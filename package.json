@@ -1,0 +1,17 @@
+{
+  "name": "silken",
+  "version": "0.0.0",
+  "description": "An unassuming framwork to build applications with.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Framework",
+    "SQL",
+    "Couch",
+    "Redis"
+  ],
+  "author": "Jim <monstertke@paperelectron.com> (http://paperelectron.com/)",
+  "license": "MIT"
+}
