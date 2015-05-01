@@ -1,0 +1,9 @@
+/node_modules/*
+.idea/
+*.off/
+*.sqlite
+*.log
+.DS_Store
+env.json
+/test/mocks/.octorp
+/scratch
