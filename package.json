@@ -1,7 +1,7 @@
 {
   "name": "pomegranate",
   "version": "0.0.0",
-  "description": "An unassuming framwork for building applications.",
+  "description": "An unassuming framework for building web applications.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
