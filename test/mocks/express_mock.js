@@ -10,4 +10,12 @@
  * @module express_mock
  */
 
-module.exports = 
+module.exports = {
+  setup: function(){
+    this.routes = [];
+    return this;
+  },
+  use: function(path, router) {
+    this.routes.push(path)
+  }
+};

@@ -4,7 +4,8 @@
   "description": "An unassuming framework for building web applications.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test mocha --ui tdd --reporter spec",
+    "docs": "jsdoc2md lib/Pomegranate.js > docs/Pomegranate.md"
   },
   "keywords": [
     "Framework",
@@ -38,5 +39,10 @@
     "mariasql": "^0.1.22",
     "mysql": "^2.6.2",
     "tedious": "^1.11.0"
+  },
+  "devDependencies": {
+    "jsdoc-to-markdown": "^1.0.3",
+    "mocha": "^2.2.4",
+    "should": "^6.0.1"
   }
 }
