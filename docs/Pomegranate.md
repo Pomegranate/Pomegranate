@@ -1,17 +1,19 @@
 <a name="module_Pomegranate"></a>
 ## Pomegranate
-Pomegranate - An unassuming framework for building apps.
+An unassuming framework for building apps.
 
 
 * [Pomegranate](#module_Pomegranate)
   * [~init(opts)](#module_Pomegranate..init) ⇒ <code>Pomegranate</code>
   * [~registerMiddleware(middleware)](#module_Pomegranate..registerMiddleware) ⇒ <code>Pomegranate</code>
   * [~registerDependency(name, name, name[].name, name[].item, item)](#module_Pomegranate..registerDependency) ⇒ <code>Pomegranate</code>
-  * [~start - Starts the configured express server instance.(cb)](#module_Pomegranate..start - Starts the configured express server instance.) ⇒ <code>Pomegranate</code>
+  * [~start(cb)](#module_Pomegranate..start) ⇒ <code>Pomegranate</code>
   * [~verifyConfig()](#module_Pomegranate..verifyConfig)
 
 <a name="module_Pomegranate..init"></a>
 ### Pomegranate~init(opts) ⇒ <code>Pomegranate</code>
+Sets up the Pomegranate framework.
+
 **Kind**: inner method of <code>[Pomegranate](#module_Pomegranate)</code>  
 
 | Param | Type | Description |
@@ -20,6 +22,8 @@ Pomegranate - An unassuming framework for building apps.
 
 <a name="module_Pomegranate..registerMiddleware"></a>
 ### Pomegranate~registerMiddleware(middleware) ⇒ <code>Pomegranate</code>
+Registers middleware functions with express.
+
 **Kind**: inner method of <code>[Pomegranate](#module_Pomegranate)</code>  
 **Returns**: <code>Pomegranate</code> - Returns the current Pomegranate instance.  
 
@@ -46,6 +50,8 @@ pomegranate.registerMiddleware([
 ```
 <a name="module_Pomegranate..registerDependency"></a>
 ### Pomegranate~registerDependency(name, name, name[].name, name[].item, item) ⇒ <code>Pomegranate</code>
+Registers a dependency with the injection framework.
+
 **Kind**: inner method of <code>[Pomegranate](#module_Pomegranate)</code>  
 
 | Param | Type | Description |
@@ -71,8 +77,10 @@ pomegranate.registerDependency([
  {name: 'StaticData', {a: 10, b: 20}}
 ])
 ```
-<a name="module_Pomegranate..start - Starts the configured express server instance."></a>
-### Pomegranate~start - Starts the configured express server instance.(cb) ⇒ <code>Pomegranate</code>
+<a name="module_Pomegranate..start"></a>
+### Pomegranate~start(cb) ⇒ <code>Pomegranate</code>
+Starts the Pomegranate server.
+
 **Kind**: inner method of <code>[Pomegranate](#module_Pomegranate)</code>  
 
 | Param | Type | Description |
