@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --ui tdd --reporter spec",
-    "docs": "jsdoc2md lib/Pomegranate.js > docs/Pomegranate.md"
+    "readme": "jsdoc2md -t docs/readme.hbs lib/**/*.js > Readme.md"
   },
   "keywords": [
     "Framework",
@@ -41,6 +41,7 @@
     "tedious": "^1.11.0"
   },
   "devDependencies": {
+    "gulp": "^3.8.11",
     "jsdoc-to-markdown": "^1.0.3",
     "mocha": "^2.2.4",
     "should": "^6.0.1"

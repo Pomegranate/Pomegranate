@@ -1,0 +1,31 @@
+# Pomegranate
+
+### An unassuming toolset for quickly building web applications.n
+
+```shell
+npm install --save pomegranate
+```
+
+```javascript
+var pom = require('pomegranate')
+var options = {
+address: '0.0.0.0',
+port: 8080
+};
+
+pom
+.init(options)
+.start()
+.on('log', console.log)
+.on('error', function(err){
+    console.log(err.stack);
+})
+```
+
+# API
+
+{{#class name="Pomegranate"~}}{{>docs}}{{/class}}
+
+{{#module name="Configuration"}}{{>docs}}{{/module}}
+
+{{#class name="Logger"}}{{>docs}}{{/class}}
