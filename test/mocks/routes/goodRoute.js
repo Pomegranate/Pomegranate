@@ -10,10 +10,10 @@
  * @module goodRoute
  */
 
-module.exports = function(router, logger, SQL, Couch){
-  router.get('/', function(req, res, next){
+module.exports = function(Router){
+  Router.get('/', function(req, res, next){
     res.json({derp: 'herp'});
   })
 
-  return {path: '/', router: router}
+  return {path: '/', router: Router}
 };
