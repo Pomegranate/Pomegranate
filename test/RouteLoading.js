@@ -9,12 +9,12 @@ var should = require('should');
 var path = require('path')
 var expressMock = require('./mocks/express_mock').setup();
 
-var injector = require('../lib/DependencyManager');
+var injector = require('magnum-di');
 var loggerMock = require('./mocks/logger_mock');
 
-injector.register('Logger', loggerMock)
-injector.register('Router', {get: function(){}})
-var routeLoader = require('../lib/RouteLoader');
+injector.service('Logger', loggerMock)
+injector.service('Router', {get: function(){}})
+var routeLoader = require('../lib/Server/RouteLoader');
 
 
 describe('RouteLoader should load the correct routes.', function(){

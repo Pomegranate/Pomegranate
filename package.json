@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --ui tdd --reporter spec",
-    "readme": "jsdoc2md -t docs/readme.hbs lib/**/*.js > Readme.md"
+    "readme": "jsdoc2md -t docs/readme.hbs \"lib/**/*.js\" > Readme.md"
   },
   "keywords": [
     "Framework",
@@ -25,7 +25,8 @@
     "hiredis": "^0.3.0",
     "jade": "^1.9.2",
     "lodash": "^3.7.0",
-    "morgan": "^1.5.2",
+    "magnum-di": "0.0.3",
+    "morgan": "paperelectron/morgan",
     "pg": "^4.3.0",
     "pg-hstore": "^2.3.2",
     "redis": "^0.12.1",
@@ -42,7 +43,7 @@
   },
   "devDependencies": {
     "gulp": "^3.8.11",
-    "jsdoc-to-markdown": "^1.0.3",
+    "jsdoc-to-markdown": "^1.1.1",
     "mocha": "^2.2.4",
     "should": "^6.0.1"
   }

@@ -1,6 +1,6 @@
 # Pomegranate
 
-### An unassuming framework for building web applications.
+### An unassuming toolset for quickly building web applications.n
 
 ```shell
 npm install --save pomegranate
@@ -128,7 +128,9 @@ Configuration options for Pomegranate.
 | --- | --- | --- | --- |
 | port | <code>number</code> | <code>8080</code> | Server listening port. |
 | address | <code>string</code> | <code>&quot;0.0.0.0&quot;</code> | Server listening address. |
+| templating | <code>string</code> | <code>&quot;jade&quot;</code> | Installed with Pomegranate [jade, handlebars] |
 | staticFiles | <code>string</code> | <code>&quot;./public&quot;</code> | Static files directory. Default is relative to the requiring file. |
+| views | <code>string</code> | <code>&quot;./views&quot;</code> | View files directory. Default is relative to the requiring file. |
 | routes | <code>string</code> | <code>&quot;./routes&quot;</code> | Route files directory. Default is relative to the requiring file. |
 | models | <code>string</code> | <code>&quot;./models&quot;</code> | Model files directory. Default is relative to the requiring file. |
 | session | <code>object</code> &#124; <code>boolean</code> | <code>false</code> | Session Configuration. See [Express-session](https://github.com/expressjs/session) |
