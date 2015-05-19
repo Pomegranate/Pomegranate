@@ -28,7 +28,7 @@ pom
 
 ### Full Example
 
-You can check out an example implementation using most of Pomegranate's features [right here.](PaperElectron/Pomegranate_Example)
+You can check out an example implementation using most of Pomegranate's features [right here.](https://github.com/PaperElectron/Pomegranate_Example)
 
 
 # Features
