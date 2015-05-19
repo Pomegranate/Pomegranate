@@ -1,10 +1,14 @@
 # Pomegranate
 
-### An unassuming toolset for quickly building web applications.n
+### An unassuming framework for quickly building web applications.
+
+### Install
 
 ```shell
 npm install --save pomegranate
 ```
+
+### Setup
 
 ```javascript
 var pom = require('pomegranate')
@@ -21,6 +25,20 @@ pom
     console.log(err.stack);
 })
 ```
+
+### Full Example
+
+You can check out an example implementation using most of Pomegranate's features [right here.](PaperElectron/Pomegranate_Example)
+
+
+# Features
+
+* Recursive model and route loader.
+* Easy to use dependency injection.
+* SQL, Redis (*CouchDB) available in every route.
+* Event based logging.
+
+\* CouchDB support is in progress.
 
 # API
 
