@@ -35,12 +35,11 @@ You can check out an example implementation using most of Pomegranate's features
 
 * Recursive model and route loader.
 * Easy to use dependency injection.
-* SQL, Redis (*CouchDB) available in every route.
+* SQL, Redis and CouchDB available in every route.
 * Event based logging.
 
-\* CouchDB support is in progress.
-
 # API
+
 
 <a name="Pomegranate"></a>
 ## Pomegranate ⇐ <code>[Logger](#Logger)</code>
@@ -166,7 +165,11 @@ Configuration options for Pomegranate.
 | sql.database | <code>string</code> | <code>&quot;no default&quot;</code> | SQL server address. |
 | sql.port | <code>number</code> | <code>no default</code> | Sql Server Port. |
 | sql.dialect | <code>string</code> | <code>&quot;sqlite&quot;</code> | SQL server dialect 'mysql','mariadb','sqlite','postgres','mssql' |
+| sql.persist | <code>boolean</code> | <code>true</code> | Destroys all model databases and recreates on startup. |
 | couch | <code>object</code> &#124; <code>boolean</code> | <code>false</code> | CouchDb connection details. See [nano](https://github.com/dscape/nano) |
+| couch.url | <code>string</code> | <code>&quot;no default&quot;</code> | CouchDB connection url. |
+| couch.prefix | <code>string</code> | <code>&quot;pomegranate&quot;</code> | Used to prefix database names, to support multitenancy. |
+| couch.persist | <code>boolean</code> | <code>true</code> | Destroys all model databases and recreates on startup. |
 
 
 
