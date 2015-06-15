@@ -26,7 +26,7 @@
     "hiredis": "^0.3.0",
     "jade": "^1.9.2",
     "lodash": "^3.9.1",
-    "magnum-di": "0.0.3",
+    "magnum-di": "^0.1.0",
     "morgan": "paperelectron/morgan",
     "nano": "^6.1.2",
     "pg": "^4.3.0",
