@@ -13,7 +13,7 @@
     "Couch",
     "Redis"
   ],
-  "author": "Jim <monstertke@paperelectron.com> (http://paperelectron.com/)",
+  "author": "Jim <jim.b@paperelectron.com> (http://paperelectron.com/)",
   "license": "MIT",
   "dependencies": {
     "bluebird": "^2.9.25",
@@ -27,13 +27,13 @@
     "jade": "^1.9.2",
     "lodash": "^3.9.1",
     "magnum-di": "^0.1.0",
-    "morgan": "paperelectron/morgan",
+    "morgan": "^1.6.0",
     "nano": "^6.1.2",
     "pg": "^4.3.0",
     "pg-hstore": "^2.3.2",
     "redis": "^0.12.1",
     "response-time": "^2.3.0",
-    "sequelize": "^2.1.0",
+    "sequelize": "^3.2.0",
     "serve-favicon": "^2.2.0",
     "serve-static": "^1.9.2",
     "sqlite3": "^3.0.5"
