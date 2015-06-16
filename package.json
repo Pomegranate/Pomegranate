@@ -1,6 +1,6 @@
 {
   "name": "pomegranate",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "An unassuming framework for building web applications.",
   "main": "index.js",
   "scripts": {
