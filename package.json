@@ -2,6 +2,10 @@
   "name": "pomegranate",
   "version": "0.2.0",
   "description": "An unassuming framework for building web applications.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PaperElectron/Pomegranate.git"
+  },
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --ui tdd --reporter spec",
@@ -23,7 +27,7 @@
     "express": "^4.12.3",
     "express-session": "^1.11.1",
     "hbs": "^3.0.1",
-    "hiredis": "^0.3.0",
+    "hiredis": "^0.4.0",
     "jade": "^1.9.2",
     "lodash": "^3.9.1",
     "magnum-di": "^0.1.0",
