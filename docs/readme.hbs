@@ -4,10 +4,13 @@
 
 #### Pomegranate is an Express driven, MVC framework that relies on Inversion of Control to manage Dependencies.
 
+[![NPM Version][npm-image]][npm-url]
+[![Linux][travis-image]][travis-url]
+
 # Features
 
 * Transparent model, controller and route loading, just drop your files into the correct directory (or configure it to use your own).
-* Inversion of control makes it simple to gain access to your controllers, models, and custom dependencies. 
+* Inversion of control makes it simple to gain access to your controllers, models, and custom dependencies.
 * Out of the box support for PostgreSQL, MySQL, MsSQL and MariaDB with sequelize as the ORM. CouchDb support through Nano. Redis via, well Redis. Dont like any of those? Install and register your own and they will be available to you in your controllers and routes... Magic!
 * Named controllers are available in any route, and can even use your own outside dependencies.
 * Sane default middlewares, with the ability to easily add your own.
@@ -24,14 +27,14 @@ npm install --save pomegranate
 ## Routes
 
 First we need a route file, the default directory is `./routes/`, but you can configure that to whatever you want to fit your project structure.
-Currently the only dependency that is required is `Router`, this gives you an instance of express.Router to attach your routes to. 
+Currently the only dependency that is required is `Router`, this gives you an instance of express.Router to attach your routes to.
 
-In this file any function arguments matching a registered dependency will be available to you in the body of the function. 
+In this file any function arguments matching a registered dependency will be available to you in the body of the function.
 
-This includes any models you defined in `./models/sql/` or `./models/couch/` available in your function as `SQL.<modelname>` and `Couch.<modelname>` respectivly. Controller objects are available by adding the controllers filename to the function arguments, manually added 
+This includes any models you defined in `./models/sql/` or `./models/couch/` available in your function as `SQL.<modelname>` and `Couch.<modelname>` respectivly. Controller objects are available by adding the controllers filename to the function arguments, manually added
 dependencies are available in the same fashion.
 
-`./views/frontPage.js`
+`./routes/frontPage.js`
 
 ```javascript
 module.exports = function(Logger, Router, Thing, Thing2, Thing3){
@@ -39,7 +42,7 @@ module.exports = function(Logger, Router, Thing, Thing2, Thing3){
     Thing3.init('bob')
     res.render('Base', {a: Thing, b: Thing2('factory'), c: Thing3});
   })
-  
+
   // Return the path this file lives on, as well as the Router.
   return {path: '/', router: Router}
 };
@@ -48,10 +51,10 @@ module.exports = function(Logger, Router, Thing, Thing2, Thing3){
 
 ## Views
 
-The default view directory is `./views/`,  here is a simple base view. The system default is hbs, you can also use jade, and in the future 
+The default view directory is `./views/`,  here is a simple base view. The system default is hbs, you can also use jade, and in the future
 any templating you want.
 
-`./views/Base.hbs`  
+`./views/Base.hbs`
 
 ```handlebars
 <!DOCTYPE html>
@@ -125,7 +128,7 @@ pom
 
 # Roadmap
 
-* Expose a bit more of the underlying API's eg. It would be useful to get the Magnum DI instance Pomegranate is using, to use elsewhere in 
+* Expose a bit more of the underlying API's eg. It would be useful to get the Magnum DI instance Pomegranate is using, to use elsewhere in
 an application.
 * Fully configurable middleware stack. Enable, disable and order default middleware.
 * Expose more templating customization.
@@ -139,3 +142,8 @@ an application.
 {{#module name="Configuration"~}}{{>docs}}{{/module}}
 
 {{#class name="Logger"~}}{{>docs}}{{/class}}
+
+[npm-image]: https://img.shields.io/npm/v/pomegranate.svg
+[npm-url]: https://www.npmjs.com/package/pomegranate
+[travis-image]: https://img.shields.io/travis/PaperElectron/Pomegranate/master.svg
+[travis-url]: https://travis-ci.org/PaperElectron/Pomegranate
