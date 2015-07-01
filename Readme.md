@@ -244,6 +244,7 @@ Configuration options for Pomegranate.
 | templating | <code>string</code> | <code>&quot;hbs&quot;</code> | Installed with Pomegranate [hbs, jade] |
 | staticFiles | <code>string</code> | <code>&quot;./public&quot;</code> | Static files directory. Default is relative to the requiring file. |
 | views | <code>string</code> | <code>&quot;./views&quot;</code> | View files directory. Default is relative to the requiring file. |
+| partials | <code>string</code> | <code>&quot;./views/partials&quot;</code> | Directory containing handlebars partials. Only for templating = hbs |
 | routes | <code>string</code> | <code>&quot;./routes&quot;</code> | Route files directory. Default is relative to the requiring file. |
 | models | <code>string</code> | <code>&quot;./models&quot;</code> | Model files directory. Default is relative to the requiring file. |
 | controllers | <code>string</code> | <code>&quot;./controllers&quot;</code> | Controller files directory. Default is relative to the requiring file. |
