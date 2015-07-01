@@ -242,6 +242,7 @@ Configuration options for Pomegranate.
 | port | <code>number</code> | <code>8080</code> | Server listening port. |
 | address | <code>string</code> | <code>&quot;0.0.0.0&quot;</code> | Server listening address. |
 | templating | <code>string</code> | <code>&quot;hbs&quot;</code> | Installed with Pomegranate [hbs, jade] |
+| basePath | <code>string</code> | <code>&quot;./&quot;</code> | This should generally be set to __dirname. |
 | staticFiles | <code>string</code> | <code>&quot;./public&quot;</code> | Static files directory. Default is relative to the requiring file. |
 | views | <code>string</code> | <code>&quot;./views&quot;</code> | View files directory. Default is relative to the requiring file. |
 | partials | <code>string</code> | <code>&quot;./views/partials&quot;</code> | Directory containing handlebars partials. Only for templating = hbs |
