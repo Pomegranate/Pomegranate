@@ -1,6 +1,6 @@
 {
   "name": "pomegranate",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "An unassuming framework for building web applications.",
   "repository": {
     "type": "git",
