@@ -6,32 +6,90 @@
  */
 
 var should = require('should');
-var path = require('path')
-var expressMock = require('./mocks/express_mock').setup();
+var path = require('path');
+var express = require('express');
+var Router = express.Router;
+
+var request = require('supertest');
+var app = express();
 
 var injector = require('magnum-di');
 var loggerMock = require('./mocks/logger_mock');
 
 injector.service('Logger', loggerMock)
-injector.service('Router', {get: function(){}})
+injector.factory('Router', Router)
 var routeLoader = require('../lib/Server/RouteLoader');
 
 
-describe('RouteLoader should load the correct routes.', function(){
+describe('RouteLoader should load routes as expected.', function(){
 
   var routes = path.join(__dirname, './mocks/routes')
-  var app = routeLoader(routes, expressMock, injector)
+  var testApp = routeLoader(routes, app, injector)
 
-  describe('should accept parameters and return an app object', function() {
-    it('Should be an object', function() {
-      app.should.be.an.Object
-    })
-    it('Should have a routes property.', function() {
+  it('should start the server and respond to requests.', function(done){
+    request(testApp)
+      .get('/')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end(function(err, res) {
+        if (err) return done(err);
+        res.body.path.should.equal('/')
+        done()
+      });
+  })
 
-      app.should.have.property('routes')
+  describe('should mount routes correctly based on filepath.', function() {
+    it('should respond to /test', function(done){
+      request(testApp)
+        .get('/test')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          res.body.path.should.equal('/test')
+          done()
+        });;
+    });
+
+    it('should respond to /test/internal', function(done){
+      request(testApp)
+        .get('/test/internal')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          res.body.path.should.equal('/test/internal')
+          done()
+        });
     })
-    it('Should have loaded 1 route.', function() {
-      app.routes.should.have.length(1)
+
+    it('should respond to /test/external', function(done){
+      request(testApp)
+        .get('/test/external')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          res.body.path.should.equal('/test/external')
+          done()
+        });
+    })
+
+    it('should handle parameter routing to /test/external/:name/:test/param', function(done){
+      request(testApp)
+        .get('/test/external/name/test/param')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          res.body.path.should.equal('/test/external/name/test/param')
+          done()
+        });
     })
   });
 });

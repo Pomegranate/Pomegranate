@@ -1,6 +1,6 @@
 # Pomegranate
 
-### An unassuming framework for quickly building web applications.
+### The most flexible web framework in the known universe.
 
 #### Pomegranate is an Express driven, MVC framework that relies on Inversion of Control to manage Dependencies.
 
@@ -43,8 +43,8 @@ module.exports = function(Logger, Router, Thing, Thing2, Thing3){
     res.render('Base', {a: Thing, b: Thing2('factory'), c: Thing3});
   })
 
-  // Return the path this file lives on, as well as the Router.
-  return {path: '/', router: Router}
+  // Return the Router.
+  return Router
 };
 
 ```
@@ -242,6 +242,7 @@ Configuration options for Pomegranate.
 | port | <code>number</code> | <code>8080</code> | Server listening port. |
 | address | <code>string</code> | <code>&quot;0.0.0.0&quot;</code> | Server listening address. |
 | templating | <code>string</code> | <code>&quot;hbs&quot;</code> | Installed with Pomegranate [hbs, jade] |
+| renderErrors | <code>string</code> | <code>false</code> | If true renders ./views/404 ./views/500 on error, else returns json. |
 | basePath | <code>string</code> | <code>&quot;./&quot;</code> | This should generally be set to __dirname. |
 | staticFiles | <code>string</code> | <code>&quot;./public&quot;</code> | Static files directory. Default is relative to the requiring file. |
 | views | <code>string</code> | <code>&quot;./views&quot;</code> | View files directory. Default is relative to the requiring file. |

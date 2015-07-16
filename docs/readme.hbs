@@ -1,6 +1,6 @@
 # Pomegranate
 
-### An unassuming framework for quickly building web applications.
+### The most flexible web framework in the known universe.
 
 #### Pomegranate is an Express driven, MVC framework that relies on Inversion of Control to manage Dependencies.
 
@@ -43,8 +43,8 @@ module.exports = function(Logger, Router, Thing, Thing2, Thing3){
     res.render('Base', {a: Thing, b: Thing2('factory'), c: Thing3});
   })
 
-  // Return the path this file lives on, as well as the Router.
-  return {path: '/', router: Router}
+  // Return the Router.
+  return Router
 };
 
 ```
