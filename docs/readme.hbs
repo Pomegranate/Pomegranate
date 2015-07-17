@@ -1,9 +1,11 @@
-<img align="left" style="padding:10px" src="./Pomegranate_icon.png" >
-# Pomegranate
+<img style="float:left;padding:10px" src="./Pomegranate_icon.png" >
+### Pomegranate
 
-### The most flexible web framework in the known universe.
+#### The most flexible web framework in the known universe.
 
-#### Pomegranate is an Express driven, MVC framework that relies on Inversion of Control to manage Dependencies.
+Pomegranate is an Express driven, MVC framework that relies on Inversion of Control to manage Dependencies.
+
+***
 
 [![NPM Version][npm-image]][npm-url]
 [![Linux][travis-image]][travis-url]
