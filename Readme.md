@@ -1,4 +1,4 @@
-<img style="float:left;padding:10px" src="./Pomegranate_icon.png" >
+<img align="left" style="padding:10px" src="./Pomegranate_icon.png" >
 ### Pomegranate
 
 #### The most flexible web framework in the known universe.
