@@ -9,7 +9,8 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --ui tdd --reporter spec",
-    "readme": "jsdoc2md -t docs/readme.hbs \"lib/**/*.js\" > Readme.md"
+    "readme": "jsdoc2md -t docs/readme.hbs \"lib/**/*.js\" > Readme.md",
+    "publish": "git subtree push --prefix _gh-pages origin gh-pages"
   },
   "keywords": [
     "Framework",

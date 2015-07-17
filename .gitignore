@@ -7,8 +7,3 @@
 env.json
 /test/mocks/.octorp
 /scratch
-
-.ruby-version
-_site
-_posts
-_gh_pages
