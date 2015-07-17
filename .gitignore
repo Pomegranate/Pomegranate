@@ -10,4 +10,5 @@ env.json
 
 .ruby-version
 _site
+_posts
 _gh_pages
