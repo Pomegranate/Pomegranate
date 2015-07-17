@@ -1,0 +1,26 @@
+# Dependencies
+markdown:         redcarpet
+highlighter:      pygments
+
+# Permalinks
+permalink:        pretty
+relative_permalinks: true
+
+# Setup
+title:            Pomegranate
+tagline:          'The simplest web framework in the known universe.'
+description:      'The simplest web framework in the known universe. Built by <a href="https://github.com/PaperElectron">@PaperElectron</a>'
+url:              https://github.com/PaperElectron/Pomegranate
+baseurl:          /
+
+author:
+  name:           'Jim Bulkowski'
+  url:            https://github.com/PaperElectron/Pomegranate
+
+paginate:         5
+
+# Custom vars
+version:          0.3.0
+
+github:
+  repo:           https://github.com/PaperElectron/Pomegranate
