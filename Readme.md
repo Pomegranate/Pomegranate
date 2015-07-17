@@ -1,3 +1,4 @@
+<img align="left" style="padding:10px" src="./Pomegranate_icon.png" >
 # Pomegranate
 
 ### The most flexible web framework in the known universe.
@@ -143,15 +144,15 @@ an application.
 **Extends:** <code>[Logger](#Logger)</code>  
 
 * [Pomegranate](#Pomegranate) ⇐ <code>[Logger](#Logger)</code>
-  * [.init(options)](#Pomegranate#init) ⇒ <code>[Pomegranate](#Pomegranate)</code>
-  * [.start(callback)](#Pomegranate#start) ⇒ <code>[Pomegranate](#Pomegranate)</code>
-  * [.addMiddleware()](#Pomegranate#addMiddleware) ⇒ <code>[Pomegranate](#Pomegranate)</code>
-  * [.addDependency()](#Pomegranate#addDependency) ⇒ <code>[Pomegranate](#Pomegranate)</code>
-  * ["log" (message, data)](#Logger#event_log)
-  * ["error" (error)](#Logger#event_error)
-  * ["log-request" (message, data)](#Logger#event_log-request)
+  * [.init(options)](#Pomegranate+init) ⇒ <code>[Pomegranate](#Pomegranate)</code>
+  * [.start(callback)](#Pomegranate+start) ⇒ <code>[Pomegranate](#Pomegranate)</code>
+  * [.addMiddleware()](#Pomegranate+addMiddleware) ⇒ <code>[Pomegranate](#Pomegranate)</code>
+  * [.addDependency()](#Pomegranate+addDependency) ⇒ <code>[Pomegranate](#Pomegranate)</code>
+  * ["log" (message, data)](#Logger+event_log)
+  * ["error" (error)](#Logger+event_error)
+  * ["log-request" (message, data)](#Logger+event_log-request)
 
-<a name="Pomegranate#init"></a>
+<a name="Pomegranate+init"></a>
 ### pomegranate.init(options) ⇒ <code>[Pomegranate](#Pomegranate)</code>
 Sets up the Pomegranate framework.
 
@@ -180,7 +181,7 @@ var options = {
 
 pomegranate.init(options)
 ```
-<a name="Pomegranate#start"></a>
+<a name="Pomegranate+start"></a>
 ### pomegranate.start(callback) ⇒ <code>[Pomegranate](#Pomegranate)</code>
 Starts the Pomegranate server instance.
 
@@ -191,19 +192,19 @@ Starts the Pomegranate server instance.
 | --- |
 | callback | 
 
-<a name="Pomegranate#addMiddleware"></a>
+<a name="Pomegranate+addMiddleware"></a>
 ### pomegranate.addMiddleware() ⇒ <code>[Pomegranate](#Pomegranate)</code>
 Adds a middleware function, or an array of middleware functions to the global middleware stack.
 
 **Kind**: instance method of <code>[Pomegranate](#Pomegranate)</code>  
 **Returns**: <code>[Pomegranate](#Pomegranate)</code> - this instance  
-<a name="Pomegranate#addDependency"></a>
+<a name="Pomegranate+addDependency"></a>
 ### pomegranate.addDependency() ⇒ <code>[Pomegranate](#Pomegranate)</code>
 Registers a dependency to be made available to the injector.
 
 **Kind**: instance method of <code>[Pomegranate](#Pomegranate)</code>  
 **Returns**: <code>[Pomegranate](#Pomegranate)</code> - this instance  
-<a name="Logger#event_log"></a>
+<a name="Logger+event_log"></a>
 ### "log" (message, data)
 **Kind**: event emitted by <code>[Pomegranate](#Pomegranate)</code>  
 
@@ -212,7 +213,7 @@ Registers a dependency to be made available to the injector.
 | message | <code>string</code> | 
 | data | <code>object</code> | 
 
-<a name="Logger#event_error"></a>
+<a name="Logger+event_error"></a>
 ### "error" (error)
 **Kind**: event emitted by <code>[Pomegranate](#Pomegranate)</code>  
 
@@ -220,7 +221,7 @@ Registers a dependency to be made available to the injector.
 | --- | --- |
 | error | <code>object</code> | 
 
-<a name="Logger#event_log-request"></a>
+<a name="Logger+event_log-request"></a>
 ### "log-request" (message, data)
 **Kind**: event emitted by <code>[Pomegranate](#Pomegranate)</code>  
 
@@ -277,14 +278,14 @@ Configuration options for Pomegranate.
 ## Logger ⇐ <code>EventEmitter</code>
 **Kind**: global class  
 **Extends:** <code>EventEmitter</code>  
-**Emits**: <code>[log](#Logger#event_log)</code>, <code>[error](#Logger#event_error)</code>, <code>[log-request](#Logger#event_log-request)</code>  
+**Emits**: <code>[log](#Logger+event_log)</code>, <code>[error](#Logger+event_error)</code>, <code>[log-request](#Logger+event_log-request)</code>  
 
 * [Logger](#Logger) ⇐ <code>EventEmitter</code>
-  * ["log" (message, data)](#Logger#event_log)
-  * ["error" (error)](#Logger#event_error)
-  * ["log-request" (message, data)](#Logger#event_log-request)
+  * ["log" (message, data)](#Logger+event_log)
+  * ["error" (error)](#Logger+event_error)
+  * ["log-request" (message, data)](#Logger+event_log-request)
 
-<a name="Logger#event_log"></a>
+<a name="Logger+event_log"></a>
 ### "log" (message, data)
 **Kind**: event emitted by <code>[Logger](#Logger)</code>  
 
@@ -293,7 +294,7 @@ Configuration options for Pomegranate.
 | message | <code>string</code> | 
 | data | <code>object</code> | 
 
-<a name="Logger#event_error"></a>
+<a name="Logger+event_error"></a>
 ### "error" (error)
 **Kind**: event emitted by <code>[Logger](#Logger)</code>  
 
@@ -301,7 +302,7 @@ Configuration options for Pomegranate.
 | --- | --- |
 | error | <code>object</code> | 
 
-<a name="Logger#event_log-request"></a>
+<a name="Logger+event_log-request"></a>
 ### "log-request" (message, data)
 **Kind**: event emitted by <code>[Logger](#Logger)</code>  
 
