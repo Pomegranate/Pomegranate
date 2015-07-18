@@ -3,8 +3,12 @@ layout: doc
 title: Configuration
 ---
 
-### Dependency management can be a complicated endeavor. Pomegranate makes it easy.
+### Pomegranate takes 1 object for its configuration.
+
+#### From a file? Environment vars? How you provide it is up to you.
 
 ```javascript
-    var derp = herp;
+!function(words){
+    console.log(words)
+}('Configuration')
 ```
