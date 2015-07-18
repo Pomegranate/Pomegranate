@@ -12,7 +12,7 @@ tagline:          'The most flexible web framework in the known universe.'
 description:      'The most flexible web framework in the known universe.'
 built_by:         'Built by <a href="https://github.com/PaperElectron">@PaperElectron</a>'
 url:              http://paperelectron.github.io/Pomegranate/
-baseurl:          /Pomegranate
+baseurl:          /
 
 author:
   name:           'Jim Bulkowski'
