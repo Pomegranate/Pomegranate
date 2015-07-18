@@ -155,8 +155,8 @@ pre {
 code {
   padding: .25em .5em;
   font-size: 85%;
-  color: rgba(255, 255, 255, .5);
-  background-color: #202020;
+  color: #717171;
+  background-color: #f9f9f9;
   border-radius: 3px;
 }
 pre {
@@ -237,6 +237,7 @@ img {
 
 /* Tables */
 table {
+  font-size: .75rem;
   margin-bottom: 1rem;
   width: 100%;
   border: 1px solid #e5e5e5;
