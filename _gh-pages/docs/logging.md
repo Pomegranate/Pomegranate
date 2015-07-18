@@ -3,8 +3,12 @@ layout: doc
 title: Logging
 ---
 
-### Dependency management can be a complicated endeavor. Pomegranate makes it easy.
+### Logging shouldn't be hard.
+
+#### Pomegranate gets out of your way.
 
 ```javascript
-    var derp = herp;
+!function(words){
+    console.log(words)
+}('Logging')
 ```

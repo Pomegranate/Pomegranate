@@ -3,8 +3,12 @@ layout: doc
 title: Dependency Management
 ---
 
-### Dependency management can be a complicated endeavor. Pomegranate makes it easy.
+### Dependency management can be a complicated endeavor.
+
+#### Pomegranate makes it easy.
 
 ```javascript
-    var derp = herp;
+!function(words){
+    console.log(words)
+}('Dependency Injection')
 ```

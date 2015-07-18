@@ -3,40 +3,38 @@ layout: default
 title: Home
 ---
 
-<h1>{{site.title}}</h1>
+<h3>Ok, the known universe is a really big place.</h3>
+<p>You got us, Pomegranate may not be the most flexible in the <i>entire</i> universe.
+    But it is a super flexible platform.
+    It is rediculously easy to use, while at the same time giving you the power to build whatever you need.
+    With an intuitive structure, and a very low noise installation, you can have a project up and running in just a
+    few lines of code.
+    <img src="{{site.baseurl}}/public/img/deep_field.png">
+</p>
 
+<h2>Features</h2>
+<ul>
+    <li>Transparent model, controller and route loading,
+        just drop your files into the correct directory (or configure it to use your own).
+        <a href="{{site.baseurl}}/docs/file-loading">More about file loading.</a>
+    </li>
+    <li>Inversion of control makes it simple to gain access to your controllers, models, and custom dependencies.
+        <a href="{{site.baseurl}}/docs/dependency-management">More about Dependencies.</a>
+    </li>
+    <li>Out of the box support for most SQL servers, using Sequelize as the ORM.
+        CouchDb support through Nano. Redis via, well Redis.
+        Don't like any of those? Install and register your own and they will be available to you in your controllers and routes... Magic!
+        <a href="{{site.baseurl}}/docs/models">More about Models.</a>
+    </li>
+    <li>Named controllers are available in any route, and can even use your own outside dependencies.
+        <a href="{{site.baseurl}}/docs/controllers">More about Controllers.</a>
+    </li>
+    <li>Sane default middlewares, with the ability to easily add your own.
+        <a href="{{site.baseurl}}/docs/middleware">More about Middleware.</a>
+    </li>
+    <li>Event based logging, so you choose what goes where.
+        <a href="{{site.baseurl}}/docs/logging">More about Logging.</a>
+    </li>
+</ul>
 
 {% include docMenu.html %}
-
-<!--<div class="posts">-->
-  <!--{% for post in paginator.posts %}-->
-  <!--<div class="post">-->
-    <!--<h1 class="post-title">-->
-      <!--<a href="{{ post.url }}">-->
-        <!--{{ post.title }}-->
-      <!--</a>-->
-    <!--</h1>-->
-
-    <!--<span class="post-date">{{ post.date | date_to_string }}</span>-->
-
-    <!--{{ post.content }}-->
-  <!--</div>-->
-  <!--{% endfor %}-->
-<!--</div>-->
-
-<!--<div class="pagination">-->
-  <!--{% if paginator.next_page %}-->
-    <!--<a class="pagination-item older" href="{{ site.baseurl }}page{{paginator.next_page}}">Older</a>-->
-  <!--{% else %}-->
-    <!--<span class="pagination-item older">Older</span>-->
-  <!--{% endif %}-->
-  <!--{% if paginator.previous_page %}-->
-    <!--{% if paginator.page == 2 %}-->
-      <!--<a class="pagination-item newer" href="{{ site.baseurl }}">Newer</a>-->
-    <!--{% else %}-->
-      <!--<a class="pagination-item newer" href="{{ site.baseurl }}page{{paginator.previous_page}}">Newer</a>-->
-    <!--{% endif %}-->
-  <!--{% else %}-->
-    <!--<span class="pagination-item newer">Newer</span>-->
-  <!--{% endif %}-->
-<!--</div>-->
