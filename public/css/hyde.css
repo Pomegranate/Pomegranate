@@ -59,6 +59,9 @@ html {
     background-color: #202020;
 }
 
+.content img {
+  padding: 5px 0 5px 0;
+}
 .sidebar img {
     margin: 10px auto 0 auto;
 }
