@@ -45,6 +45,9 @@ html {
     }
 }
 
+.scroll-x {
+  overflow-x: auto;
+}
 /*
  * Sidebar
  *

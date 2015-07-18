@@ -1,0 +1,28 @@
+---
+layout: doc
+title: Configuration
+---
+
+### Pomegranate takes 1 object for its configuration.
+
+#### From a file? Environment vars? How you provide it is up to you.
+
+```javascript
+var options = {
+    port: 8080,
+    address: "0.0.0.0",
+    session: false
+}
+```
+
+{{#module name="ServerOptions"~}}{{>docs}}{{/module}}
+
+{{#module name="PathOptions"~}}{{>docs}}{{/module}}
+
+{{#module name="SessionOptions"~}}{{>docs}}{{/module}}
+
+{{#module name="RedisOptions"~}}{{>docs}}{{/module}}
+
+{{#module name="SQLOptions"~}}{{>docs}}{{/module}}
+
+{{#module name="CouchOptions"~}}{{>docs}}{{/module}}

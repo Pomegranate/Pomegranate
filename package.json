@@ -10,6 +10,7 @@
   "scripts": {
     "test": "NODE_ENV=test mocha --ui tdd --reporter spec",
     "readme": "jsdoc2md -t docs/readme.hbs \"lib/**/*.js\" > Readme.md",
+    "TPub": "jsdoc2md -t docs/configuration.hbs \"lib/Configuration/Config.js\" > _gh-pages/docs/configuration.md",
     "publish": "git subtree push --prefix _gh-pages origin gh-pages"
   },
   "keywords": [
