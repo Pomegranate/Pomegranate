@@ -45,8 +45,18 @@ html {
     }
 }
 
-.scroll-x {
-  overflow-x: auto;
+.list-nav {
+  font-size: 1rem;
+  margin-bottom: .5rem;
+}
+
+.inline {
+  padding: 0px;
+  margin-bottom: 0px;
+}
+.inline li {
+  padding: .25rem;
+  display: inline;
 }
 /*
  * Sidebar
