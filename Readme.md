@@ -1,7 +1,7 @@
 <img align="left" style="padding:10px" src="./Pomegranate_icon.png" >
 ### Pomegranate
 
-#### The most flexible web framework in the known universe.
+#### Complex applications without complex structure.
 
 Pomegranate is an Express driven, MVC framework that relies on Inversion of Control to manage Dependencies.
 
