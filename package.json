@@ -22,6 +22,12 @@
   ],
   "author": "Jim <jim.b@paperelectron.com> (http://paperelectron.com/)",
   "license": "MIT",
+  "files": [
+    "index.js",
+    "lib/",
+    "assets/",
+    "Readme.md"
+  ],
   "dependencies": {
     "bluebird": "^2.9.25",
     "body-parser": "^1.12.3",
