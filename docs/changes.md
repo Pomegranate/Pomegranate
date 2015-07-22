@@ -3,6 +3,14 @@ layout: doc
 title: Changes
 ---
 
+1.0.1 / 2015-07-22
+==================
+
+  * 1.0.1
+  * Added change log, added docs for routing and route files.
+  * Update package.json files entry
+  * Added licence file
+
 1.0.0 / 2015-07-21
 ==================
   * 1.0.0
