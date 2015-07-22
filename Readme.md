@@ -1,4 +1,3 @@
-<img align="left" style="padding:10px" src="./Pomegranate_icon.png" >
 ### Pomegranate
 
 #### Complex applications without complex structure.
@@ -12,7 +11,6 @@ Pomegranate is an Express driven, MVC framework that relies on Inversion of Cont
 
 # Features
 
-[![Awesome][deep-field]][doc-url]
 
 * Transparent model, controller and route loading, just drop your files into the correct directory (or configure it to use your own).
 * Inversion of control makes it simple to gain access to your controllers, models, and custom dependencies.
@@ -27,7 +25,13 @@ Pomegranate is an Express driven, MVC framework that relies on Inversion of Cont
 npm install --save pomegranate
 ```
 
+# [Quick start](http://pomegranate.paperelectron.com/docs/quickstart)
+
 ## [Full Documentation](http://pomegranate.paperelectron.com)
+
+## [Change log](http://pomegranate.paperelectron.com/docs/changes)
+
+
 
 # Basic Usage
 
@@ -140,7 +144,6 @@ an application.
 * Fully configurable middleware stack. Enable, disable and order default middleware.
 * Expose more templating customization.
 
-[deep-field]: ./_gh-pages/public/img/deep_field.png
 [doc-url]: http://pomegranate.paperelectron.com
 [npm-image]: https://img.shields.io/npm/v/pomegranate.svg
 [npm-url]: https://www.npmjs.com/package/pomegranate
