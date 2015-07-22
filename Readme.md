@@ -1,3 +1,4 @@
+<img align="left" style="padding:10px" src="./Pomegranate_icon.png" >
 ### Pomegranate
 
 #### Complex applications without complex structure.
