@@ -26,7 +26,7 @@ Controls server operation.
 | port | <code>number</code> | <code>8080</code> | Server listening port. |
 | address | <code>string</code> | <code>&quot;0.0.0.0&quot;</code> | Server listening address. |
 | templating | <code>string</code> | <code>&quot;hbs&quot;</code> | Installed with Pomegranate [hbs, jade] |
-| renderErrors | <code>string</code> | <code>false</code> | If true renders ./views/404 ./views/500 on error, else returns json. |
+| renderErrors | <code>string</code> | <code>false</code> | If true renders ./views/errors/404 ./views/errors/500 on error, else returns json. |
 
 
 
