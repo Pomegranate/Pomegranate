@@ -90,9 +90,14 @@ Controls SQL connection settings [Postgres, MySQL, MsSQL, MariaDB].
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | sql | <code>object</code> &#124; <code>boolean</code> | <code>false</code> | SQL connection details. See [Sequelize](https://github.com/sequelize/sequelize) |
-| sql.database | <code>string</code> | <code>&quot;no default&quot;</code> | SQL server address. |
+| sql.database | <code>string</code> | <code>&quot;no default&quot;</code> | SQL server database. |
+| sql.username | <code>string</code> | <code>&quot;no default&quot;</code> | SQL User. |
+| sql.password | <code>string</code> | <code>&quot;no default&quot;</code> | SQL User password. |
+| sql.host | <code>string</code> | <code>&quot;localhost&quot;</code> | SQL server address. |
 | sql.port | <code>number</code> | <code>no default</code> | Sql Server Port. |
 | sql.dialect | <code>string</code> | <code>&quot;sqlite&quot;</code> | SQL server dialect 'mysql','mariadb','sqlite','postgres','mssql' |
+| sql.storage | <code>string</code> | <code>&quot;no default&quot;</code> | SQLITE only, path to db file. |
+| sql.logging | <code>boolean</code> | <code>false</code> | LOG SQL queries |
 | sql.persist | <code>boolean</code> | <code>true</code> | Destroys all model databases and recreates on startup. |
 
 
