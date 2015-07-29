@@ -45,6 +45,7 @@ Controls Pomegranate file locations.
 | routes | <code>string</code> | <code>&quot;./routes&quot;</code> | Route files directory. Default is relative to the requiring file. |
 | models | <code>string</code> | <code>&quot;./models&quot;</code> | Model files directory. Default is relative to the requiring file. |
 | controllers | <code>string</code> | <code>&quot;./controllers&quot;</code> | Controller files directory. Default is relative to the requiring file. |
+| dependencies | <code>string</code> | <code>&quot;./dependencies&quot;</code> | Dependency files directory. Default is relative to the requiring file. |
 
 
 
