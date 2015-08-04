@@ -36,7 +36,7 @@ File: `./routes/index.js``
 module.exports = function(Router){
   Router.get('/', function(req, res, next){
     res.render('base')
-  }
+  })
 
   // Router Object must be returned.
   return Router
