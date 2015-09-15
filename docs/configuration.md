@@ -59,6 +59,7 @@ Controls Server sessions and session storage.
 | --- | --- | --- | --- |
 | session | <code>object</code> &#124; <code>boolean</code> | <code>false</code> | Session Configuration. See [Express-session](https://github.com/expressjs/session) |
 | session.secret | <code>string</code> | <code>&quot;process.exit()&quot;</code> | No default, Pomegranate will exit if not set. |
+| session.domain | <code>string</code> | <code>false</code> | No default, Domain to store cookie on. |
 | session.name | <code>string</code> | <code>&quot;pomegranate.sid&quot;</code> | Session cookie name. |
 | session.ttl | <code>number</code> | <code>60 * 60 * 24 * 7</code> | Expiration time for session data. In seconds. |
 | session.resave | <code>boolean</code> | <code>false</code> | Save session on every request, even if unmodified. |
