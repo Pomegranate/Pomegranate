@@ -101,6 +101,7 @@ Controls SQL connection settings [Postgres, MySQL, MsSQL, MariaDB].
 | sql.storage | <code>string</code> | <code>&quot;no default&quot;</code> | SQLITE only, path to db file. |
 | sql.logging | <code>boolean</code> | <code>false</code> | LOG SQL queries |
 | sql.persist | <code>boolean</code> | <code>true</code> | Destroys all model databases and recreates on startup. |
+| sql.typeValidation | <code>boolean</code> | <code>false</code> | Run validators on insert and update for Primary keys. |
 
 
 
