@@ -23,7 +23,7 @@ author:
 paginate:         5
 
 # Custom vars
-version:          0.3.0
+version:          1.9.1
 
 github:
   repo:           https://github.com/PaperElectron/Pomegranate
