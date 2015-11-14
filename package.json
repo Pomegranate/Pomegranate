@@ -49,6 +49,15 @@
     "serve-static": "^1.9.2",
     "yeoman-environment": "^1.2.7"
   },
+  "peerDependencies": {
+    "sequelize": "^3.13.0",
+    "sqlite3": "^3.0.5",
+    "pg": "^4.3.0",
+    "pg-hstore": "^2.3.2",
+    "mariasql": "^0.1.22",
+    "mysql": "^2.6.2",
+    "tedious": "^1.11.0"
+  },
   "devDependencies": {
     "gulp": "^3.8.11",
     "jsdoc-to-markdown": "^1.1.1",
