@@ -44,19 +44,10 @@
     "nano": "^6.1.2",
     "parent-require": "^1.0.0",
     "path-parse": "^1.0.5",
-    "pg": "^4.3.0",
-    "pg-hstore": "^2.3.2",
     "response-time": "^2.3.0",
-    "sequelize": "^3.13.0",
     "serve-favicon": "^2.2.0",
     "serve-static": "^1.9.2",
-    "sqlite3": "^3.0.5",
     "yeoman-environment": "^1.2.7"
-  },
-  "optionalDependencies": {
-    "mariasql": "^0.1.22",
-    "mysql": "^2.6.2",
-    "tedious": "^1.11.0"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
