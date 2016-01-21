@@ -1,149 +1,99 @@
 <img align="left" style="padding:10px" src="./Pomegranate_icon.png" >
-### Pomegranate
+# Pomegranate 3.0.0-0 Beta
 
-#### Complex applications without complex structure.
-
-Pomegranate is an Express driven, MVC framework that relies on Inversion of Control to manage Dependencies.
+#### A wildly flexible application framework.
 
 ***
-
 [![NPM Version][npm-image]][npm-url]
 [![Linux][travis-image]][travis-url]
+***
 
-# Features
+# Whats it do?
 
+Pomegranate is a whitebox, Inversion of Control based application framework. It ingests simple plugins, orders them and runs the hooks they expose. With it you can build simple applications in just a few lines of code, or highly complex systems designed to scale.
 
-* Transparent model, controller and route loading, just drop your files into the correct directory (or configure it to use your own).
-* Inversion of control makes it simple to gain access to your controllers, models, and custom dependencies.
-* Out of the box support for PostgreSQL, MySQL, MsSQL and MariaDB with sequelize as the ORM. CouchDb support through Nano. Redis via, well Redis. Dont like any of those? Install and register your own and they will be available to you in your controllers and routes... Magic!
-* Named controllers are available in any route, and can even use your own outside dependencies.
-* Sane default middlewares, with the ability to easily add your own.
-* Event based logging, so you choose what goes where.
+Pomegranate automatically loads plugins prefixed with `pomegranate` found in your package.json, as well as your own plugins from whatever directory you choose. 
 
-### Install
+## Simple plugins are the building blocks to complex applications.
 
-```shell
-npm install --save pomegranate
+Pomegranate plugins are simple structures that make it easy to separate concerns and write unit tests. You can export one plugin from a 
+module, and provide a very specific functionality, or you can export an array of them and build and entire application. 
+
+### A very basic plugin example.
+
+#### options
+You can [optionally] define an options object for plugins, these values will be used as defaults in the absence
+of a config file value that overrides them. Pomegranate also has a CLI app that loads all of your current plugins,
+extracts their configs and writes them into a file for you. So you'll never have to worry about missing a configurable option.
+ 
+```javascript
+// file ./plugins/myFirstPlugin.js 
+exports.options = {
+	workDir: './files', //workDir is special, Pomegranate automatically builds an absolute path from it.
+	city: 'Atlanta',
+	state: 'Georgia'
+}
 ```
+#### metadata
 
-# [Quick start](http://pomegranate.paperelectron.com/docs/quickstart)
-
-## [Full Documentation](http://pomegranate.paperelectron.com)
-
-## [Change log](http://pomegranate.paperelectron.com/docs/changes)
-
-
-
-# Basic Usage
-
-## Routes
-
-First we need a route file, the default directory is `./routes/`, but you can configure that to whatever you want to fit your project structure.
-Currently the only dependency that is required is `Router`, this gives you an instance of express.Router to attach your routes to.
-
-In this file any function arguments matching a registered dependency will be available to you in the body of the function.
-
-This includes any models you defined in `./models/sql/` or `./models/couch/` available in your function as `SQL.<modelname>` and `Couch.<modelname>` respectivly. Controller objects are available by adding the controllers filename to the function arguments, manually added
-dependencies are available in the same fashion.
-
-`./routes/frontPage.js`
+Pomegranate requires plugins to tell it a little about themselves, so it knows just what to do when its their turn to run. 
 
 ```javascript
-module.exports = function(Logger, Router, Thing, Thing2, Thing3){
-  Router.get('/', function(req, res, next){
-    Thing3.init('bob')
-    res.render('Base', {a: Thing, b: Thing2('factory'), c: Thing3});
-  })
-
-  // Return the Router.
-  return Router
-};
-
+exports.metadata = {
+	name: 'MyPlugin', // Used internally and for logging.
+	layer: 'core', // The layer to load in. Anything loaded before is available to everything loaded after.
+	type: 'service', // The type of 'thing' you are going to add.
+	param: 'MyPlugin' // What should that 'thing' be called in the injector.
+}
 ```
+#### plugin
 
-## Views
+Here is where your code gets its time to shine. Pomegranate calls three plugin hooks at various phases of the 
+application life cycle. Plugins are run in layer order, with all of the `load` hooks in a layer being run to
+completion before the next layer above, and so on and so forth. Pomegranate defines 7 layers, but dont worry, 
+if that isn't enough, or you need an extra layer or 10, you can do that too.
 
-The default view directory is `./views/`,  here is a simple base view. The system default is hbs, you can also use jade, and in the future
-any templating you want.
+The `this` value of each hook is set to an object that contains properties and methods specifically 
+tailored to your plugin. So you can do things like `this.Logger.log()` and have a nice formatted output prefixed with
+your plugin name. 
 
-`./views/Base.hbs`
+The load hook is the most complex and bears a bit more discussion, specifically its two parameters
+`inject` and `loaded`. 
 
-```handlebars
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Pomegranate Demo</title>
-</head>
-<body>
-    <h1>Welcome to Pomegranate</h1>
-    <h3>IOC is  This is a simple service.</h3>
-    <h3>This is a factory, ""</h3>
-    <h3>It also does instances, if you need a newed object every time it is injected, for instance(get it?)</h3>
-    <h3>This instance object is named </h3>
-</body>
-</html>
-```
+The first, `inject` is a reference to the [Magnum-DI](https://github.com/PaperElectron/Magnum-DI#module_injector.inject) inject 
+function, which accepts a function as a parameter, and provides arguments based on the parameter names provided to that function.
+It is what gives you access to all of the other dependencies loaded into the framework by other plugins, provided they were
+loaded in a layer before the one your plugin is loading in.
 
-## Configure and Run
+The second, `loaded` is an error first callback, its second parameter accepts an Object, Array or Function, based on the metadata 
+value `type` you provided. This value is what will be added to the injector as `metadata.param` for other plugins to use.
 
-Your main file is responsible for creating and configuring the Pomegranate instance. Here you can specify all of your configuration options,
-add middlewares, as well as add dependencies. Your Models, Controllers and Routes will automatically be loaded up, and the server will be started.
-
-You can bind a few event handlers, mostly related to logging, to your Pomegranate instance. Dependancies are added via `Pomegranate#addDependency()` and can either take arguments for a single dependency or an array of objects describing your dependencies, it returns itself so further calls can be chained.
-
-`./index.js`
 
 ```javascript
-var pom = require('pomegranate')
-var options = {
-  address: '0.0.0.0',
-  port: 8080
-};
+ exports.plugin = {
+ 	load: function(inject, loaded){
+ 	   	var self = this; // Feel free to use es6 and compile.
+ 		this.Logger.log('My first plugin has these options ' + this.options);
+ 		
+ 		// loaded is a callback, so take your sweet time calling it, Pomegranate will wait (for a bit anyway).
+ 		setTimeout(function(){
+ 		    var myDependency = {random: function(mult){return Math.random * (mult || 1)}};
+ 			loaded(null, myDependency)
+ 		}, 1000)
+ 	},
+ 	start: function(done){
+ 		// If you encounter an error in any of the hooks, just pass it to the callback
+ 		// and Pomegranate will bail as gracefully as it can.
+ 		done(null)
+ 	}
+ 	load: function(done){
+ 		done(null)
+ 	}
+ }
 
-// Setup some custom dependencies.
-var service = {ioc: 'is pretty cool'}
 
-var factory = function(){
-  return function(s){
-    return {factory: 'it is a ' + s}
-  }
-}
-
-var instance = function(){
-  this.init = function(name) {
-    this.name = name
-  }
-}
-
-// Configure and run the server.
-pom
-.init(options)
-.addDependency('Thing', service)
-.addDependency([
-    {name: 'Thing2', item: factory},
-    {name: 'Thing3', item: instance, instance: true}
-])
-.start(function(err){
-	if(err)
-	  console.log(err)
-})
-.on('log', console.log)
-.on('log-request', console.log)
-.on('error', function(err){
-    console.log(err.stack);
-})
 ```
 
-# Advanced Usage
-
-\<coming soon\> We'll show how to write SQL and CouchDB models, and controllers that use both at the same time.
-
-# Roadmap
-
-* Expose a bit more of the underlying API's eg. It would be useful to get the Magnum DI instance Pomegranate is using, to use elsewhere in
-an application.
-* Fully configurable middleware stack. Enable, disable and order default middleware.
-* Expose more templating customization.
 
 [doc-url]: http://pomegranate.paperelectron.com
 [npm-image]: https://img.shields.io/npm/v/pomegranate.svg
