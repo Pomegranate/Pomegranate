@@ -107,7 +107,10 @@ function isEmpty(path, cb) {
 
 function isDirectory(path, cb){
   fs.stat(path, function(err, stats) {
-    if(err) throw err;
+    if(err && 'ENOENT' != err.code) throw err;
+    if(err){
+      return cb(false)
+    }
     cb(stats.isDirectory())
   })
 }
@@ -149,7 +152,6 @@ function createPomegranateApp(path) {
 }
 
 function createPluginConfig(args) {
-
   var configPath = path.join(process.cwd(), 'PomegranateSettings');
   var packagePath = path.join(process.cwd(), 'package.json');
   var pluginOptions = path.join(process.cwd(), 'PluginSettings.js');
@@ -167,7 +169,6 @@ function createPluginConfig(args) {
   var Loader = require('magnum-loader');
   var loader = Loader(PkgJson, mergedOptions, pluginOptions)
   var defaultConfigs = loader.getPluginConfigs({stringify: false, defaults: true});
-
 
   var existingConfigKeys = _.keys(CurrentPluginSettings);
   var returnedConfigKeys = _.keys(defaultConfigs);
@@ -209,7 +210,6 @@ function createPluginWorkdirs(defaultConfigs, parentDirectory, cb) {
         console.log(dir + ' Directory exists')
         allDone()
       } else {
-        console.log('Create directory here.');
         mkdir(dir, allDone);
       }
 
