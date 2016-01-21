@@ -1,6 +1,6 @@
 {
   "name": "pomegranate",
-  "version": "2.0.2",
+  "version": "3.0.0-0",
   "description": "Super flexible whitebox web application framework",
   "main": "index.js",
   "scripts": {
