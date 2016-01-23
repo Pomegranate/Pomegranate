@@ -12,8 +12,6 @@
 
 Pomegranate is a graybox, Inversion of Control based application framework. It ingests simple plugins, orders them and runs the hooks they expose. With it you can build applications in just a few lines of code, or highly complex systems designed to scale.
 
-Pomegranate automatically loads plugins prefixed with `pomegranate` found in your package.json, as well as your own plugins from whatever directory you choose.
-
 ### So, how's it going to make my life easier?
 
 A modern web backend, REST Api, or microservice doesn't live in it's own tidy little box just waiting for connections. The need to talk to, and interface with SQL Databases, Redis, S3 buckets and mail services among others, presents one of the greatest challenges in an Asynchronous programming enviornment. Pomegranate steps in and provides a discrete, layer based hook interface for managing the entire lifecycle of your code, without events or callback/promise hell.
@@ -45,7 +43,8 @@ $ node_modules/.bin/pomegranate start
 
 Writing Plugins is easy and intuitive. If we wanted to wrap the Node http server in a plugin we could do something like this.
 In just 26 lines of code we can abstract the entire lifecycle of creating, starting and stopping an http server,
-with the added benefit of user overridable default configs. If you need access to other plugins, simply 
+with the added benefit of user overridable default configs. If you need access to other plugins, simply pass a function with parameter names 
+matching the dependencies you need and they will be available to you inside.
 
 ```javascript
 module.exports = {
@@ -53,11 +52,20 @@ module.exports = {
   metadata: {name: 'HTTP', type: 'none', layer: 'server'},
   plugin: {
     load: function(inject, loaded){
-      this.server = require('http').createServer(function(req, res){
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end('Hello World\n');
-      })
-      loaded(null, null)
+      
+      // Router here assumes another plugin that provides your routing stack.
+      inject(function(Router){ 
+        this.server = require('http').createServer(Router)
+        loaded(null, null)
+      }, this)
+     
+     /* 
+      * This will work just as well.
+      * 
+      * var Router = inject(function(Router){ return Router })
+      * this.server = require('http').createServer(Router)
+      * loaded(null, null)
+      * /
     },
     start: function(done){
       this.server.listen(this.options.port, this.options.host, function(err){
