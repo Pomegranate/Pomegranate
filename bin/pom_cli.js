@@ -34,7 +34,7 @@ var argv = yargs
       .options('c', {
         alias: 'config',
         describe: 'Path to framework config',
-        default: './FrameworkSettings.js',
+        default: './PomegranateSettings.js',
         type: 'string'
       })
       .options('f', {
@@ -64,8 +64,8 @@ var argv = yargs
       .wrap(null)
       .argv
 
-    if(checkCommands(yargs, argv, 2)) {
-
+    if(checkCommands(yargs, argv, 1)) {
+      require(path.join(process.cwd(), 'pom.js'))
     }
   })
   .help('help')
@@ -123,9 +123,10 @@ function mkdir(path, cb) {
   })
 }
 
-function write(f) {
-  fs.writeFile(f.path, f.file)
-  console.log('Creating file: ' + f.path);
+function write(f, message) {
+  message = message || 'Creating';
+  fs.writeFile(f.path, f.file);
+  console.log(message + ' file: ' + f.path);
 }
 
 function createPomegranateApp(path) {
@@ -151,56 +152,59 @@ function createPomegranateApp(path) {
   })
 }
 
-function createPluginConfig(args) {
-  var configPath = path.join(process.cwd(), 'PomegranateSettings');
-  var packagePath = path.join(process.cwd(), 'package.json');
-  var pluginOptions = path.join(process.cwd(), 'PluginSettings.js');
-  var FrameworkOptions = require(configPath);
-  var PkgJson = require(packagePath);
-  var CurrentPluginSettings = require(pluginOptions)
+function createPluginConfig(args){
+  var Config = require(path.join(process.cwd(), args.config));
+  Config.verbose = false;
+  var Pomegranate = require('../')
+  var pom = Pomegranate(Config)
+  pom.on('ready', function(){
+    //console.log(pom.getDefaultConfigs());
+    //console.log(pom.getProvidedConfigs())
+    buildConfig(pom.getDefaultConfigs(), pom.getProvidedConfigs())
+  });
+}
 
-  var immutableOptions = {
-    prefix: 'pomegranate',
-    parentDirectory: process.cwd(),
-    layers: ['core', 'data', 'dependency', 'pre_router', 'router', 'post_router', 'server']
-  };
-  var mergedOptions = _.chain(FrameworkOptions).omit('prefix', 'layers').merge(immutableOptions).value();
-  mergedOptions.pluginDirectory = path.join(mergedOptions.parentDirectory, mergedOptions.pluginDirectory);
-  var Loader = require('magnum-loader');
-  var loader = Loader(PkgJson, mergedOptions, pluginOptions)
-  var defaultConfigs = loader.getPluginConfigs({stringify: false, defaults: true});
+function buildConfig(defaultConf, providedConf, stale){
 
-  var existingConfigKeys = _.keys(CurrentPluginSettings);
-  var returnedConfigKeys = _.keys(defaultConfigs);
+  var existingConfigKeys = _.keys(providedConf.options);
+  var returnedConfigKeys = _.keys(defaultConf);
   var removeStale = _.difference(existingConfigKeys, returnedConfigKeys);
-  var newConfigs = _.omit(defaultConfigs, existingConfigKeys);
+  var newConfigs = _.omit(defaultConf, existingConfigKeys);
 
-  var m = _.merge(CurrentPluginSettings, newConfigs);
-  if(args.stale)
-    m = _.omit(m, removeStale)
+  var merged = _.merge(providedConf.options, newConfigs);
+  if(stale) {
+    merged = _.omit(merged, removeStale)
+  }
 
   var pluginSettings = {
-    file: require('./pluginSettings')('PluginSettings', m),
-    path: pluginOptions
+    file: require('./pluginSettings')('PluginSettings', merged),
+    path: providedConf.path
   };
-  createPluginWorkdirs(defaultConfigs,mergedOptions.parentDirectory, function(){
-    write(pluginSettings)
+  write(pluginSettings, 'Writing Plugin configs to');
+  createPluginWorkdirs(defaultConf, providedConf.parentDirectory, function(err, message){
+    console.log(message);
   })
-
 }
 
 function createPluginWorkdirs(defaultConfigs, parentDirectory, cb) {
+
   var dirs = _.chain(defaultConfigs)
     .mapValues(function(o) {
-      return o.workDir || false
+      return o.workDir || _.chain(o).mapValues(function(v){
+          return v.workDir || false
+        }).values().filter(Boolean).value()
     })
-    .values()
-    .filter(Boolean)
-    .value()
+    .values().filter(Boolean).flatten().value();
+
   var count = dirs.length;
+
+  if(!count){
+    return cb('No plugin directories to create.')
+  }
+
   var allDone = function(){
     if(!--count){
-      cb()
+      cb(null, 'Created plugin work directories.')
     }
   };
 
@@ -212,7 +216,6 @@ function createPluginWorkdirs(defaultConfigs, parentDirectory, cb) {
       } else {
         mkdir(dir, allDone);
       }
-
     })
   })
 

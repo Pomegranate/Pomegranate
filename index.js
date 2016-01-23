@@ -16,7 +16,7 @@ var _ = require('lodash');
 
 var OptionsParser = require('./lib/OptionHandler');
 
-process.stdin.resume()
+//process.stdin.resume()
 
 var Loader;
 var instance;
@@ -30,7 +30,7 @@ function Pomegranate(FrameworkOptions){
   Events.call(this);
   instance = this;
   this.FrameworkOptions = FrameworkOptions;
-  this.parentDirectory = path.dirname((module.parent.filename));
+  this.parentDirectory = process.cwd()//path.dirname((module.parent.filename));
   this.pluginOptionsPath = path.join(this.parentDirectory, FrameworkOptions.pluginOptions);
   this.packageFile = path.join(this.parentDirectory, 'package.json');
   try{
@@ -57,35 +57,46 @@ Pomegranate.prototype.init = function(){
 
   Loader = require('magnum-loader')(this.parentPkgJson, mergedOptions, this.PluginOptions);
 
+  // Bind to all Loader events.
   Loader.on('ready', function(){
     self.ready = true
-    Loader.load()
-  })
-  Loader.on('load', function() {
-    self.loaded = true;
     self.emit('ready');
   })
+
+  Loader.on('load', function() {
+    self.loaded = true;
+    self.emit('load');
+  })
+
   Loader.on('start', function() {
     self.started = true;
     self.emit('start');
   })
+
   Loader.on('stop', function() {
     self.emit('stop')
     setImmediate(process.exit);
   });
+
   Loader.on('error', function(err){
     console.log(err);
     this.started = true;
     Loader.stop()
   })
+
   return this
 }
 
 Pomegranate.prototype.start = function(){
-  if(this.loaded){
-    return Loader.start()
+  if(this.ready){
+    Loader.on('load', function(){
+      Loader.start();
+    })
+    return Loader.load()
   }
+
   return setTimeout(function(){
+    console.log('waiting for ready');
     this.start()
   }.bind(this),250)
 }
@@ -97,6 +108,14 @@ Pomegranate.prototype.stop = function(){
   return setTimeout(function(){
     this.stop()
   }.bind(this),250)
+}
+
+Pomegranate.prototype.getDefaultConfigs = function(){
+  return Loader.getPluginConfigs({defaults: true});
+};
+
+Pomegranate.prototype.getProvidedConfigs = function(){
+  return {options: this.PluginOptions, path: this.pluginOptionsPath, parentDirectory: this.parentDirectory};
 }
 
 process.on('SIGINT', function() {
