@@ -65,7 +65,7 @@ module.exports = {
       * var Router = inject(function(Router){ return Router })
       * this.server = require('http').createServer(Router)
       * loaded(null, null)
-      * /
+      */
     },
     start: function(done){
       this.server.listen(this.options.port, this.options.host, function(err){
