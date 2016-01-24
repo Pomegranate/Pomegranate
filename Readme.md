@@ -43,7 +43,7 @@ $ node_modules/.bin/pomegranate start
 
 Writing Plugins is easy and intuitive. If we wanted to wrap the Node http server in a plugin we could do something like this.
 In just 26 lines of code we can abstract the entire lifecycle of creating, starting and stopping an http server,
-with the added benefit of user overridable default configs. If you need access to other plugins, simply pass a function with parameter names 
+with the added benefit of user overridable default configs. If you need access to other plugins, simply pass a function with parameter names
 matching the dependencies you need and they will be available to you inside.
 
 ```javascript
@@ -52,20 +52,21 @@ module.exports = {
   metadata: {name: 'HTTP', type: 'none', layer: 'server'},
   plugin: {
     load: function(inject, loaded){
-      
+    
       // Router here assumes another plugin that provides your routing stack.
-      inject(function(Router){ 
+      inject(function(Router){
         this.server = require('http').createServer(Router)
         loaded(null, null)
       }, this)
-     
-     /* 
+
+     /*
       * This will work just as well.
-      * 
+      *
       * var Router = inject(function(Router){ return Router })
       * this.server = require('http').createServer(Router)
       * loaded(null, null)
       */
+    
     },
     start: function(done){
       this.server.listen(this.options.port, this.options.host, function(err){
