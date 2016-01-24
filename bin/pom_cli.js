@@ -9,6 +9,10 @@ var _ = require('lodash');
 var yargs = require('yargs')
 var argv = yargs
   .usage('usage: $0 <command>')
+  .version(function(){
+    var version = require('../package').version
+    return 'Pomegranate ' + version;
+  })
   .demand(1, 'Requires init, build or start argument.')
   .command('init', 'create a new Pomegranate project.', function(yargs) {
     argv = yargs
@@ -81,10 +85,11 @@ function checkCommands(yargs, argv, numRequired) {
 }
 
 function init(args) {
-  var path = args._.pop()
+
+  var path = args._[args._.length - 1];
   isEmpty(path, function(empty) {
     if(empty || args.force) {
-      return createPomegranateApp(path)
+      return createPomegranateApp(args)
     }
     return console.log('Directory Exists: rerun with "pomegranate init -f ' + path + '" to force')
   })
@@ -98,38 +103,10 @@ function start(args) {
   console.log('Starting')
 }
 
-function isEmpty(path, cb) {
-  fs.readdir(path, function(err, files) {
-    if(err && 'ENOENT' != err.code) throw err;
-    cb(!files || !files.length);
-  });
-}
+function createPomegranateApp(args) {
 
-function isDirectory(path, cb){
-  fs.stat(path, function(err, stats) {
-    if(err && 'ENOENT' != err.code) throw err;
-    if(err){
-      return cb(false)
-    }
-    cb(stats.isDirectory())
-  })
-}
+  var path = args._.pop()
 
-function mkdir(path, cb) {
-  mkdirp(path, 0755, function(err) {
-    if(err) throw err;
-    console.log('Creating directory: ' + path)
-    cb && cb()
-  })
-}
-
-function write(f, message) {
-  message = message || 'Creating';
-  fs.writeFile(f.path, f.file);
-  console.log(message + ' file: ' + f.path);
-}
-
-function createPomegranateApp(path) {
   mkdir(path, function() {
     var appTemplate = {
       file: require('./appTemplate')(path),
@@ -158,8 +135,6 @@ function createPluginConfig(args){
   var Pomegranate = require('../')
   var pom = Pomegranate(Config)
   pom.on('ready', function(){
-    //console.log(pom.getDefaultConfigs());
-    //console.log(pom.getProvidedConfigs())
     buildConfig(pom.getDefaultConfigs(), pom.getProvidedConfigs())
   });
 }
@@ -219,4 +194,35 @@ function createPluginWorkdirs(defaultConfigs, parentDirectory, cb) {
     })
   })
 
+}
+
+function isEmpty(path, cb) {
+  fs.readdir(path, function(err, files) {
+    if(err && 'ENOENT' != err.code) throw err;
+    cb(!files || !files.length);
+  });
+}
+
+function isDirectory(path, cb){
+  fs.stat(path, function(err, stats) {
+    if(err && 'ENOENT' != err.code) throw err;
+    if(err){
+      return cb(false)
+    }
+    cb(stats.isDirectory())
+  })
+}
+
+function mkdir(path, cb) {
+  mkdirp(path, 0755, function(err) {
+    if(err) throw err;
+    console.log('Creating directory: ' + path)
+    cb && cb()
+  })
+}
+
+function write(f, message) {
+  message = message || 'Creating';
+  fs.writeFile(f.path, f.file);
+  console.log(message + ' file: ' + f.path);
 }
