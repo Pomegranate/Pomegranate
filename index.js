@@ -79,7 +79,6 @@ Pomegranate.prototype.init = function(){
   });
 
   Loader.on('error', function(err){
-    console.log(err);
     this.started = true;
     Loader.stop()
   })

@@ -166,6 +166,9 @@ function createPluginWorkdirs(defaultConfigs, parentDirectory, cb) {
   var dirs = _.chain(defaultConfigs)
     .mapValues(function(o) {
       return o.workDir || _.chain(o).mapValues(function(v){
+          if(_.isNull(v)) {
+            return false
+          }
           return v.workDir || false
         }).values().filter(Boolean).value()
     })
