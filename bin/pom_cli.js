@@ -4,7 +4,7 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
-
+var PluginSettingsTmpl = require('./pluginSettings');
 
 var yargs = require('yargs')
 var argv = yargs
@@ -135,12 +135,14 @@ function createPluginConfig(args){
   var Pomegranate = require('../')
   var pom = Pomegranate(Config)
   pom.on('ready', function(){
-    buildConfig(pom.getDefaultConfigs(), pom.getProvidedConfigs())
+    createPluginConfigurations(null, pom.getDefaultConfigs())
+    //buildConfig(pom.getDefaultConfigs(), pom.getProvidedConfigs())
   });
 }
 
 function buildConfig(defaultConf, providedConf, stale){
-
+  console.log(defaultConf);
+  console.log(providedConf);
   var existingConfigKeys = _.keys(providedConf.options);
   var returnedConfigKeys = _.keys(defaultConf);
   var removeStale = _.difference(existingConfigKeys, returnedConfigKeys);
@@ -228,4 +230,22 @@ function write(f, message) {
   message = message || 'Creating';
   fs.writeFile(f.path, f.file);
   console.log(message + ' file: ' + f.path);
+}
+
+function createPluginConfigurations(pluginConfigDir, defaultConfig){
+  pluginConfigDir = path.join(process.cwd(), 'pluginSettings');
+
+  fs.readdir(pluginConfigDir, function(err, files){
+    console.log(files);
+
+  })
+
+  _.mapValues(defaultConfig, function(v,k){
+    var pluginSettings = {
+      file: PluginSettingsTmpl(k, v),
+      path: path.join(pluginConfigDir, k + '.js')
+    };
+    write(pluginSettings, 'Writing Plugin configs to');
+
+  })
 }
