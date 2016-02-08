@@ -95,7 +95,6 @@ Pomegranate.prototype.start = function(){
   }
 
   return setTimeout(function(){
-    console.log('waiting for ready');
     this.start()
   }.bind(this),250)
 }
