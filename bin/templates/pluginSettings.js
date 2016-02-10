@@ -7,14 +7,14 @@
 
 var stringifyObject = require('stringify-object');
 
-module.exports = function(appName, exportObj) {
+module.exports = function(pluginName, exportObj) {
   var objString = stringifyObject(exportObj, {indent: '  ', singleQuotes: true})
-  objString = 'module.exports = ' + objString + ';';
+  objString = 'exports.'+ pluginName +' = ' + objString + ';';
 
   var EOL = require('os').EOL
   var file = [
     '/* ',
-    ' * Plugin Settings for ' + appName ,
+    ' * Settings for plugin -- ' + pluginName ,
     ' */',
     ''
   ].concat(objString).join(EOL)

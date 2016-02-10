@@ -30,12 +30,10 @@ function Pomegranate(FrameworkOptions){
   Events.call(this);
   instance = this;
   this.FrameworkOptions = FrameworkOptions;
-  this.parentDirectory = process.cwd()//path.dirname((module.parent.filename));
-  this.pluginOptionsPath = path.join(this.parentDirectory, FrameworkOptions.pluginOptions);
+  this.parentDirectory = process.cwd()
   this.packageFile = path.join(this.parentDirectory, 'package.json');
   try{
     this.parentPkgJson = require(this.packageFile) || {};
-    this.PluginOptions = require(this.pluginOptionsPath)
   }
   catch(e) {
     console.log(e.message);
@@ -54,8 +52,7 @@ util.inherits(Pomegranate, Events);
 Pomegranate.prototype.init = function(){
   var self = this;
   var mergedOptions = OptionsParser.parseOptions(this.FrameworkOptions, this.parentDirectory);
-
-  Loader = require('magnum-loader')(this.parentPkgJson, mergedOptions, this.PluginOptions);
+  Loader = require('magnum-loader')(this.parentPkgJson, mergedOptions);
 
   // Bind to all Loader events.
   Loader.on('ready', function(){
