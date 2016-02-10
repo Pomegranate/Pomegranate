@@ -4,7 +4,7 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
-var PluginSettingsTmpl = require('./templates/pluginSettings');
+var PluginSettingsTmpl = require('./templates/pluginSettingsObject');
 
 var yargs = require('yargs')
 var argv = yargs
@@ -29,7 +29,6 @@ var argv = yargs
       .argv
 
     if(checkCommands(yargs, argv, 2)) {
-      //init(argv)
       return require('./commands/init')(argv);
     }
   })
@@ -48,9 +47,9 @@ var argv = yargs
         default: false,
         type: 'boolean'
       })
-      .options('s', {
-        alias: 'stale',
-        describe: 'Removes config properties that no longer have a plugin associated.',
+      .options('e', {
+        alias: 'envs',
+        describe: 'Generates plugin setting files that export a function with access to the "Environment" dependency.',
         default: false,
         type: 'boolean'
       })

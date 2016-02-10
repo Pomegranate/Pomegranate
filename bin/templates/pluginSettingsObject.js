@@ -5,6 +5,8 @@
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 
+'use strict';
+
 var stringifyObject = require('stringify-object');
 
 module.exports = function(pluginName, exportObj) {
@@ -14,7 +16,7 @@ module.exports = function(pluginName, exportObj) {
   var EOL = require('os').EOL
   var file = [
     '/* ',
-    ' * Settings for plugin -- ' + pluginName ,
+    ' * ' + pluginName + ' -- Settings',
     ' */',
     ''
   ].concat(objString).join(EOL)

@@ -23,12 +23,58 @@ module.exports = function createPluginConfig(args) {
   pom.on('ready', function() {
     var defaultConfiguration = pom.getDefaultConfigs();
     var applicationDirectory = Config.applicationDirectory;
-    createPluginConfigurations(Config.pluginSettingsDirectory, defaultConfiguration, function() {
+    createPluginConfigurations(args, Config.pluginSettingsDirectory, defaultConfiguration, function() {
       createPluginWorkdirs(defaultConfiguration, applicationDirectory, function(err, message) {
         console.log(message);
       })
     })
   });
+}
+
+
+
+function createPluginConfigurations(args, pluginConfigDir, defaultConfig, cb) {
+  var functionTemplate = require('../templates/pluginSettingsFunction');
+  var objectTemplate = require('../templates/pluginSettingsObject');
+
+  pluginConfigDir = path.join(process.cwd(), pluginConfigDir);
+  var count = Object.keys(defaultConfig).length;
+
+  fileHelpers.isDirectory(pluginConfigDir, function(exists) {
+    if(!exists) {
+      return fileHelpers.mkdir(pluginConfigDir, writeConfigFiles)
+    }
+    return writeConfigFiles(null)
+  })
+
+  //Create our plugins configuration files.
+  function writeConfigFiles(err) {
+    if(err) throw err
+    var settingsTemplate = args.envs ? functionTemplate : objectTemplate;
+    _.mapValues(defaultConfig, function(v, k) {
+
+      var pluginSettings = {
+        file: (k === 'ApplicationEnvironment') ? objectTemplate(k,v) : settingsTemplate(k, v),
+        path: path.join(pluginConfigDir, k + '.js')
+      };
+
+      fs.stat(pluginSettings.path, function(err, stats) {
+        if(err && err.code === 'ENOENT') {
+          fileHelpers.write(pluginSettings, 'Writing Plugin configs to', allDone);
+        }
+        else {
+          console.log('Skipping existing file ./' + path.relative(process.cwd(), pluginSettings.path))
+          allDone()
+        }
+      });
+    })
+  }
+
+  function allDone() {
+    if(!--count) {
+      cb && cb()
+    }
+  }
 }
 
 function createPluginWorkdirs(defaultConfigs, applicationDirectory, cb) {
@@ -74,43 +120,4 @@ function createPluginWorkdirs(defaultConfigs, applicationDirectory, cb) {
       })
     }).value()
 
-}
-
-function createPluginConfigurations(pluginConfigDir, defaultConfig, cb) {
-  pluginConfigDir = path.join(process.cwd(), pluginConfigDir);
-  var count = Object.keys(defaultConfig).length;
-
-  fileHelpers.isDirectory(pluginConfigDir, function(exists) {
-    if(!exists) {
-      return fileHelpers.mkdir(pluginConfigDir, writeConfigFiles)
-    }
-    return writeConfigFiles(null)
-  })
-
-  //Create our plugins configuration files.
-  function writeConfigFiles(err) {
-    if(err) throw err
-
-    _.mapValues(defaultConfig, function(v, k) {
-      var pluginSettings = {
-        file: require('../templates/pluginSettings')(k, v),
-        path: path.join(pluginConfigDir, k + '.js')
-      };
-      fs.stat(pluginSettings.path, function(err, stats) {
-        if(err && err.code === 'ENOENT') {
-          fileHelpers.write(pluginSettings, 'Writing Plugin configs to', allDone);
-        }
-        else {
-          console.log('Skipping existing file ./' + path.relative(process.cwd(), pluginSettings.path))
-          allDone()
-        }
-      });
-    })
-  }
-
-  function allDone() {
-    if(!--count) {
-      cb && cb()
-    }
-  }
 }
