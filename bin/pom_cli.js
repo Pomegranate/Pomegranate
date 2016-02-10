@@ -4,12 +4,12 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
-var PluginSettingsTmpl = require('./pluginSettings');
+var PluginSettingsTmpl = require('./templates/pluginSettings');
 
 var yargs = require('yargs')
 var argv = yargs
   .usage('usage: $0 <command>')
-  .version(function(){
+  .version(function() {
     var version = require('../package').version
     return 'Pomegranate ' + version;
   })
@@ -29,7 +29,8 @@ var argv = yargs
       .argv
 
     if(checkCommands(yargs, argv, 2)) {
-      init(argv)
+      //init(argv)
+      return require('./commands/init')(argv);
     }
   })
   .command('build', 'Creates plugin directories and config files.', function(yargs) {
@@ -58,18 +59,25 @@ var argv = yargs
       .argv
 
     if(checkCommands(yargs, argv, 1)) {
-      build(argv)
+      //build(argv)
+      return require('./commands/build')(argv);
     }
   })
-  .command('start', 'list items in project', function(yargs) {
+  .command('start', 'Starts the pomegranate framework in the current working directory.', function(yargs) {
     argv = yargs
       .usage('usage: $0 start')
+      .options('c', {
+        alias: 'config',
+        describe: 'Name of main framework file to run.',
+        default: './pom.js',
+        type: 'string'
+      })
       .help('help')
       .wrap(null)
       .argv
 
     if(checkCommands(yargs, argv, 1)) {
-      require(path.join(process.cwd(), 'pom.js'))
+      return require('./commands/start')(argv);
     }
   })
   .help('help')
@@ -82,170 +90,4 @@ function checkCommands(yargs, argv, numRequired) {
     return false
   }
   return true
-}
-
-function init(args) {
-
-  var path = args._[args._.length - 1];
-  isEmpty(path, function(empty) {
-    if(empty || args.force) {
-      return createPomegranateApp(args)
-    }
-    return console.log('Directory Exists: rerun with "pomegranate init -f ' + path + '" to force')
-  })
-}
-
-function build(args) {
-  createPluginConfig(args)
-}
-
-function start(args) {
-  console.log('Starting')
-}
-
-function createPomegranateApp(args) {
-
-  var path = args._.pop()
-
-  mkdir(path, function() {
-    var appTemplate = {
-      file: require('./appTemplate')(path),
-      path: path + '/pom.js'
-    };
-    var pluginSettings = {
-      file: require('./pluginSettings')(path, {}),
-      path: path + '/PluginSettings.js'
-    };
-    var frameworkSettings = {
-      file: require('./frameworkSettings')(path, './PluginSettings.js'),
-      path: path + '/PomegranateSettings.js'
-    };
-
-    write(appTemplate);
-    write(frameworkSettings);
-    write(pluginSettings);
-    mkdir(path + '/plugins');
-
-  })
-}
-
-function createPluginConfig(args){
-  var Config = require(path.join(process.cwd(), args.config));
-  Config.verbose = false;
-  var Pomegranate = require('../')
-  var pom = Pomegranate(Config)
-  pom.on('ready', function(){
-    createPluginConfigurations(null, pom.getDefaultConfigs())
-    //buildConfig(pom.getDefaultConfigs(), pom.getProvidedConfigs())
-  });
-}
-
-function buildConfig(defaultConf, providedConf, stale){
-  console.log(defaultConf);
-  console.log(providedConf);
-  var existingConfigKeys = _.keys(providedConf.options);
-  var returnedConfigKeys = _.keys(defaultConf);
-  var removeStale = _.difference(existingConfigKeys, returnedConfigKeys);
-  var newConfigs = _.omit(defaultConf, existingConfigKeys);
-
-  var merged = _.merge(providedConf.options, newConfigs);
-  if(stale) {
-    merged = _.omit(merged, removeStale)
-  }
-
-  var pluginSettings = {
-    file: require('./pluginSettings')('PluginSettings', merged),
-    path: providedConf.path
-  };
-  write(pluginSettings, 'Writing Plugin configs to');
-  createPluginWorkdirs(defaultConf, providedConf.parentDirectory, function(err, message){
-    console.log(message);
-  })
-}
-
-function createPluginWorkdirs(defaultConfigs, parentDirectory, cb) {
-
-  var dirs = _.chain(defaultConfigs)
-    .mapValues(function(o) {
-      return o.workDir || _.chain(o).mapValues(function(v){
-          if(_.isNull(v)) {
-            return false
-          }
-          return v.workDir || false
-        }).values().filter(Boolean).value()
-    })
-    .values().filter(Boolean).flatten().value();
-
-  var count = dirs.length;
-
-  if(!count){
-    return cb('No plugin directories to create.')
-  }
-
-  var allDone = function(){
-    if(!--count){
-      cb(null, 'Created plugin work directories.')
-    }
-  };
-
-  _.each(dirs, function(dir) {
-    isDirectory(dir, function(isDir){
-      if(isDir){
-        console.log(dir + ' Directory exists')
-        allDone()
-      } else {
-        mkdir(dir, allDone);
-      }
-    })
-  })
-
-}
-
-function isEmpty(path, cb) {
-  fs.readdir(path, function(err, files) {
-    if(err && 'ENOENT' != err.code) throw err;
-    cb(!files || !files.length);
-  });
-}
-
-function isDirectory(path, cb){
-  fs.stat(path, function(err, stats) {
-    if(err && 'ENOENT' != err.code) throw err;
-    if(err){
-      return cb(false)
-    }
-    cb(stats.isDirectory())
-  })
-}
-
-function mkdir(path, cb) {
-  mkdirp(path, 0755, function(err) {
-    if(err) throw err;
-    console.log('Creating directory: ' + path)
-    cb && cb()
-  })
-}
-
-function write(f, message) {
-  message = message || 'Creating';
-  fs.writeFile(f.path, f.file);
-  console.log(message + ' file: ' + f.path);
-}
-
-function createPluginConfigurations(pluginConfigDir, defaultConfig){
-  pluginConfigDir = path.join(process.cwd(), 'pluginSettings');
-
-  fs.readdir(pluginConfigDir, function(err, files){
-    console.log(files);
-
-  })
-
-  _.mapValues(defaultConfig, function(v,k){
-    var pluginSettings = {
-      file: PluginSettingsTmpl(k, v),
-      path: path.join(pluginConfigDir, k + '.js')
-    };
-    write(pluginSettings, 'Writing Plugin configs to');
-
-  })
 }
