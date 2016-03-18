@@ -1,4 +1,4 @@
-<img align="left" style="padding:10px" src="./Pomegranate_icon.png" >
+<img align="left" style="padding:10px" src="http://pomegranate.io/img/pomegranate_100.png" >
 # Pomegranate 3.0.0-0 Beta
 
 #### A wildly flexible application framework.
