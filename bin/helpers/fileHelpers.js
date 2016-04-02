@@ -31,6 +31,16 @@ exports.isDirectory = function(path, cb) {
   })
 }
 
+exports.isFile = function(path, cb) {
+  fs.stat(path, function(err, stats) {
+    if(err && 'ENOENT' != err.code) throw err;
+    if(err) {
+      return cb(false)
+    }
+    cb(stats.isFile())
+  })
+}
+
 exports.mkdir = function(dir, cb) {
   mkdirp(dir, '0755', function(err) {
     if(err) throw err;

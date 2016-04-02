@@ -12,7 +12,7 @@ module.exports = function(appName, pluginOptionsFile) {
 
   var file = [
     '/* ',
-    ' * Framework and Plugin Settings for ' + appName ,
+    ' * Pomegranate Framework and Plugin Settings for ' + appName ,
     ' */',
     '',
     'module.exports = {',

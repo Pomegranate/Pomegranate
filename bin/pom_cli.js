@@ -21,8 +21,14 @@ var argv = yargs
       .options('f', {
         alias: 'force',
         default: false,
-        description: 'Runs in a non empty directory.',
+        description: 'Overwrites existing settings and startup file.',
         type: 'boolean'
+      })
+      .options('n', {
+        alias: 'name',
+        default: 'Default-App',
+        description: 'application name',
+        type: 'string'
       })
       .help('help')
       .wrap(null)
@@ -49,7 +55,7 @@ var argv = yargs
       })
       .options('e', {
         alias: 'envs',
-        describe: 'Generates plugin setting files that export a function with access to the "Environment" dependency.',
+        describe: 'Generates plugin setting files that export a function with access to the Environment dependency "Env".',
         default: false,
         type: 'boolean'
       })
