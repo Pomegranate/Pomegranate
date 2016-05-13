@@ -17,6 +17,7 @@
     "bin/"
   ],
   "dependencies": {
+    "fs-extra": "^0.30.0",
     "lodash": "^4.3.0",
     "magnum-loader": "^3.0.2",
     "mkdirp": "^0.5.1",

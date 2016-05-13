@@ -6,7 +6,7 @@
  */
 
 'use strict';
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var mkdirp = require('mkdirp')
 /**

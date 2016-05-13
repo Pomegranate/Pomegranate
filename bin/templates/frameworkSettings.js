@@ -16,7 +16,7 @@ module.exports = function(appName, pluginOptionsFile) {
     ' */',
     '',
     'module.exports = {',
-    '  applicationDirectory: \'./\',',
+    '  applicationDirectory: \'./application\',',
     '  pluginDirectory: \'./plugins\',',
     '  pluginSettingsDirectory: \'' + pluginOptionsFile + '\',',
     '  additionalLayers: false,',

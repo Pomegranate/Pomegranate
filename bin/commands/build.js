@@ -8,7 +8,7 @@
 'use strict';
 var fileHelpers = require('../helpers/fileHelpers');
 var path = require('path');
-var fs = require('fs');
+var fs = require('fs-extra');
 var _ = require('lodash')
 /**
  *
@@ -19,16 +19,28 @@ module.exports = function createPluginConfig(args) {
   var Config = require(path.join(process.cwd(), args.config));
   Config.verbose = false;
   var Pomegranate = require('../../')
-  var pom = Pomegranate(Config)
-  pom.on('ready', function() {
-    var defaultConfiguration = pom.getDefaultConfigs();
-    var applicationDirectory = Config.applicationDirectory;
-    createPluginConfigurations(args, Config.pluginSettingsDirectory, defaultConfiguration, function() {
-      createPluginWorkdirs(defaultConfiguration, applicationDirectory, function(err, message) {
-        console.log(message);
-      })
-    })
-  });
+
+  fs.stat(Config.applicationDirectory, function(err, stats){
+    if(err && err.code === 'ENOENT'){
+      return fileHelpers.mkdir(Config.applicationDirectory, BuildPomegranateApp);
+    }
+
+    BuildPomegranateApp()
+
+    function BuildPomegranateApp() {
+      var pom = Pomegranate(Config)
+      pom.on('ready', function() {
+        var defaultConfiguration = pom.getDefaultConfigs();
+        var applicationDirectory = Config.applicationDirectory;
+        createPluginConfigurations(args, Config.pluginSettingsDirectory, defaultConfiguration, function() {
+          createPluginWorkdirs(defaultConfiguration, applicationDirectory, function(err, message) {
+            console.log(message);
+          })
+        })
+      });
+    }
+  })
+
 }
 
 
@@ -57,7 +69,6 @@ function createPluginConfigurations(args, pluginConfigDir, defaultConfig, cb) {
         file: (k === 'ApplicationEnvironment') ? objectTemplate(k,v) : settingsTemplate(k, v),
         path: path.join(pluginConfigDir, k + '.js')
       };
-
       fs.stat(pluginSettings.path, function(err, stats) {
         if(err && err.code === 'ENOENT') {
           fileHelpers.write(pluginSettings, 'Writing Plugin configs to', allDone);
