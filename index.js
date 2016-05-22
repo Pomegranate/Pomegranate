@@ -40,6 +40,7 @@ function Pomegranate(FrameworkOptions){
     console.log(e.message);
     throw e
   }
+  this.layers = null;
   this.init()
 }
 
@@ -53,6 +54,8 @@ util.inherits(Pomegranate, Events);
 Pomegranate.prototype.init = function(){
   var self = this;
   var mergedOptions = OptionsParser.parseOptions(this.FrameworkOptions, this.parentDirectory);
+
+  this.layers = mergedOptions.layers;
   Loader = require('magnum-loader')(this.parentPkgJson, mergedOptions);
 
   // Bind to all Loader events.
