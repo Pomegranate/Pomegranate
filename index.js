@@ -36,6 +36,7 @@ function Pomegranate(FrameworkOptions){
     this.parentPkgJson = require(this.packageFile) || {};
   }
   catch(e) {
+    this.parentPkgJson = {}
     console.log(e.message);
     throw e
   }

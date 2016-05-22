@@ -4,7 +4,10 @@
   "description": "Super flexible whitebox web application framework",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test tap -R spec --cov test/unit/*.js test/integration/**/*.js",
+    "test-unit": "NODE_ENV=test tap -R spec --cov test/unit/*.js",
+    "test-integration": "NODE_ENV=test tap -R spec --cov test/integration/**/*.js",
+    "test-report": "NODE_ENV=test tap -R spec --cov --coverage-report=lcov test/unit/*.js test/integration/**/*.js"
   },
   "bin": {
     "pomegranate": "bin/pom_cli.js"
@@ -19,7 +22,7 @@
   "dependencies": {
     "fs-extra": "^0.30.0",
     "lodash": "^4.3.0",
-    "magnum-loader": "^3.0.5",
+    "magnum-loader": "^3.1.0",
     "mkdirp": "^0.5.1",
     "stringify-object": "^2.3.1",
     "yargs": "^3.31.0"
@@ -37,5 +40,8 @@
   "bugs": {
     "url": "https://github.com/Pomegranate/Pomegranate/issues"
   },
-  "homepage": "https://github.com/Pomegranate/Pomegranate"
+  "homepage": "https://github.com/Pomegranate/Pomegranate",
+  "devDependencies": {
+    "tap": "^5.7.1"
+  }
 }
