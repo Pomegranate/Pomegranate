@@ -1,5 +1,5 @@
 <img align="left" style="padding:10px" src="http://pomegranate.io/img/pomegranate_100.png" >
-# Pomegranate 3.0.0-0 Beta
+# Pomegranate 4 Beta
 
 #### A wildly flexible application framework.
 
@@ -8,18 +8,20 @@
 [![Linux][travis-image]][travis-url]
 ***
 
-# Whats it do?
+# What does it do?
 
-Pomegranate is a graybox, Inversion of Control based application framework. It ingests simple plugins, orders them and runs the hooks they expose. With it you can build applications in just a few lines of code, or highly complex systems designed to scale.
+Simply? Pomegranate is a framework to build other frameworks, though it just as happily handles general application programming tasks.
+
+Pomegranate is a graybox, Inversion of Control based application framework. It ingests simple plugins, sorts them topologically and runs the hooks they expose. It supports polymorphic dependencies and simple, expressive configuration external to its plugins.
 
 ### So, how's it going to make my life easier?
 
-A modern web backend, REST Api, or microservice doesn't live in it's own tidy little box just waiting for connections. The need to talk to, and interface with SQL Databases, Redis, S3 buckets and mail services among others, presents one of the greatest challenges in an Asynchronous programming enviornment. Pomegranate steps in and provides a discrete, layer based hook interface for managing the entire lifecycle of your code, without events or callback/promise hell.
+A modern web backend, REST Api, or microservice doesn't live in it's own tidy little box just waiting for connections. The need to talk to, and interface with SQL Databases, Redis, S3 buckets and mail services among others, presents one of the greatest challenges in an asynchronous programming enviornment. Pomegranate steps in and provides plugins a simple hook interface for managing the entire lifecycle of your code, without events or callback/promise hell.
 
 ### Write the code you are already writing today.
 
 Pomegranate plugins are simple structures that make it easy to separate concerns and write unit tests. You can export one plugin from a
-module, and provide a very specific functionality, or you can export an array of them and build and entire application. *Simple plugins are the building blocks to complex applications.*
+module, and provide a very specific functionality, or you can export an array of them and build and entire application or framework. *Simple plugins are the building blocks to complex applications.*
 
 # Install
 
@@ -49,10 +51,10 @@ matching the dependencies you need and they will be available to you inside.
 ```javascript
 module.exports = {
   options: {host: 'localhost', port: 8080},
-  metadata: {name: 'HTTP', type: 'none', layer: 'server'},
+  metadata: {name: 'HTTP', type: 'action'},
   plugin: {
     load: function(inject, loaded){
-    
+
       // Router here assumes another plugin that provides your routing stack.
       inject(function(Router){
         this.server = require('http').createServer(Router)
@@ -62,11 +64,11 @@ module.exports = {
      /*
       * This will work just as well.
       *
-      * var Router = inject(function(Router){ return Router })
+      * var Router = inject('Router')
       * this.server = require('http').createServer(Router)
       * loaded(null, null)
       */
-    
+
     },
     start: function(done){
       this.server.listen(this.options.port, this.options.host, function(err){
@@ -95,11 +97,11 @@ $ pomegranate build
 
 You can checkout detailed documentation about Pomegranate, Plugins, and the underlying modules that support it here:
 
-* [Pomegranate Docs]()
+* [Pomegranate Docs](http://pomegranate.io/docs)
 * [Plugin Authoring](https://github.com/Pomegranate/pomegranate-example-plugin)
 
 [doc-url]: http://pomegranate.paperelectron.com
 [npm-image]: https://img.shields.io/npm/v/pomegranate.svg
 [npm-url]: https://www.npmjs.com/package/pomegranate
-[travis-image]: https://img.shields.io/travis/PaperElectron/Pomegranate/master.svg
-[travis-url]: https://travis-ci.org/PaperElectron/Pomegranate
+[travis-image]: https://travis-ci.org/Pomegranate/Pomegranate.svg?branch=master
+[travis-url]: https://travis-ci.org/Pomegranate/Pomegranate
