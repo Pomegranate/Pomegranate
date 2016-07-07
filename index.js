@@ -55,7 +55,7 @@ Pomegranate.prototype.init = function(){
   var self = this;
   var mergedOptions = OptionsParser.parseOptions(this.FrameworkOptions, this.parentDirectory);
 
-  this.layers = mergedOptions.layers;
+  // this.layers = mergedOptions.layers;
   Loader = require('magnum-loader')(this.parentPkgJson, mergedOptions);
 
   // Bind to all Loader events.
