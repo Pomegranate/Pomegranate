@@ -8,18 +8,15 @@
 'use strict';
 var path = require('path');
 var mockConsole = require('../mocks/helpers/mockConsole')
-process.chdir(path.join(__dirname,'../mocks/layerTest'))
+process.chdir(path.join(__dirname,'../mocks/startupTest'))
 
 var tap = require('tap')
 var pomegranate = require('../../index')
-
-var setLayers = ['core', 'doot','data', 'controller', 'dependency', 'setup','pre_router', 'router', 'post_router', 'server']
 
 var frameworkOptions = {
   applicationDirectory: './application',
   pluginDirectory: './plugins',
   pluginSettingsDirectory: './pluginSettings',
-  additionalLayers: setLayers,
   logger: mockConsole,
   timeout: 2000,
   verbose: true,
@@ -28,7 +25,7 @@ var frameworkOptions = {
 
 tap.test('Startup', function(t){
   var pom = pomegranate(frameworkOptions)
-  t.plan(5)
+  t.plan(4)
   pom.on('ready',function(){
     t.pass('Ready Handler called')
   })
@@ -37,8 +34,8 @@ tap.test('Startup', function(t){
   })
   pom.on('start',function(){
     t.pass('Start Handler called')
-    setLayers.unshift('system')
-    t.equal(pom.layers.length, 11 , 'Uses additional layers as set.');
+    // setLayers.unshift('system')
+    // t.equal(pom.layers.length, 11 , 'Uses additional layers as set.');
     setImmediate(function() {
       pom.stop()
     })
