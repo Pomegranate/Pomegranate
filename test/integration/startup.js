@@ -8,7 +8,7 @@
 'use strict';
 var path = require('path');
 var mockConsole = require('../mocks/helpers/mockConsole')
-process.chdir(path.join(__dirname,'../mocks/layerTest'))
+process.chdir(path.join(__dirname,'../mocks/startupTest'))
 
 var tap = require('tap')
 var pomegranate = require('../../index')
