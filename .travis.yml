@@ -1,9 +1,11 @@
 language: node_js
 node_js:
-  - "0.10"
-  - "0.12"
-  - "1.0"
-  - "1.8"
-  - "2.0"
+- '4'
+- '5'
+- '6'
+- node
 sudo: false
 script: npm test
+notifications:
+  slack:
+    secure: mc2K8u4KxQxpidSiUYddLa9+FzFZKTwUHcjwKLpy1mMJa3ud3rLhNVhd9DaGkTczW+Gb0WeuWS6NCX16HMAfesjA15HXG22b3P+cZ5n9Zcm3MsYDJ8F6VoGlPMttqI8rIzc0kM/MPsg5RimRWPc6AxNtbIYsEv1o2c1m28DvLI5KPvwM6QIaOdb67w58pPtxA1AiuvNorzAKpswyWTsS1r9QJAu9IBWC2O5Elqugpr5HSkXD+EM+PLJE2is80yxjVSbT+HMEVab6yOHFXECmDxSJNycFKb8f5qisELxvMvsLsrR/KT7CA0Wih0GaIcQ9apMz9fbN6fLO46AUw6zro7DACyx3+0vwCH3gsM6sfTQMk9VPTeEVDGGeBeKn5kzyMTkdyrw8jL2GdnmmbrzyxgYa2RUx5aP12ReD4ajBuAqsGSbOZION78AScvG6AQ3gEzpxIchUan9vmlw2Dks5DqdGVmr03IcbkachqoL+COJOLDc1pfJj4yRqmQ3uujkWZhhG5M7/fwoXOhylI00h1GxtQ0NgcBnnpSeL1LIAcSySKFc+wR8xbtQ2xGaK3M6A2OSLW2SWMaGaj/c0NzGNH633014Md5hFGd4LDghFZnyOcATpnkmPXqKqJQmHbOFdE/eYTeDpH5LqbhxyndVJaJ7DrYcPx8QGYrUQOrGNTWg=
