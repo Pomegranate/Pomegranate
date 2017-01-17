@@ -19,7 +19,7 @@ module.exports = function(appName, pluginOptionsFile) {
     '  applicationDirectory: \'./application\',',
     '  pluginDirectory: \'./plugins\',',
     '  pluginSettingsDirectory: \'' + pluginOptionsFile + '\',',
-    '  additionalLayers: false,',
+    '  additionalPrefix: false,',
     '  logger: console,',
     '  timeout: 2000,',
     '  verbose: true,',

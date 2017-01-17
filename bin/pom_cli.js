@@ -85,6 +85,38 @@ var argv = yargs
       return require('./commands/start')(argv);
     }
   })
+  .command('report', 'Generates a report, giving the current plugins, their internal names, and load order.', function(yargs) {
+    argv = yargs
+      .usage('usage: $0 report -w -f [path] -c [path]')
+      .example('$0 report', 'Prints the report to the terminal.')
+      .example('$0 report -w -f ./dir/plugin.report', 'Writes the report to a file as JSON.')
+      .group(['write', 'file'],'Write Options:')
+      .options('c', {
+        alias: 'config',
+        describe: 'Path to framework config',
+        default: './PomegranateSettings.js',
+        type: 'string'
+      })
+      .options('w', {
+        alias: 'write',
+        describe: 'Write the plugin report as JSON.',
+        default: false,
+        type: 'boolean'
+      })
+      .options('f', {
+        alias: 'file',
+        describe: 'Path to output report',
+        default: './plugin.report',
+        type: 'string'
+      })
+      .help('help')
+      .wrap(null)
+      .argv
+
+    if(checkCommands(yargs, argv, 1)) {
+      return require('./commands/report')(argv);
+    }
+  })
   .help('help')
   .wrap(null)
   .argv

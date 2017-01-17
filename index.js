@@ -25,12 +25,14 @@ var instance;
  * @returns {Pomegranate|*}
  * @constructor
  */
-function Pomegranate(FrameworkOptions){
-  if(!(this instanceof Pomegranate)) return new Pomegranate(FrameworkOptions);
+function Pomegranate(FrameworkOptions, commandMode){
+  if(!(this instanceof Pomegranate)) return new Pomegranate(FrameworkOptions, commandMode);
   Events.call(this);
   instance = this;
+  this.commandMode = !!commandMode
   this.FrameworkOptions = FrameworkOptions;
   this.parentDirectory = process.cwd()
+  this.pomegranateVersion = require('./package.json').version
   this.packageFile = path.join(this.parentDirectory, 'package.json');
   try{
     this.parentPkgJson = require(this.packageFile) || {};
@@ -54,7 +56,8 @@ util.inherits(Pomegranate, Events);
 Pomegranate.prototype.init = function(){
   var self = this;
   var mergedOptions = OptionsParser.parseOptions(this.FrameworkOptions, this.parentDirectory);
-
+  mergedOptions.wrapperVersion = this.pomegranateVersion
+  mergedOptions.commandMode = this.commandMode
   // this.layers = mergedOptions.layers;
   Loader = require('magnum-loader')(this.parentPkgJson, mergedOptions);
 
@@ -109,6 +112,14 @@ Pomegranate.prototype.stop = function(){
   }.bind(this),250)
 }
 
+Pomegranate.prototype.getLoader = function(){
+  return Loader
+}
+
+Pomegranate.prototype.generateReport = function(){
+  return Loader.generateReport()
+};
+
 Pomegranate.prototype.getDefaultConfigs = function(){
   return Loader.getPluginConfigs({defaults: true});
 };
@@ -117,13 +128,17 @@ Pomegranate.prototype.getProvidedConfigs = function(){
   return {options: this.PluginOptions, path: this.pluginOptionsPath, parentDirectory: this.parentDirectory};
 }
 
-process.on('SIGINT', function() {
+function HandleSignal(){
   if(instance){
     return instance.stop()
   }
   return setTimeout(function(){
     this.stop()
   }.bind(instance),250)
-});
+}
+
+process.on('SIGINT', HandleSignal)
+process.on('SIGTERM', HandleSignal)
+
 
 module.exports = Pomegranate;
