@@ -137,7 +137,10 @@ function HandleSignal(){
   }.bind(instance),250)
 }
 
-process.on('SIGINT', HandleSignal)
+process.on('SIGHUP',  HandleSignal)
+process.on('SIGINT',  HandleSignal)
+process.on('SIGQUIT', HandleSignal)
+process.on('SIGABRT', HandleSignal)
 process.on('SIGTERM', HandleSignal)
 
 
