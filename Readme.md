@@ -100,6 +100,7 @@ You can checkout detailed documentation about Pomegranate, Plugins, and the unde
 * [Pomegranate Docs](http://pomegranate.io/docs)
 * [Plugin Authoring](https://github.com/Pomegranate/pomegranate-example-plugin)
 
+
 [doc-url]: http://pomegranate.paperelectron.com
 [npm-image]: https://img.shields.io/npm/v/pomegranate.svg
 [npm-url]: https://www.npmjs.com/package/pomegranate

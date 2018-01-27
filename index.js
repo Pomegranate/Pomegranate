@@ -20,128 +20,72 @@ var OptionsParser = require('./lib/OptionHandler');
 
 var Loader;
 var instance;
+
+
+let Framework = require('@pomegranate/framework')
 /**
  *
  * @returns {Pomegranate|*}
  * @constructor
  */
-function Pomegranate(FrameworkOptions, commandMode){
-  if(!(this instanceof Pomegranate)) return new Pomegranate(FrameworkOptions, commandMode);
-  Events.call(this);
-  instance = this;
-  this.commandMode = !!commandMode
-  this.FrameworkOptions = FrameworkOptions;
-  this.parentDirectory = process.cwd()
-  this.pomegranateVersion = require('./package.json').version
-  this.packageFile = path.join(this.parentDirectory, 'package.json');
-  try{
-    this.parentPkgJson = require(this.packageFile) || {};
-  }
-  catch(e) {
-    this.parentPkgJson = {}
-    console.log(e.message);
-    throw e
-  }
-  this.layers = null;
-  this.init()
-}
 
-util.inherits(Pomegranate, Events);
+function Pomegranate6(FrameworkOptions, CommandMode){
 
-/**
- *
- * @param frameworkOptions
- * @param pluginOptions
- */
-Pomegranate.prototype.init = function(){
-  var self = this;
-  var mergedOptions = OptionsParser.parseOptions(this.FrameworkOptions, this.parentDirectory);
-  mergedOptions.wrapperVersion = this.pomegranateVersion
-  mergedOptions.commandMode = this.commandMode
-  // this.layers = mergedOptions.layers;
-  Loader = require('magnum-loader')(this.parentPkgJson, mergedOptions);
+  let Pom = new Framework()
+  let workingDirectory = process.cwd()
+  let packageFile = require(path.join(workingDirectory, 'package.json'))
 
-  // Bind to all Loader events.
-  Loader.on('ready', function(){
-    self.ready = true
-    self.emit('ready');
-  })
+  let mergedOptions = OptionsParser.parseOptions(FrameworkOptions, workingDirectory);
+  // mergedOptions.wrapperVersion = this.pomegranateVersion
+  // mergedOptions.commandMode = this.commandMode
 
-  Loader.on('load', function() {
-    self.loaded = true;
-    self.emit('load');
-  })
-
-  Loader.on('start', function() {
-    self.started = true;
-    self.emit('start');
-  })
-
-  Loader.on('stop', function() {
-    self.emit('stop')
-    setImmediate(process.exit);
-  });
-
-  Loader.on('error', function(err){
-    this.started = true;
-    Loader.stop()
-  })
-
-  return this
-}
-
-Pomegranate.prototype.start = function(){
-  if(this.ready){
-    Loader.on('load', function(){
-      Loader.start();
-    })
-    return Loader.load()
+  function HandleSignal(signal){
+    return function(err){
+      if(err){
+        console.log(err)
+      }
+      Pom.logMessage(`Caught ${signal}, stopping Pomegranate gracefully.`)
+      if(Pom){
+        return Pom.stop()
+      }
+      return setTimeout(function(){
+        Pom.stop()
+      },250)
+    }
   }
 
-  return setTimeout(function(){
-    this.start()
-  }.bind(this),250)
-}
+  process.on('SIGHUP',  HandleSignal('SIGHUP'))
+  process.on('SIGINT',  HandleSignal('SIGINT'))
+  process.on('SIGQUIT', HandleSignal('SIGQUIT'))
+  process.on('SIGABRT', HandleSignal('SIGABRT'))
+  process.on('SIGTERM', HandleSignal('SIGTERM'))
+  process.on('uncaughtException', HandleSignal('UncaughtException'))
 
-Pomegranate.prototype.stop = function(){
-  if(this.started){
-    return Loader.stop()
+  return {
+    start: function() {
+      Pom.on('stopped', () => {
+        setTimeout(process.exit.bind(0), 500)
+      })
+      return Pom.initialize({packageJSON: packageFile, frameworkOptions: mergedOptions})
+        .then(() => {
+          return Pom.configure()
+        })
+        .then(() => {
+          return Pom.load()
+        })
+        .then(() => {
+          return Pom.start()
+        })
+    },
+    stop: function() {
+      return Pom.stop().then((r) => {
+        return r
+      })
+    },
+    on: function(handler, fn){
+      Pom.on(handler, fn)
+    }
   }
-  return setTimeout(function(){
-    this.stop()
-  }.bind(this),250)
 }
 
-Pomegranate.prototype.getLoader = function(){
-  return Loader
-}
-
-Pomegranate.prototype.generateReport = function(){
-  return Loader.generateReport()
-};
-
-Pomegranate.prototype.getDefaultConfigs = function(){
-  return Loader.getPluginConfigs({defaults: true});
-};
-
-Pomegranate.prototype.getProvidedConfigs = function(){
-  return {options: this.PluginOptions, path: this.pluginOptionsPath, parentDirectory: this.parentDirectory};
-}
-
-function HandleSignal(){
-  if(instance){
-    return instance.stop()
-  }
-  return setTimeout(function(){
-    this.stop()
-  }.bind(instance),250)
-}
-
-process.on('SIGHUP',  HandleSignal)
-process.on('SIGINT',  HandleSignal)
-process.on('SIGQUIT', HandleSignal)
-process.on('SIGABRT', HandleSignal)
-process.on('SIGTERM', HandleSignal)
-
-
-module.exports = Pomegranate;
+module.exports = Pomegranate6

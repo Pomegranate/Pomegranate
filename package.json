@@ -20,6 +20,8 @@
     "bin/"
   ],
   "dependencies": {
+    "@pomegranate/cli": "^1.0.0",
+    "@pomegranate/framework": "^1.0.0",
     "fs-extra": "^0.30.0",
     "lodash": "^4.3.0",
     "magnum-loader": "^5.1.0",
