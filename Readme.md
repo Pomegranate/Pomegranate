@@ -103,7 +103,7 @@ You can checkout detailed documentation about Pomegranate, Plugins, and the unde
 
 # Project Structure
 
-Pomegranate Framework Packages
+### Pomegranate Framework Packages
 
 Pomegranate 
   * @pomegranate/cli
@@ -118,7 +118,7 @@ Pomegranate
     * @pomegranate/plugin-iterator
       * @pomegranate/toposorter
 
-Dependency Order      
+### Dependency Order      
 
 * magnum-di
 * @pomegranate/framework-logger
