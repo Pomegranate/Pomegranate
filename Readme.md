@@ -1,5 +1,5 @@
 <img align="left" style="padding:10px" src="http://pomegranate.io/img/pomegranate_100.png" >
-# Pomegranate 4 Beta
+# Pomegranate 6 Beta
 
 #### A wildly flexible application framework.
 
@@ -100,6 +100,36 @@ You can checkout detailed documentation about Pomegranate, Plugins, and the unde
 * [Pomegranate Docs](http://pomegranate.io/docs)
 * [Plugin Authoring](https://github.com/Pomegranate/pomegranate-example-plugin)
 
+
+# Project Structure
+
+Pomegranate Framework Packages
+
+Pomegranate 
+  * @pomegranate/cli
+  * @pomegranate/framework
+    * magnum-di
+    * @pomegranate/framework-utils
+      * @pomegranate/framework-logger
+    * @pomegranate/plugin-finder
+      * @pomegranate/framework-utils
+      * @pomegranate/plugin-facade
+        * @pomegranate-framework-utils
+    * @pomegranate/plugin-iterator
+      * @pomegranate/toposorter
+
+Dependency Order      
+
+* magnum-di
+* @pomegranate/framework-logger
+* @pomegranate/framework-utils
+* @pomegranate/plugin-facade
+* @pomegranate/plugin-finder
+* @pomegranate/toposorter
+* @pomegranate/plugin-iterator
+* @pomegranate/cli
+* @pomegranate/framework
+* Pomegranate
 
 [doc-url]: http://pomegranate.paperelectron.com
 [npm-image]: https://img.shields.io/npm/v/pomegranate.svg
