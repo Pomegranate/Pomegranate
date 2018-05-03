@@ -19,13 +19,24 @@
     "lib/",
     "bin/"
   ],
+  "engines": {
+    "node": ">=7.6.0"
+  },
   "dependencies": {
     "@pomegranate/cli": "^1.0.0",
+    "@pomegranate/common-modules": "^1.1.0",
     "@pomegranate/framework": "^1.0.0",
+    "@pomegranate/framework-logger": "^0.1.1",
+    "@pomegranate/framework-utils": "^0.2.2",
+    "@pomegranate/plugin-facade": "^1.0.3",
+    "@pomegranate/plugin-finder": "^1.0.2",
+    "@pomegranate/plugin-iterator": "^1.0.0",
+    "@pomegranate/toposorter": "^1.0.0",
     "fs-extra": "^0.30.0",
     "lodash": "^4.3.0",
     "magnum-loader": "^5.1.0",
     "mkdirp": "^0.5.1",
+    "semver": "^5.5.0",
     "stringify-object": "^2.3.1",
     "yargs": "^3.31.0"
   },
