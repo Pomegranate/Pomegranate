@@ -2,14 +2,15 @@
 # yarn lockfile v1
 
 
-"@pomegranate/cli@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@pomegranate/cli/-/cli-1.0.0.tgz#b3d3d1fd3c769cc311ee011c0c924e2f3e337533"
+"@pomegranate/cli@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@pomegranate/cli/-/cli-1.1.0.tgz#3afba085174a3bcaaab5f235f3a20a3f1954ab16"
   dependencies:
     bluebird "^3.5.1"
     fs-extra "^5.0.0"
     handlebars "^4.0.11"
     lodash "^4.17.4"
+    semver "^5.5.0"
     stringify-object "^3.2.1"
     yargs "^10.1.1"
 

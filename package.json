@@ -23,7 +23,7 @@
     "node": ">=7.6.0"
   },
   "dependencies": {
-    "@pomegranate/cli": "^1.0.0",
+    "@pomegranate/cli": "^1.1.0",
     "@pomegranate/common-modules": "^1.1.0",
     "@pomegranate/framework": "^1.0.0",
     "@pomegranate/framework-logger": "^0.1.1",
