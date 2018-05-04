@@ -14,14 +14,14 @@
     stringify-object "^3.2.1"
     yargs "^10.1.1"
 
-"@pomegranate/common-modules@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@pomegranate/common-modules/-/common-modules-1.1.1.tgz#0563d5fd6d0b075d8972adee9d0ba18b39167d97"
+"@pomegranate/common-modules@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@pomegranate/common-modules/-/common-modules-1.2.0.tgz#2790d255d61ae2a105b5132579a74f6bf0fe2215"
   dependencies:
     "@pomegranate/framework" "^1.1.1"
     "@pomegranate/framework-logger" "^1.0.0"
     "@pomegranate/framework-utils" "^1.0.0"
-    "@pomegranate/plugin-facade" "^2.0.2"
+    "@pomegranate/plugin-facade" "^2.1.0"
     "@pomegranate/plugin-finder" "^1.0.5"
     "@pomegranate/plugin-iterator" "^1.1.1"
     "@pomegranate/toposorter" "^1.0.0"
@@ -105,9 +105,9 @@
     parent-require "^1.0.0"
     uuid "^3.1.0"
 
-"@pomegranate/plugin-facade@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-facade/-/plugin-facade-2.0.2.tgz#5b9e750d83ecc90a141237f4d89c445766608637"
+"@pomegranate/plugin-facade@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-facade/-/plugin-facade-2.1.0.tgz#13c7d1f93b581f8702ca7824f545198b2f7328c1"
   dependencies:
     bluebird "^3.5.0"
     chalk "^2.3.0"
