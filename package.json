@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@pomegranate/cli": "^1.1.0",
-    "@pomegranate/common-modules": "^1.2.1",
+    "@pomegranate/common-modules": "^1.2.2",
     "@pomegranate/framework": "^1.0.0",
     "@pomegranate/framework-logger": "^0.1.1",
     "@pomegranate/framework-utils": "^0.2.2",
