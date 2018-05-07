@@ -11,7 +11,6 @@
  */
 const path = require('path');
 const OptionsParser = require('./lib/OptionHandler')
-const Framework = require('@pomegranate/framework')
 const PomModules = require('@pomegranate/common-modules')
 
 const semver = require('semver')
@@ -114,7 +113,7 @@ function Pomegranate6(FrameworkOptions, CommandMode){
   if(process.env.NODE_ENV === 'test'){
     console.log('test')
   }
-  
+
   return Pomegranate
 }
 
