@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test tap -R spec --cov test/unit/*.js test/integration/**/*.js",
-    "test-unit": "NODE_ENV=test tap -R spec --cov test/unit/*.js",
-    "test-integration": "NODE_ENV=test tap -R spec --cov test/integration/**/*.js",
-    "test-report": "NODE_ENV=test tap -R spec --cov --coverage-report=lcov test/unit/*.js test/integration/**/*.js"
+    "test:acceptance": "NODE_ENV=test tap -R spec --cov test/acceptance/*.js",
+    "test:unit": "NODE_ENV=test tap -R spec --cov test/unit/*.js",
+    "test:integration": "NODE_ENV=test tap -R spec --cov test/integration/**/*.js",
+    "test:report": "NODE_ENV=test tap -R spec --cov --coverage-report=lcov test/unit/*.js test/integration/**/*.js"
   },
   "bin": {
     "pomegranate": "bin/pom_cli.js"
@@ -24,7 +25,7 @@
   },
   "dependencies": {
     "@pomegranate/cli": "^1.1.0",
-    "@pomegranate/common-modules": "^1.2.0",
+    "@pomegranate/common-modules": "^1.2.1",
     "@pomegranate/framework": "^1.0.0",
     "@pomegranate/framework-logger": "^0.1.1",
     "@pomegranate/framework-utils": "^0.2.2",

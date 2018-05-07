@@ -85,7 +85,7 @@ function Pomegranate6(FrameworkOptions, CommandMode){
 
   Pom.on('lateError', HandleSignal('LATEERROR'))
 
-  return {
+  let Pomegranate = {
     start: function() {
       Pom.on('stopped', () => {
         setTimeout(process.exit.bind(0), 500)
@@ -110,6 +110,12 @@ function Pomegranate6(FrameworkOptions, CommandMode){
       Pom.on(handler, fn)
     }
   }
+
+  if(process.env.NODE_ENV === 'test'){
+    console.log('test')
+  }
+  
+  return Pomegranate
 }
 
 module.exports = Pomegranate6

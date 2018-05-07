@@ -14,11 +14,11 @@
     stringify-object "^3.2.1"
     yargs "^10.1.1"
 
-"@pomegranate/common-modules@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@pomegranate/common-modules/-/common-modules-1.2.0.tgz#2790d255d61ae2a105b5132579a74f6bf0fe2215"
+"@pomegranate/common-modules@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@pomegranate/common-modules/-/common-modules-1.2.1.tgz#7dbfb419a8661cd58964708b7172c873227f3bd1"
   dependencies:
-    "@pomegranate/framework" "^1.1.1"
+    "@pomegranate/framework" "^1.1.2"
     "@pomegranate/framework-logger" "^1.0.0"
     "@pomegranate/framework-utils" "^1.0.0"
     "@pomegranate/plugin-facade" "^2.1.0"
@@ -83,9 +83,9 @@
     lodash "^4.17.4"
     magnum-di "^2.2.3"
 
-"@pomegranate/framework@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@pomegranate/framework/-/framework-1.1.1.tgz#5b13780336b2f7a278cdb58640761e04c5b054db"
+"@pomegranate/framework@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@pomegranate/framework/-/framework-1.1.2.tgz#9abb43702c11b103fe0ee0c3b6d69856ceb84dac"
   dependencies:
     chalk "^2.3.0"
     lodash "^4.17.4"
