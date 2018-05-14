@@ -17,12 +17,10 @@ const semver = require('semver')
 const nodeVersion = process.version
 const cantRun = !semver.satisfies(nodeVersion, `>=7.6.0`)
 
-
-if(cantRun){
+if(cantRun) {
   throw new Error('Pomegranate v6.x and higher requires NodeJS v7.6.0 at a minimum.')
   process.exit(1)
 }
-
 
 /**
  *
@@ -30,7 +28,7 @@ if(cantRun){
  * @constructor
  */
 
-function Pomegranate6(FrameworkOptions, CommandMode){
+function Pomegranate6(FrameworkOptions, CommandMode) {
   let Framework = PomModules.Framework.module
   let Pom = new Framework(PomModules)
   let workingDirectory = process.cwd()
@@ -42,31 +40,38 @@ function Pomegranate6(FrameworkOptions, CommandMode){
 
   let handled = false
 
-  function HandleSignal(signal){
-    return function(err){
-      if(handled) { return }
+  function HandleSignal(signal) {
+    return function(err) {
+      console.log('Signal')
+      if(handled) {
+        return
+      }
       handled = true
-      if(err){
+      if(err) {
         Pom.logMessage(err, 'error')
       }
       Pom.logMessage(`Caught ${signal}, stopping Pomegranate gracefully.`)
-      if(Pom){
+      if(Pom) {
         return Pom.stop()
           .then((r) => {
-            return Pom.shutdown()
+            return r
+            // return Pom.shutdown()
           })
       }
-      return setTimeout(function(){
+      return setTimeout(function() {
         Pom.stop()
           .then((r) => {
-            return Pom.shutdown()
+            return r
+            // return Pom.shutdown()
           })
-      },250)
+      }, 250)
     }
   }
 
   process.on('beforeExit', () => {
-    if(handled) { return }
+    if(handled) {
+      return
+    }
     handled = true
     Pom.logMessage('Event loop empty, exiting.')
     Pom.stop()
@@ -75,8 +80,8 @@ function Pomegranate6(FrameworkOptions, CommandMode){
       })
   })
 
-  process.on('SIGHUP',  HandleSignal('SIGHUP'))
-  process.on('SIGINT',  HandleSignal('SIGINT'))
+  process.on('SIGHUP', HandleSignal('SIGHUP'))
+  process.on('SIGINT', HandleSignal('SIGINT'))
   process.on('SIGQUIT', HandleSignal('SIGQUIT'))
   process.on('SIGABRT', HandleSignal('SIGABRT'))
   process.on('SIGTERM', HandleSignal('SIGTERM'))
@@ -86,31 +91,41 @@ function Pomegranate6(FrameworkOptions, CommandMode){
 
   let Pomegranate = {
     start: function() {
-      Pom.on('stopped', () => {
+      // Pom.on('stopped', () => {
+      //   Pom.shutdown()
+      //   setTimeout(process.exit.bind(0), 500)
+      // })
+      Pom.on('exitReady', () => {
+        Pom.shutdown()
         setTimeout(process.exit.bind(0), 500)
       })
+
       return Pom.initialize({packageJSON: packageFile, frameworkOptions: mergedOptions})
-        .then(() => {
+        .then((result) => {
           return Pom.configure()
         })
-        .then(() => {
+        .then((result) => {
           return Pom.load()
         })
-        .then(() => {
+        .then((result) => {
           return Pom.start()
+        })
+        .then((what) => {
+
+          return what
         })
     },
     stop: function() {
       return Pom.stop().then((r) => {
-        return Pom.shutdown()
+        return r
       })
     },
-    on: function(handler, fn){
+    on: function(handler, fn) {
       Pom.on(handler, fn)
     }
   }
 
-  if(process.env.NODE_ENV === 'test'){
+  if(process.env.NODE_ENV === 'test') {
     console.log('test')
   }
 

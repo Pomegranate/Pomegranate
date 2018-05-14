@@ -14,16 +14,16 @@
     stringify-object "^3.2.1"
     yargs "^10.1.1"
 
-"@pomegranate/common-modules@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@pomegranate/common-modules/-/common-modules-1.2.2.tgz#64a48198b5284a88b2f1d206fc67259a1c928115"
+"@pomegranate/common-modules@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@pomegranate/common-modules/-/common-modules-1.3.0.tgz#45ebe4c75a98c2e91e710eb9f0ccf1269aa7e889"
   dependencies:
-    "@pomegranate/framework" "^1.1.3"
+    "@pomegranate/framework" "^1.2.0"
     "@pomegranate/framework-logger" "^1.0.0"
     "@pomegranate/framework-utils" "^1.0.0"
-    "@pomegranate/plugin-facade" "^2.1.0"
-    "@pomegranate/plugin-finder" "^1.0.5"
-    "@pomegranate/plugin-iterator" "^1.1.1"
+    "@pomegranate/plugin-facade" "^2.1.1"
+    "@pomegranate/plugin-finder" "^2.0.0"
+    "@pomegranate/plugin-iterator" "^1.1.2"
     "@pomegranate/toposorter" "^1.0.0"
 
 "@pomegranate/framework-logger@^0.1.1":
@@ -51,17 +51,18 @@
     fs-extra "^4.0.1"
     lodash "^4.17.4"
 
-"@pomegranate/framework@^1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@pomegranate/framework/-/framework-1.1.3.tgz#3404ae1e3d2c7a43ef802cfeb555f2d3c451f09e"
+"@pomegranate/framework@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@pomegranate/framework/-/framework-1.2.0.tgz#7b51e67343d6494c8d4788576fee864eb8b7f5b5"
   dependencies:
     chalk "^2.3.0"
+    debug "^3.1.0"
     lodash "^4.17.4"
     magnum-di "^3.2.0"
 
-"@pomegranate/plugin-facade@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-facade/-/plugin-facade-2.1.0.tgz#13c7d1f93b581f8702ca7824f545198b2f7328c1"
+"@pomegranate/plugin-facade@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-facade/-/plugin-facade-2.1.1.tgz#f71cf08d7bbaec1624acc2a1cc2d7c72d0971a02"
   dependencies:
     bluebird "^3.5.0"
     chalk "^2.3.0"
@@ -72,18 +73,18 @@
     parent-require "^1.0.0"
     uuid "^3.1.0"
 
-"@pomegranate/plugin-finder@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-finder/-/plugin-finder-1.0.5.tgz#a9eed08f2c2ded906a7d34baafa4711fdad3bd6a"
+"@pomegranate/plugin-finder@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-finder/-/plugin-finder-2.0.0.tgz#e23271ac187e789c70b2e35d9a1a01a1771e225c"
   dependencies:
     bluebird "^3.5.1"
     debug "^3.1.0"
     fs-extra "^6.0.0"
     lodash "^4.17.4"
 
-"@pomegranate/plugin-iterator@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-iterator/-/plugin-iterator-1.1.1.tgz#4d5a3cc754aa6c68fe6edde0f3be849bcd292efa"
+"@pomegranate/plugin-iterator@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-iterator/-/plugin-iterator-1.1.2.tgz#7a6a6a8d83b29c6c88ce00bbc09936b3f7301c62"
   dependencies:
     bluebird "^3.5.1"
     debug "^3.1.0"
