@@ -42,7 +42,6 @@ function Pomegranate6(FrameworkOptions, CommandMode) {
 
   function HandleSignal(signal) {
     return function(err) {
-      console.log('Signal')
       if(handled) {
         return
       }
