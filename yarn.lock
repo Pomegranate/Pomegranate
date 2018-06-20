@@ -14,13 +14,13 @@
     stringify-object "^3.2.1"
     yargs "^10.1.1"
 
-"@pomegranate/common-modules@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@pomegranate/common-modules/-/common-modules-1.4.0.tgz#faac9a1e6a9f843e9c6bba10814a3df558aa34fc"
+"@pomegranate/common-modules@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@pomegranate/common-modules/-/common-modules-1.5.0.tgz#0f616dff4779e74be3a390b6cc48633f1497136a"
   dependencies:
     "@pomegranate/framework" "^1.2.0"
     "@pomegranate/framework-logger" "^1.0.0"
-    "@pomegranate/framework-utils" "^1.1.0"
+    "@pomegranate/framework-utils" "^1.2.0"
     "@pomegranate/plugin-facade" "^2.2.0"
     "@pomegranate/plugin-finder" "^2.1.0"
     "@pomegranate/plugin-iterator" "^1.1.2"
@@ -40,9 +40,9 @@
     chalk "^2.3.0"
     lodash "^4.17.4"
 
-"@pomegranate/framework-utils@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@pomegranate/framework-utils/-/framework-utils-1.1.0.tgz#cbb1e1d130c59119f38e33a1d2382a755740cafb"
+"@pomegranate/framework-utils@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@pomegranate/framework-utils/-/framework-utils-1.2.0.tgz#7faeb7441e9edbf4febf4b04f6e728d3d3fa9486"
   dependencies:
     "@pomegranate/framework-logger" "^0.1.1"
     bluebird "^3.5.0"
