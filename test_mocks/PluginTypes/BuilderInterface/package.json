@@ -1,0 +1,8 @@
+{
+  "name": "pomegranate-mock",
+  "version": "0.0.0",
+  "dependencies": {
+    "@pom-test/WorkDirs":  "0.0.0",
+    "@pom-test/ExternalApplication":  "0.0.0"
+  }
+}

@@ -1,38 +1,26 @@
 {
   "name": "pomegranate",
-  "version": "6.0.0-beta.2.9",
+  "version": "7.0.0-beta.1",
   "description": "Super flexible whitebox web application framework",
-  "main": "index.js",
-  "scripts": {
-    "test": "NODE_ENV=test tap -R spec --cov test/unit/*.js test/integration/**/*.js",
-    "test:acceptance": "NODE_ENV=test tap -R spec --cov test/acceptance/*.js",
-    "test:unit": "NODE_ENV=test tap -R spec --cov test/unit/*.js",
-    "test:integration": "NODE_ENV=test tap -R spec --cov test/integration/**/*.js",
-    "test:report": "NODE_ENV=test tap -R spec --cov --coverage-report=lcov test/unit/*.js test/integration/**/*.js"
-  },
-  "bin": {
-    "pomegranate": "bin/pom_cli.js"
-  },
-  "author": "Jim <jim.b@paperelectron.com> (http://paperelectron.com/)",
+  "author": "Jim Bulkowski <jim.b@paperelectron.com> (http://paperelectron.com)",
   "license": "MIT",
+  "main": "index.js",
   "files": [
-    "index.js",
-    "lib/",
-    "bin/"
+    "index.d.ts",
+    "index.js.map",
+    "Framework/**/*",
+    "Readme.md",
+    "LICENCE"
   ],
-  "engines": {
-    "node": ">=7.6.0"
-  },
-  "dependencies": {
-    "@pomegranate/cli": "^1.2.0",
-    "@pomegranate/common-modules": "^1.5.0",
-    "fs-extra": "^0.30.0",
-    "lodash": "^4.3.0",
-    "magnum-loader": "^5.1.0",
-    "mkdirp": "^0.5.1",
-    "semver": "^5.5.0",
-    "stringify-object": "^2.3.1",
-    "yargs": "^3.31.0"
+  "scripts": {
+    "prepublishOnly": "tsc",
+    "script:updateVersionFile": "./__scripts/updateTsVersionFile.js",
+    "build": "tsc -p tsconfig.json",
+    "build:watch": "tsc --watch",
+    "build:mocks": "tsc -p tsconfig-mocks.json && tsc -p tsconfig-mocks.json -d --emitDeclarationOnly --allowJs false",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:js": "jest --config=./jest.js-config.js"
   },
   "repository": {
     "type": "git",
@@ -41,14 +29,41 @@
   "keywords": [
     "Framework",
     "Plugins",
-    "IoC",
-    "Web"
+    "IoC"
   ],
   "bugs": {
     "url": "https://github.com/Pomegranate/Pomegranate/issues"
   },
   "homepage": "https://github.com/Pomegranate/Pomegranate",
+  "bin": {
+    "pomegranate": "./cli/pomegranate.js"
+  },
   "devDependencies": {
-    "tap": "^5.7.1"
+    "@types/bluebird": "^3.5.23",
+    "@types/fs-extra": "^5.0.4",
+    "@types/jest": "^23.3.0",
+    "@types/lodash": "^4.14.119",
+    "@types/node": "^10.12.18",
+    "@types/stringify-object": "^3.2.0",
+    "@types/yargs": "^12.0.9",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  },
+  "dependencies": {
+    "@pomegranate/plugin-tools": "^0.0.9",
+    "bluebird": "^3.5.1",
+    "chalk": "^2.4.2",
+    "fs-extra": "^7.0.0",
+    "handlebars": "^4.1.0",
+    "immutable-dll": "^3.0.0",
+    "lodash": "^4.17.11",
+    "lodash-fun": "^1.6.1",
+    "magnum-di": "^4.2.0",
+    "monet": "^0.9.0",
+    "stringify-object": "^3.3.0",
+    "uuid": "^3.3.2",
+    "yargs": "^13.2.1"
   }
 }

@@ -8,3 +8,8 @@ coverage/
 .DS_Store
 env.json
 /scratch
+.npmrc
+index.js
+index.js.map
+index.d.ts
+package-lock.json

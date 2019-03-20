@@ -1,5 +1,5 @@
 <img align="left" style="padding:10px" src="http://pomegranate.io/img/pomegranate_100.png" >
-# Pomegranate 6 Beta
+# Pomegranate 7 Beta
 
 #### A wildly flexible application framework.
 
@@ -10,7 +10,7 @@
 
 # What does it do?
 
-Simply? Pomegranate is a framework to build other frameworks, though it just as happily handles general application programming tasks.
+Pomegranate is a framework to build other frameworks, though it just as happily handles general application programming tasks.
 
 Pomegranate is a graybox, Inversion of Control based application framework. It ingests simple plugins, sorts them topologically and runs the hooks they expose. It supports polymorphic dependencies and simple, expressive configuration external to its plugins.
 
@@ -105,7 +105,7 @@ You can checkout detailed documentation about Pomegranate, Plugins, and the unde
 
 ### Pomegranate Framework Packages
 
-Pomegranate 
+Pomegranate
   * @pomegranate/cli
   * @pomegranate/framework
     * magnum-di
@@ -118,7 +118,7 @@ Pomegranate
     * @pomegranate/plugin-iterator
       * @pomegranate/toposorter
 
-### Dependency Order      
+### Dependency Order
 
 * magnum-di
 * @pomegranate/framework-logger
