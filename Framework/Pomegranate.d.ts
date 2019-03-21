@@ -9,6 +9,10 @@ export interface PomegranateRuntime {
     start: () => any;
     stop: () => any;
 }
+export declare function crashedCli(baseDirectory: string, config: PomegranateConfiguration): Promise<{
+    Plugins: any[];
+    Config: import("./Configuration").ComposedFrameworkState;
+}>;
 export declare function CliData(baseDirectory: string, config: PomegranateConfiguration): Promise<{
     Plugins: ComposedPlugin[];
     Config: import("./Configuration").ComposedFrameworkState;

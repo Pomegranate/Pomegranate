@@ -1,7 +1,7 @@
 /**
- * @file startPomegranate
+ * @file resetBuild
  * @author Jim Bulkowski <jim.b@paperelectron.com>
- * @project @framework
+ * @project Pomegranate
  * @license MIT {@link http://opensource.org/licenses/MIT}
- */
-export declare const start: (argv: any) => Promise<void>;
+ */ 
+//# sourceMappingURL=resetBuild.js.map

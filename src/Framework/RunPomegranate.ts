@@ -51,18 +51,19 @@ export const RunPomegranate = async (settings: PomegranateConfiguration, working
       }
       Pom.externalLog('log',`Caught ${signal}, attempting to stop Pomegranate gracefully.`)
 
-      let t = setTimeout(function() {
-        Pom.stop()
-          .then((r) => {
-            process.exit(1)
-            return null
-          })
-      }, 1000)
+      // let t = setTimeout(function() {
+      //   console.log('whoops')
+      //   Pom.stop()
+      //     .then((r) => {
+      //       process.exit(1)
+      //       return null
+      //     })
+      // }, 1000)
 
       if(Pom) {
         return Pom.stop()
           .then((r) => {
-            clearTimeout(t)
+            // clearTimeout(t)
             process.exit(0)
             return null
           })
@@ -87,7 +88,6 @@ export const RunPomegranate = async (settings: PomegranateConfiguration, working
   })
 
   Pom.events.on('lateError', async (msg) => {
-
     await Pom.stop()
     Pom.externalLog('error', `Received lateError event from ${msg.name}, attempted to stop gracefully.`)
     process.exit(1)

@@ -47,17 +47,18 @@ exports.RunPomegranate = (settings, workingDirectory = process.cwd()) => __await
                 Pom.externalLog('log', err);
             }
             Pom.externalLog('log', `Caught ${signal}, attempting to stop Pomegranate gracefully.`);
-            let t = setTimeout(function () {
-                Pom.stop()
-                    .then((r) => {
-                    process.exit(1);
-                    return null;
-                });
-            }, 1000);
+            // let t = setTimeout(function() {
+            //   console.log('whoops')
+            //   Pom.stop()
+            //     .then((r) => {
+            //       process.exit(1)
+            //       return null
+            //     })
+            // }, 1000)
             if (Pom) {
                 return Pom.stop()
                     .then((r) => {
-                    clearTimeout(t);
+                    // clearTimeout(t)
                     process.exit(0);
                     return null;
                 });

@@ -24,6 +24,25 @@ const monet_1 = require("monet");
 const bluebird_1 = __importDefault(require("bluebird"));
 const helpers_1 = require("./Configuration/helpers");
 // import {isInjectableBuilder, isApplicationBuilder} from "@pomegranate/plugin-tools";
+const parentRequire = function (id) {
+    console.log(id);
+    try {
+        return require(id);
+    }
+    catch (err) {
+        let parent = module.parent;
+        for (; parent; parent = parent.parent) {
+            try {
+                return parent.require(id);
+            }
+            catch (ex) {
+                console.log(parent);
+                console.log(ex);
+            }
+        }
+        throw new Error("Cannot find module '" + id + "' from parent...");
+    }
+};
 const eitherUnwrapOrFail = (o, filename) => {
     return (fp_1.isFunction(fp_1.get('Plugin.getPlugin', o)))
         ? monet_1.Right(o.Plugin)
@@ -178,7 +197,7 @@ exports.discoverNamespaced = (dependencies) => {
         // let unrolled = unroll(plugin)
         // let unwrapLocal = appendUnwrap(getNamespace(ns), 'namespaced', ns)
         // return unwrapLocal(unrolled)
-        let plugin = eitherUnwrapOrFail(require(ns), i)
+        let plugin = eitherUnwrapOrFail(parentRequire(ns), i)
             .cata(fail => {
             throw fail;
         }, fp_1.identity);

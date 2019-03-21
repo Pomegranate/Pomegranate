@@ -39,6 +39,23 @@ async function installPlugins(plugins: ComposedPlugin[]) {
   }, plugins)
 }
 
+export async function crashedCli(baseDirectory: string, config: PomegranateConfiguration){
+  let FrameworkEvents = new EventEmitter()
+  let RuntimeState = <any>{}
+  let PluginInjector = new MagnumDI()
+  PluginInjector.service('Env', process.env)
+  let frameworkMetrics = FrameworkMetrics()
+  /*
+   * Loads and validates the application config, creates the pomegranate framework logger.
+   */
+  const {PomConfig,FrameworkConfiguration, loggerFactory, frameworkLogger, systemLogger, LogManager} = await Configure(frameworkMetrics, baseDirectory, config)
+  const FutureFrameworkState: IFutureState<RuntimeFrameworkState> = await CreateFrameworkState(frameworkLogger, FrameworkConfiguration)
+  const FrameworkState = await FutureFrameworkState.getState()
+
+  let FullConfig = await updateFrameworkMeta(LogManager, frameworkMetrics, FutureFrameworkState, [])
+
+  return {Plugins: [], Config: FullConfig}
+}
 
 export async function CliData(baseDirectory: string, config: PomegranateConfiguration){
   let FrameworkEvents = new EventEmitter()
@@ -216,6 +233,7 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
       }
     },
     stop: async function runStopHooks() {
+
       rightBar(LogManager.use('system')).run({msg: 'Running Stop hooks.'})
       frameworkMetrics.startFrameworkPhase('StopHook')
 
@@ -235,6 +253,7 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
         return acc
       }, RuntimeState)
 
+      console.log(results)
       LogManager.use('pomegranate').log(`Stop Hooks complete with no errors in  ${frameworkMetrics.stopFrameworkPhase('StopHook')}ms.`, 3)
       LogManager.use('system').log('Pomegranate finished...', 4)
       return RuntimeState

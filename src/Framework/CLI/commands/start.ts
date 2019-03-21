@@ -7,22 +7,53 @@
 
 import {Argv} from "yargs";
 import {join}  from 'path'
+import {fork} from 'child_process'
 
-import {startPomegranate} from "../handlers/start";
 
+export function startPomegranate(){
 
-export const command = 'start [path]'
-export const aliases = 's'
-export const describe = 'Starts a Pomegranate application'
-export const builder = (yargs: Argv) => {
-  let cwd = process.cwd()
-  return yargs
-    .positional('path', {
-      description: 'path containing a pom.js',
-      default: cwd,
-      defaultDescription: 'package.json name if available',
-      type: 'string'
-    })
-    .usage('Usage: $0 start [path]')
+  return {
+      command: 'start [path]',
+      describe: 'Starts a Pomegranate application',
+      aliases: 's',
+      builder: (yargs: Argv) => {
+        let cwd = process.cwd()
+        return yargs
+          .positional('path', {
+            description: 'path containing a pom.js',
+            default: cwd,
+            defaultDescription: 'Defaults to process.cwd()',
+            type: 'string'
+          })
+          .option('f', {
+            alias: 'file',
+            description: 'Pom startup file',
+            default: 'pom.js',
+            defaultDescription: 'pom.js',
+            string: true
+          })
+          .usage('Usage: $0 start [path]')
+      },
+      handler: (argv) => {
+        let file = join(argv.path, argv.file)
+        fork(file)
+      }
+    }
+  // return {
+  //   command: 'start [path]',
+  //   describe: 'Starts a Pomegranate application',
+  //   aliases: 's',
+  //   builder: (yargs: Argv) => {
+  //     let cwd = process.cwd()
+  //     return yargs
+  //       .positional('path', {
+  //         description: 'path containing a pom.js',
+  //         default: cwd,
+  //         defaultDescription: 'package.json name if available',
+  //         type: 'string'
+  //       })
+  //       .usage('Usage: $0 start [path]')
+  //   },
+  //   handler: start
+  // }
 }
-export const handler = startPomegranate

@@ -29,7 +29,13 @@ exports.handler = (argv) => {
 function buildPomegranate(PomInstance) {
     let projectDir = fp_1.get('Config.projectPluginDirectory', PomInstance);
     let baseDir = fp_1.get('Config.baseDirectory', PomInstance);
-    let defaultPluginDir = path_1.relative(baseDir, projectDir);
+    let defaultPluginDir;
+    try {
+        defaultPluginDir = path_1.relative(baseDir, projectDir);
+    }
+    catch (e) {
+        console.log('Unable to extract directory data');
+    }
     return {
         command: 'build',
         aliases: 'b',

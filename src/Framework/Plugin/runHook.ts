@@ -208,7 +208,7 @@ function composeStopRunner(frameworkConf: ValidatedConfiguration, LogManager: Lo
         return pluginName
       })
       .catch((err) => {
-        console.log(err)
+        PluginLogger.error(err.message)
         throw err
       })
   }

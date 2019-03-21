@@ -34,6 +34,24 @@ function installPlugins(plugins) {
         }, plugins);
     });
 }
+function crashedCli(baseDirectory, config) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let FrameworkEvents = new events_1.EventEmitter();
+        let RuntimeState = {};
+        let PluginInjector = new magnum_di_1.MagnumDI();
+        PluginInjector.service('Env', process.env);
+        let frameworkMetrics = FrameworkMetrics_1.FrameworkMetrics();
+        /*
+         * Loads and validates the application config, creates the pomegranate framework logger.
+         */
+        const { PomConfig, FrameworkConfiguration, loggerFactory, frameworkLogger, systemLogger, LogManager } = yield Bootstrap_1.Configure(frameworkMetrics, baseDirectory, config);
+        const FutureFrameworkState = yield Bootstrap_1.CreateFrameworkState(frameworkLogger, FrameworkConfiguration);
+        const FrameworkState = yield FutureFrameworkState.getState();
+        let FullConfig = yield Configuration_1.updateFrameworkMeta(LogManager, frameworkMetrics, FutureFrameworkState, []);
+        return { Plugins: [], Config: FullConfig };
+    });
+}
+exports.crashedCli = crashedCli;
 function CliData(baseDirectory, config) {
     return __awaiter(this, void 0, void 0, function* () {
         let FrameworkEvents = new events_1.EventEmitter();
@@ -204,6 +222,7 @@ function Pomegranate(baseDirectory, config) {
                         }
                         return acc;
                     }), RuntimeState);
+                    console.log(results);
                     LogManager.use('pomegranate').log(`Stop Hooks complete with no errors in  ${frameworkMetrics.stopFrameworkPhase('StopHook')}ms.`, 3);
                     LogManager.use('system').log('Pomegranate finished...', 4);
                     return RuntimeState;

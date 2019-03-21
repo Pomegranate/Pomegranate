@@ -33,6 +33,26 @@ import {filterIndexedDirs} from "./Configuration/helpers";
 import {ApplicationBuilder, Builder, InjectableBuilder} from "./Plugin/Builders";
 // import {isInjectableBuilder, isApplicationBuilder} from "@pomegranate/plugin-tools";
 
+const parentRequire = function(id) {
+  console.log(id)
+  try {
+    return require(id)
+  }
+  catch(err){
+    let parent = module.parent;
+    for (; parent; parent = parent.parent) {
+      try {
+        return parent.require(id);
+      } catch(ex) {
+        console.log(parent)
+        console.log(ex)
+      }
+    }
+    throw new Error("Cannot find module '" + id + "' from parent...");
+  }
+
+};
+
 const eitherUnwrapOrFail = (o, filename): Either<Error, Builder> => {
   return (isFunction(get('Plugin.getPlugin', o)))
     ? Right(o.Plugin)
@@ -221,7 +241,7 @@ export const discoverNamespaced = (dependencies): Bluebird<any[]> => {
     // let unwrapLocal = appendUnwrap(getNamespace(ns), 'namespaced', ns)
     // return unwrapLocal(unrolled)
 
-    let plugin = eitherUnwrapOrFail(require(ns), i)
+    let plugin = eitherUnwrapOrFail(parentRequire(ns), i)
       .cata(
         fail => {
           throw fail

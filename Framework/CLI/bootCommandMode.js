@@ -1,8 +1,8 @@
 "use strict";
 /**
- * @file startPomegranate
+ * @file bootCommandMode
  * @author Jim Bulkowski <jim.b@paperelectron.com>
- * @project @framework
+ * @project Pomegranate
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -14,7 +14,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.start = (argv) => __awaiter(this, void 0, void 0, function* () {
-    console.log(argv);
+const path_1 = require("path");
+const Pomegranate_1 = require("../Pomegranate");
+exports.bootCommandMode = (appPath) => __awaiter(this, void 0, void 0, function* () {
+    let PomegranateSettings;
+    let PomInstance;
+    try {
+        PomegranateSettings = require(path_1.join(appPath, 'PomegranateSettings'));
+        PomegranateSettings.logLevel = 0;
+        PomegranateSettings.logger = {
+            log: () => { },
+            warn: () => { },
+            info: () => { },
+            error: () => { },
+        };
+        PomInstance = yield Pomegranate_1.CliData(appPath, PomegranateSettings);
+        console.log(PomInstance);
+    }
+    catch (err) {
+        console.log(err.message);
+    }
 });
-//# sourceMappingURL=start.js.map
+//# sourceMappingURL=bootCommandMode.js.map

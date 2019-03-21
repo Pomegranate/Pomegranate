@@ -5,6 +5,6 @@
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 
-export const startPomegranate = async (argv: any) => {
+export const start = async (argv: any) => {
   console.log(argv)
 }

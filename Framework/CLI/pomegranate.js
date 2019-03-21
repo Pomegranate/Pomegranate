@@ -13,37 +13,103 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = require("path");
 const Pomegranate_1 = require("../Pomegranate");
-const start = __importStar(require("./commands/start"));
+const start_1 = require("./commands/start");
 const plugin_1 = require("./commands/plugin");
 const build_1 = require("./commands/build");
 const init_1 = require("./commands/init");
 const config_1 = require("./commands/config");
 exports.pomCli = (cwd) => __awaiter(this, void 0, void 0, function* () {
+    let yargs = require('yargs');
     let PomegranateSettings;
     let PomInstance;
     try {
         PomegranateSettings = require(path_1.join(cwd, 'PomegranateSettings'));
-        PomegranateSettings.logLevel = 0;
         PomInstance = yield Pomegranate_1.CliData(cwd, PomegranateSettings);
     }
     catch (err) {
-        console.log(err.message);
     }
-    let yargs = require('yargs');
+    // try {
+    //   let PomegranateSettings = require(join(cwd, 'PomegranateSettings'))
+    //   PomegranateSettings.logLevel = 4
+    //   // PomegranateSettings.logger = {
+    //   //   log: () => {},
+    //   //   warn: () => {},
+    //   //   info: () => {},
+    //   //   error: () => {},
+    //   // }
+    //
+    //   let PomInstance = await CliData(cwd, PomegranateSettings)
+    //   yargs
+    //     .command(initPomegranate(PomInstance))
+    //     .command(buildPomegranate(PomInstance))
+    //     .command(startPomegranate())
+    //     .command(plugin(PomInstance, PomegranateSettings))
+    //     .command(configurePomegranate(PomInstance))
+    //     .recommendCommands()
+    //     .wrap(yargs.terminalWidth() - (yargs.terminalWidth() * 0.05))
+    //     .demandCommand(1, 'You must provide at least one command.')
+    //     .help()
+    //     // .showHelpOnFail(true)
+    //
+    //     .fail((msg, err) => {
+    //       if (msg) {
+    //         console.log(msg)
+    //         yargs.showHelp()
+    //       }
+    //       if (err) {
+    //         console.error(err.message)
+    //       }
+    //
+    //       process.exit(1)
+    //     })
+    //     .help()
+    //     .argv
+    // } catch (err) {
+    //   console.log('Pomegranate command mode could not fully instantiate the framework. Limited command set available.')
+    //   console.log(err.message)
+    //   let PomegranateSettings = require(join(cwd, 'PomegranateSettings'))
+    //   PomegranateSettings.logLevel = 0
+    //   PomegranateSettings.logger = {
+    //     log: () => {},
+    //     warn: () => {},
+    //     info: () => {},
+    //     error: () => {},
+    //   }
+    //
+    //   let LimitedInstance = await crashedCli(cwd, PomegranateSettings)
+    //
+    //   yargs
+    //     .command(initPomegranate(LimitedInstance))
+    //     .command(buildPomegranate(LimitedInstance))
+    //     .wrap(yargs.terminalWidth() - (yargs.terminalWidth() * 0.05))
+    //     .demandCommand(1, 'You must provide at least one command.')
+    //     .recommendCommands()
+    //     .strict()
+    //     .help()
+    //     // .showHelpOnFail(true)
+    //
+    //     .fail((msg, err) => {
+    //       console.log(msg)
+    //       if (msg) {
+    //         yargs.showHelp()
+    //       }
+    //       if (err) {
+    //         console.error(err.message)
+    //       }
+    //
+    //       process.exit(1)
+    //     })
+    //     .help()
+    //     .argv
+    //
+    // }
     yargs
         .command(init_1.initPomegranate(PomInstance))
         .command(build_1.buildPomegranate(PomInstance))
-        .command(start)
+        .command(start_1.startPomegranate())
         .command(plugin_1.plugin(PomInstance, PomegranateSettings))
         .command(config_1.configurePomegranate(PomInstance))
         .recommendCommands()
