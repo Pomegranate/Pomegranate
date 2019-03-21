@@ -49,8 +49,7 @@
     "@types/yargs": "^12.0.9",
     "jest": "^23.6.0",
     "ts-jest": "^23.10.5",
-    "ts-node": "^7.0.1",
-    "typescript": "^3.2.2"
+    "ts-node": "^7.0.1"
   },
   "dependencies": {
     "@pomegranate/plugin-tools": "^0.0.9",
@@ -66,5 +65,8 @@
     "stringify-object": "^3.3.0",
     "uuid": "^3.3.2",
     "yargs": "^13.2.1"
+  },
+  "peerDependencies": {
+    "typescript": "^3.3.4000"
   }
 }
