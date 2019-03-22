@@ -13,7 +13,7 @@ export declare function crashedCli(baseDirectory: string, config: PomegranateCon
     Plugins: any[];
     Config: import("./Configuration").ComposedFrameworkState;
 }>;
-export declare function CliData(baseDirectory: string, config: PomegranateConfiguration): Promise<{
+export declare function RunCLI(baseDirectory: string, config: PomegranateConfiguration): Promise<{
     Plugins: ComposedPlugin[];
     Config: import("./Configuration").ComposedFrameworkState;
 }>;

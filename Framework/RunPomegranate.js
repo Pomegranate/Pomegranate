@@ -72,7 +72,6 @@ exports.RunPomegranate = (settings, workingDirectory = process.cwd()) => __await
     process.on('SIGTERM', HandleSignal('SIGTERM'));
     process.on('uncaughtException', HandleSignal('UncaughtException'));
     process.on('beforeExit', () => __awaiter(this, void 0, void 0, function* () {
-        console.log('before exit');
         if (handled) {
             return;
         }

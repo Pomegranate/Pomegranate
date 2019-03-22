@@ -7,5 +7,5 @@
 
 
 export {InjectablePlugin, EffectPlugin, CommandPlugin, ApplicationPlugin, LoghandlerPlugin} from '@pomegranate/plugin-tools'
-export * from './Framework/Pomegranate'
-export * from './Framework/RunPomegranate'
+export {RunCLI} from './Framework/Pomegranate'
+export {RunPomegranate} from './Framework/RunPomegranate'

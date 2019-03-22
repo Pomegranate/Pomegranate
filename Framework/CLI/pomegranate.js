@@ -27,7 +27,7 @@ exports.pomCli = (cwd) => __awaiter(this, void 0, void 0, function* () {
     let PomInstance;
     try {
         PomegranateSettings = require(path_1.join(cwd, 'PomegranateSettings'));
-        PomInstance = yield Pomegranate_1.CliData(cwd, PomegranateSettings);
+        PomInstance = yield Pomegranate_1.RunCLI(cwd, PomegranateSettings);
     }
     catch (err) {
     }
@@ -41,7 +41,7 @@ exports.pomCli = (cwd) => __awaiter(this, void 0, void 0, function* () {
     //   //   error: () => {},
     //   // }
     //
-    //   let PomInstance = await CliData(cwd, PomegranateSettings)
+    //   let PomInstance = await RunCLI(cwd, PomegranateSettings)
     //   yargs
     //     .command(initPomegranate(PomInstance))
     //     .command(buildPomegranate(PomInstance))
@@ -106,6 +106,13 @@ exports.pomCli = (cwd) => __awaiter(this, void 0, void 0, function* () {
     //     .argv
     //
     // }
+    try {
+        let ts = require('typescript/package.json');
+        console.log(ts);
+    }
+    catch (err) {
+        console.log('Typescript not available in this location.');
+    }
     yargs
         .command(init_1.initPomegranate(PomInstance))
         .command(build_1.buildPomegranate(PomInstance))

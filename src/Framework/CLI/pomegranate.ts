@@ -7,7 +7,7 @@
 
 import {Argv} from 'yargs'
 import {join} from 'path'
-import {CliData, crashedCli} from "../Pomegranate";
+import {RunCLI, crashedCli} from "../Pomegranate";
 
 import {startPomegranate} from './commands/start'
 import {plugin} from "./commands/plugin";
@@ -22,7 +22,7 @@ export const pomCli = async (cwd) => {
   let PomInstance
   try {
     PomegranateSettings = require(join(cwd, 'PomegranateSettings'))
-    PomInstance = await CliData(cwd, PomegranateSettings)
+    PomInstance = await RunCLI(cwd, PomegranateSettings)
   }
   catch(err){
 
@@ -37,7 +37,7 @@ export const pomCli = async (cwd) => {
   //   //   error: () => {},
   //   // }
   //
-  //   let PomInstance = await CliData(cwd, PomegranateSettings)
+  //   let PomInstance = await RunCLI(cwd, PomegranateSettings)
   //   yargs
   //     .command(initPomegranate(PomInstance))
   //     .command(buildPomegranate(PomInstance))
@@ -103,6 +103,13 @@ export const pomCli = async (cwd) => {
   //
   // }
 
+  try{
+    let ts = require('typescript/package.json')
+    console.log(ts)
+  }
+  catch(err){
+    console.log('Typescript not available in this location.')
+  }
 
   yargs
     .command(initPomegranate(PomInstance))

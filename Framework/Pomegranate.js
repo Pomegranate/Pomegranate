@@ -52,7 +52,7 @@ function crashedCli(baseDirectory, config) {
     });
 }
 exports.crashedCli = crashedCli;
-function CliData(baseDirectory, config) {
+function RunCLI(baseDirectory, config) {
     return __awaiter(this, void 0, void 0, function* () {
         let FrameworkEvents = new events_1.EventEmitter();
         let RuntimeState = {};
@@ -86,7 +86,7 @@ function CliData(baseDirectory, config) {
         return { Plugins: finalPlugins, Config: FullConfig };
     });
 }
-exports.CliData = CliData;
+exports.RunCLI = RunCLI;
 function Pomegranate(baseDirectory, config) {
     return __awaiter(this, void 0, void 0, function* () {
         let FrameworkEvents = new events_1.EventEmitter();
@@ -222,7 +222,6 @@ function Pomegranate(baseDirectory, config) {
                         }
                         return acc;
                     }), RuntimeState);
-                    console.log(results);
                     LogManager.use('pomegranate').log(`Stop Hooks complete with no errors in  ${frameworkMetrics.stopFrameworkPhase('StopHook')}ms.`, 3);
                     LogManager.use('system').log('Pomegranate finished...', 4);
                     return RuntimeState;

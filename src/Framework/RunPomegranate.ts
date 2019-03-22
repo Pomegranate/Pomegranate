@@ -79,7 +79,6 @@ export const RunPomegranate = async (settings: PomegranateConfiguration, working
   process.on('SIGTERM', HandleSignal('SIGTERM'))
   process.on('uncaughtException', HandleSignal('UncaughtException'))
   process.on('beforeExit', async () => {
-    console.log('before exit')
     if(handled) {
       return
     }

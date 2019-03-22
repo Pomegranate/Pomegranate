@@ -34,7 +34,6 @@ import {ApplicationBuilder, Builder, InjectableBuilder} from "./Plugin/Builders"
 // import {isInjectableBuilder, isApplicationBuilder} from "@pomegranate/plugin-tools";
 
 const parentRequire = function(id) {
-  console.log(id)
   try {
     return require(id)
   }
@@ -44,8 +43,6 @@ const parentRequire = function(id) {
       try {
         return parent.require(id);
       } catch(ex) {
-        console.log(parent)
-        console.log(ex)
       }
     }
     throw new Error("Cannot find module '" + id + "' from parent...");

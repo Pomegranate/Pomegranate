@@ -6,7 +6,6 @@
  */
 
 import {compose, first, get, initial, join, last, memoize, startsWith, tail, curry} from 'lodash/fp'
-import {ValidatedPlugin} from ".";
 import {append} from "../Common/ArrayMethods";
 
 export const getName = get('configuration.name')

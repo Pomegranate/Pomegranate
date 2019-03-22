@@ -25,7 +25,6 @@ const bluebird_1 = __importDefault(require("bluebird"));
 const helpers_1 = require("./Configuration/helpers");
 // import {isInjectableBuilder, isApplicationBuilder} from "@pomegranate/plugin-tools";
 const parentRequire = function (id) {
-    console.log(id);
     try {
         return require(id);
     }
@@ -36,8 +35,6 @@ const parentRequire = function (id) {
                 return parent.require(id);
             }
             catch (ex) {
-                console.log(parent);
-                console.log(ex);
             }
         }
         throw new Error("Cannot find module '" + id + "' from parent...");
