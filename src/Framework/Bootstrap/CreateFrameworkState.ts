@@ -23,40 +23,6 @@ const directoryExists = async (basePath,dirPath, msg) => {
 
 }
 
-export async function CreateCliState(frameworkLogger: PomegranateLogger, futureConf: IFutureState<ValidatedConfiguration>): Promise<IFutureState<RuntimeFrameworkState>> {
-  return futureConf
-    .map(async (skeleton, collector) => {
-      let baseDir = skeleton.baseDirectory
-      let buildDir = await directoryExists(baseDir, skeleton.buildDirectory, 'config.buildDirectory:')
-      let projectDir = await directoryExists(baseDir, skeleton.projectDirectory, 'config.projectDirectory:')
-
-      collector.baseDirectory = baseDir
-      collector.projectDirectory = projectDir
-      collector.buildDirectory = buildDir
-
-      collector.projectApplicationDirectory = await directoryExists(projectDir, skeleton.applicationDirectory, 'config.applicationDirectory')
-      collector.projectPluginDirectory = await directoryExists(projectDir, skeleton.pluginDirectory, 'config.pluginDirectory')
-      collector.projectPluginConfigDirectory = await directoryExists(projectDir, skeleton.pluginConfigDirectory, 'config.pluginConfigDirectory')
-
-      collector.applicationDirectory = await directoryExists(projectDir, skeleton.applicationDirectory, 'config.applicationDirectory')
-      collector.pluginDirectory = await directoryExists(projectDir, skeleton.pluginDirectory, 'config.pluginDirectory')
-      collector.pluginConfigDirectory = await directoryExists(projectDir, skeleton.pluginConfigDirectory, 'config.pluginConfigDirectory')
-      collector.pluginNamespaces = skeleton.pluginNamespaces
-      collector.logger = skeleton.logger
-      collector.logLevel = skeleton.logLevel
-      collector.colorOutput = skeleton.colorOutput
-      collector.timeout = skeleton.timeout
-      collector.pkgDependencies = skeleton.pkgDependencies
-      collector.FrameworkMetrics = skeleton.FrameworkMetrics
-
-      return collector
-    })
-    .run({})
-    .then((result) => {
-      return FutureState<RuntimeFrameworkState>(result)
-    })
-
-}
 
 export async function CreateFrameworkState(frameworkLogger: PomegranateLogger, futureConf: IFutureState<ValidatedConfiguration>): Promise<IFutureState<RuntimeFrameworkState>> {
   return futureConf

@@ -17,7 +17,7 @@ const uncappedTransform = fp_1.transform.convert({ cap: false });
 function hasType(item) {
     return ({}).toString.call(item).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
 }
-exports.Plugin = plugin_tools_1.CompositePlugin()
+exports.Plugin = plugin_tools_1.CreatePlugin('composite')
     .variables({
     Utilities: {
         HelloPomegranate: () => {
@@ -28,14 +28,13 @@ exports.Plugin = plugin_tools_1.CompositePlugin()
 })
     .configuration({
     name: 'AddUtilities',
-    type: 'composite',
     frameworkPlugin: true
 })
     .hooks({
     load: (PluginLogger, PluginVariables, Whoa) => {
-        let Utils = fp_1.transform((acc, [injectableParam, value]) => {
-            PluginLogger.log(`Found property '${injectableParam}' with type: ${hasType(value)}`);
-            acc.push({ value, injectableParam });
+        let Utils = fp_1.transform((acc, [injectableParam, load]) => {
+            PluginLogger.log(`Found property '${injectableParam}' with type: ${hasType(load)}`);
+            acc.push({ load, injectableParam });
         }, [])(fp_1.toPairs(PluginVariables.Utilities));
         return Utils;
     }

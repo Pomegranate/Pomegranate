@@ -73,8 +73,8 @@ export const PomegranateConfig = (searchDirectory, conf: PomegranateConfiguratio
   return conformDeep(configValidator, conf)
 }
 
-export const pluginConfig = (FrameworkState: RuntimeFrameworkState, frameworkInjector: MagnumDI): any => {
-  let configValidator = pluginConfigValidators(FrameworkState, frameworkInjector)
+export const pluginConfig = (FrameworkState: RuntimeFrameworkState, GlobalInjector: MagnumDI): any => {
+  let configValidator = pluginConfigValidators(FrameworkState, GlobalInjector)
   return conformDeep(configValidator)
 }
 

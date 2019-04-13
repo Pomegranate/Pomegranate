@@ -5,10 +5,10 @@
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 
-const {InjectablePlugin} = require('@pomegranate/plugin-tools')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 'use strict';
 
-exports.Plugin = InjectablePlugin({
+exports.Plugin = CreatePlugin({
   configuration: {
     name: 'JsExportsTest',
     type: "action"

@@ -40,7 +40,8 @@ export const pluginTypes = [
   'merge',
   'application',
   'override',
-  'loghandler'
+  'loghandler',
+  'command'
 ]
 
 export type PluginType =
@@ -71,7 +72,7 @@ export interface PluginVariables {
 
 export interface PluginConfiguration {
   fqn?: string[]
-  name: string | string[]
+  name: string[]
   type: PluginType
   frameworkPlugin: boolean
   parents?: string[]
@@ -134,4 +135,5 @@ export interface ComposedPlugin extends  ValidatedPlugin {
  projectDirectories: any
  injector: MagnumDI,
  missingDependencies: string[]
+ application?: boolean
 }

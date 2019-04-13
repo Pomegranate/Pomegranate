@@ -1,8 +1,8 @@
 'use strict';
-const {InjectablePlugin, ApplicationPlugin} = require('../../../../../Framework/Plugin/Builders')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 const {strictEqual, equal, ok} = require('assert')
 
-exports.Plugin = InjectablePlugin({
+exports.Plugin = CreatePlugin({
   configuration: {
     name: 'A',
     injectableParam: 'Merger',
@@ -21,25 +21,3 @@ exports.Plugin = InjectablePlugin({
     }
   }
 })
-exports.variables = {};
-// exports.directories = ['stuff', 'other/stuff'];
-exports.directories = [];
-
-exports.configuration = {
-  name: 'A',
-  injectableParam: 'Merger',
-  type: 'merge',
-  depends: ['B']
-};
-exports.hooks = {
-  load: async (PluginLogger, PluginVariables, Z, PluginStore, Merger) => {
-
-    strictEqual(Merger.C, 'C')
-    strictEqual(Merger.B, 'B')
-    return {A: 'A'}
-  },
-  start: (PluginLogger, Merger, PluginStore, PluginLateError) => {
-    strictEqual(Merger.A, 'A')
-  }
-}
-exports.commands = {};

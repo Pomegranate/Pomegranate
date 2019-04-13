@@ -1,6 +1,6 @@
 import { RuntimeFrameworkState } from "../index";
 import { MagnumDI } from "magnum-di";
-export declare const pluginConfigValidators: (FrameworkState: RuntimeFrameworkState, PluginInjector: MagnumDI) => {
+export declare const pluginConfigValidators: (FrameworkState: RuntimeFrameworkState, GlobalInjector: MagnumDI) => {
     variables: (variables: any, srcPlugin: any) => Promise<any>;
     overrides: (overrides: any, srcPlugin: any) => any;
     installs: (installs: any, srcPlugin: any) => any;
@@ -10,13 +10,14 @@ export declare const pluginConfigValidators: (FrameworkState: RuntimeFrameworkSt
         name: (name: any, srcPlugin: any) => any[] | Error;
         type: (type: any, srcPlugin: any) => any;
         injectableParam: (injectableParam: any, srcPlugin: any) => any;
+        injectableScope: (injectableScope: any, srcPlugin: any) => any;
         frameworkPlugin: (frameworkPlugin: any) => any;
         depends: (depends: any) => any[] | Error;
         provides: (provides: any) => any[] | Error;
         optional: (optional: any) => any[] | Error;
     };
     hooks: {
-        load: (hook: any) => Error | ((...args: any[]) => any);
+        load: (hook: any, srcPlugin: any) => Error | ((...args: any[]) => any);
         start: (hook: any, srcPlugin: any) => (...args: any[]) => any;
         stop: (hook: any, srcPlugin: any) => (...args: any[]) => any;
     };
@@ -25,6 +26,7 @@ export declare const pluginConfigValidators: (FrameworkState: RuntimeFrameworkSt
     loadSrc: import("lodash/fp").LodashIdentity;
     moduleSrc: import("lodash/fp").LodashIdentity;
     parents: import("lodash/fp").LodashIdentity;
+    application: (application: any, src: any) => boolean;
     baseDirectory: (_: any) => string;
     projectDirectory: (_: any) => string;
     buildDirectory: (_: any) => string;

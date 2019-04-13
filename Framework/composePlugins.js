@@ -31,6 +31,7 @@ exports.composePlugins = (pomConf, LogManager, frameworkMetrics, loggerFactory, 
         frameworkOutputs_1.rightBar(LogManager.use('system')).run({ msg: 'Initializing Plugins.' });
         frameworkMetrics.startFrameworkPhase('InitializePlugins');
         return bluebird_1.default.map(skeletons, (skeleton) => {
+            // console.log(skeleton)
             let PluginName = helpers_2.getFqShortname(skeleton);
             let pullProp = helpers_2.configObjectPath(skeleton);
             pomConf.FrameworkMetrics.startPluginPhase(PluginName, 'initialize');

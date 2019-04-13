@@ -35,12 +35,12 @@ export type StructuralPlugin = 'StructuralPlugin'
 
 
 export interface Builder {
-  builderType: string,
+  builder: string,
   state: any
 }
 
 export interface ApplicationBuilder extends Builder {
-  builderType: ApplicationPlugin
+  builder: ApplicationPlugin
 }
 
 export interface InjectableBuilder extends Builder {

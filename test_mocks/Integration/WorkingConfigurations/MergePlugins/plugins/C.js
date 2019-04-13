@@ -4,10 +4,10 @@
  * @project @framework
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-const {InjectablePlugin, ApplicationPlugin} = require('../../../../../Framework/Plugin/Builders')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 const {strictEqual, equal, ok} = require('assert')
 
-exports.Plugin = InjectablePlugin({
+exports.Plugin = CreatePlugin({
   configuration: {
     name: 'C',
     injectableParam: 'Merger',
@@ -25,23 +25,3 @@ exports.Plugin = InjectablePlugin({
   }
 }
 })
-
-exports.variables = {};
-exports.directories = [];
-exports.configuration = {
-  name: 'C',
-  injectableParam: 'Merger',
-  type: 'merge',
-  depends: []
-};
-exports.hooks = {
-  load: (PluginLogger, PluginVariables, Merger) => {
-
-    strictEqual(Merger, null)
-    return {C: 'C'}
-  },
-  start: (PluginLogger, Merger, PluginStore, PluginLateError) => {
-    strictEqual(Merger.C, 'C')
-  }
-}
-exports.commands = {};

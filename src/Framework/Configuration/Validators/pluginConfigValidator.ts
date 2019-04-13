@@ -31,12 +31,12 @@ import {MagnumDI} from "magnum-di";
 
 const hasHookFuns = hasKeysWith(['load', 'start', 'stop'], isFunction)
 
+const isCommand = matchesProperty('configuration.type', 'command')
 const isOverride = matchesProperty('configuration.type', 'override')
 const isInstaller = matchesProperty('configuration.type', 'installer')
 
 
 const isNullOrUndefined = v => (isNull(v) || isUndefined(v))
-
 
 const defaultArrayFromNull = (mayBeArr: any[], errmsg: string) => {
   return isNull(mayBeArr) ? [] : isArray(mayBeArr) ? compact(mayBeArr) : new Error(errmsg)
@@ -50,6 +50,11 @@ const getNamespace = (srcConfig) => {
 const mustHaveInjectable = ['anything', 'factory', 'instance', 'merge']
 const requiresInjectableParam = (srcPlugin) => {
   return includes(srcPlugin.configuration.type,mustHaveInjectable)
+}
+
+const mustHaveInjectableScope = ['global', 'namespace', 'application']
+const hasValidInjectableScope = (injectableScope: string) => {
+  return includes(injectableScope, mustHaveInjectableScope)
 }
 
 const validateInjectableParam = (injectableParam, errMsg) => {
@@ -68,7 +73,7 @@ const getConfigMeta = memoize((srcPlugin) => {
   return {loadSource, moduleName, pluginName, pluginType}
 })
 
-export const pluginConfigValidators = (FrameworkState: RuntimeFrameworkState, PluginInjector: MagnumDI) => {
+export const pluginConfigValidators = (FrameworkState: RuntimeFrameworkState, GlobalInjector: MagnumDI) => {
   return {
     variables: async (variables, srcPlugin) => {
 
@@ -133,6 +138,16 @@ export const pluginConfigValidators = (FrameworkState: RuntimeFrameworkState, Pl
 
         return injectableParam
       },
+      injectableScope: (injectableScope, srcPlugin) => {
+
+        let scope = !injectableScope ?
+          'global' :
+          hasValidInjectableScope(injectableScope) ?
+            injectableScope :
+            new Error('config.injectableScope must be either "global", "namespace", or "application"')
+
+        return scope
+      },
       frameworkPlugin: (frameworkPlugin) => {
         return frameworkPlugin
       },
@@ -141,8 +156,8 @@ export const pluginConfigValidators = (FrameworkState: RuntimeFrameworkState, Pl
       optional: (optional) => defaultArrayFromNull(optional, 'configuration.optional must be string[]'),
     },
     hooks: {
-      load: (hook) => {
-        return isFunction(hook) ? hook : new Error('Load Hook must be a function.')
+      load: (hook, srcPlugin) => {
+        return isFunction(hook) ? hook : isCommand(srcPlugin) ? () => {}: new Error(`Load Hook must be a function.`)
       },
       start: (hook,srcPlugin) => {
         return isFunction(hook) ? hook : isOverride(srcPlugin) ? null : () => {}
@@ -158,6 +173,9 @@ export const pluginConfigValidators = (FrameworkState: RuntimeFrameworkState, Pl
     loadSrc: identity,
     moduleSrc: identity,
     parents: identity,
+    application: (application, src) => {
+      return application ? true : false
+    },
     baseDirectory: _ => normalize(FrameworkState.baseDirectory),
     projectDirectory: _ => normalize(FrameworkState.projectDirectory),
     buildDirectory: _ => normalize(FrameworkState.buildDirectory),

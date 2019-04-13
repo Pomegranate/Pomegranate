@@ -24,6 +24,7 @@ export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogM
     rightBar(LogManager.use('system')).run({msg: 'Initializing Plugins.'})
     frameworkMetrics.startFrameworkPhase('InitializePlugins')
     return Bluebird.map(skeletons, (skeleton: ValidatedPlugin) => {
+      // console.log(skeleton)
       let PluginName = getFqShortname(skeleton)
       let pullProp = configObjectPath(skeleton)
 

@@ -1,6 +1,6 @@
-const {InjectablePlugin, ApplicationPlugin} = require('@pomegranate/plugin-tools')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 const {strictEqual} = require('assert')
-let Plugin1 = InjectablePlugin({
+let Plugin1 = CreatePlugin({
   variables: {},
   directories: ['Multiple1-work'],
   configuration: {
@@ -18,7 +18,7 @@ let Plugin1 = InjectablePlugin({
   commands: {}
 })
 
-let Plugin2 = InjectablePlugin({
+let Plugin2 = CreatePlugin({
   variables: {},
   directories: [],
   configuration: {
@@ -35,7 +35,7 @@ let Plugin2 = InjectablePlugin({
   commands: {}
 })
 
-let Plugin3 = InjectablePlugin({
+let Plugin3 = CreatePlugin({
   variables: {},
   directories: [],
   configuration: {
@@ -53,10 +53,9 @@ let Plugin3 = InjectablePlugin({
 })
 
 
-exports.Plugin = ApplicationPlugin()
+exports.Plugin = CreatePlugin('application')
   .configuration({
     name: 'MultiplePlugin',
-    type: 'application'
   })
   .applicationPlugins([
     Plugin1,

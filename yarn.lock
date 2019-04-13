@@ -18,11 +18,13 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@pomegranate/plugin-tools@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-tools/-/plugin-tools-0.0.9.tgz#01957be1578227314727c095d45bb5f1ca30e96c"
-  integrity sha512-isU83J+X1x/XsH1OkPEaFjQR5REURW0/q0TdOt78ENZyzmXNfh49pqhPH27LQfjkLwUZR8eVDTBEgRTdmth2dA==
+"@pomegranate/plugin-tools@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-tools/-/plugin-tools-1.2.2.tgz#4d84adcf50acdbae89572c99137c5c3315c70533"
+  integrity sha512-9jz6Q02tCjMq/2Dxd8doaOzVJGUup9xq67R82FvQykEEoB0+GiRKSX6DoXTO17C3/duneU4a9q4L1zFEifs1yA==
   dependencies:
+    bluebird "^3.5.3"
+    fs-extra "^7.0.1"
     lodash "^4.17.11"
 
 "@types/bluebird@^3.5.23":
@@ -1179,7 +1181,7 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
-fs-extra@^7.0.0:
+fs-extra@^7.0.0, fs-extra@^7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-7.0.1.tgz#4f189c44aa123b895f722804f55ea23eadc348e9"
   integrity sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==
@@ -2363,10 +2365,10 @@ lru-cache@^4.0.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
-magnum-di@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/magnum-di/-/magnum-di-4.2.0.tgz#b1df2d53a4e976a653878bfbcc2a7704ecf9ee58"
-  integrity sha512-Djwkw4rBdeBBOsGKfbnrHmUIh3nS2QmIasnGL+T3C9GhbcxyrNp70OQFEIiguMu9PaaOi+fynUO2vPpPTcYqmg==
+magnum-di@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/magnum-di/-/magnum-di-6.0.0.tgz#9fe9d37d3408d7dcf8c088825713cf08d3179af7"
+  integrity sha512-6QQ3HqairGZK0Vlwrc2z0wCHZkX1Qqv42fJJ7vpGCWpGiXaYDet+RVZQBM7jtLWkEf9eDQiCpxPQy5caFylOpQ==
   dependencies:
     debug "^2.2.0"
     esprima "^4.0.0"

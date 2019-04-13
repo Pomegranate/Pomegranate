@@ -5,7 +5,7 @@
  * @project @framework
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-import {filter, map, find, merge, negate, isNull, toPairs, fromPairs, pickBy} from 'lodash/fp'
+import {filter, map, find, merge, negate, isNull, toPairs, fromPairs, pickBy, matchesProperty} from 'lodash/fp'
 import {EventEmitter} from 'events'
 
 import {DLinkedList} from "immutable-dll";
@@ -19,9 +19,25 @@ import {composeHookRunners} from "./Plugin/runHook";
 import {rightBar} from "./Common/frameworkOutputs";
 import {getFqShortname, joinFqShortname} from "./Plugin/helpers";
 import {RuntimeFrameworkState} from "./Configuration";
+import {pluralizer} from "./Common/stringFuns";
 
+import * as Handlebars from 'handlebars'
 
-import {Configure, CreateFrameworkState, LoadPlugins, ValidatePlugins, EnsureResources,OverridePlugins,PopulateInjectors, PopulateCliInjectors,OrderPlugins } from './Bootstrap'
+const pluginPluralizer = pluralizer({negative: 'plugins',zero: 'plugins', many: 'plugins', one: 'plugin'})
+
+const isCommand = matchesProperty('configuration.type', 'command')
+
+import {
+  Configure,
+  CreateFrameworkState,
+  LoadPlugins,
+  ValidatePlugins,
+  EnsureResources,
+  OverridePlugins,
+  PopulateInjectors,
+  PopulateCliInjectors,
+  OrderPlugins,
+} from './Bootstrap'
 import {IFutureState} from "./Common/FutureState";
 
 export interface PomegranateRuntime {
@@ -39,29 +55,16 @@ async function installPlugins(plugins: ComposedPlugin[]) {
   }, plugins)
 }
 
-export async function crashedCli(baseDirectory: string, config: PomegranateConfiguration){
-  let FrameworkEvents = new EventEmitter()
-  let RuntimeState = <any>{}
-  let PluginInjector = new MagnumDI()
-  PluginInjector.service('Env', process.env)
-  let frameworkMetrics = FrameworkMetrics()
-  /*
-   * Loads and validates the application config, creates the pomegranate framework logger.
-   */
-  const {PomConfig,FrameworkConfiguration, loggerFactory, frameworkLogger, systemLogger, LogManager} = await Configure(frameworkMetrics, baseDirectory, config)
-  const FutureFrameworkState: IFutureState<RuntimeFrameworkState> = await CreateFrameworkState(frameworkLogger, FrameworkConfiguration)
-  const FrameworkState = await FutureFrameworkState.getState()
 
-  let FullConfig = await updateFrameworkMeta(LogManager, frameworkMetrics, FutureFrameworkState, [])
 
-  return {Plugins: [], Config: FullConfig}
-}
 
 export async function RunCLI(baseDirectory: string, config: PomegranateConfiguration){
   let FrameworkEvents = new EventEmitter()
   let RuntimeState = <any>{}
-  let PluginInjector = new MagnumDI()
-  PluginInjector.service('Env', process.env)
+  let GlobalInjector = new MagnumDI()
+
+  GlobalInjector.anything('Env', process.env)
+  GlobalInjector.anything('Handlebars', Handlebars)
   let frameworkMetrics = FrameworkMetrics()
   /*
    * Loads and validates the application config, creates the pomegranate framework logger.
@@ -78,20 +81,21 @@ export async function RunCLI(baseDirectory: string, config: PomegranateConfigura
   /*
    * Validates plugin types, values and usage constraints.
    */
-  let validatedPlugins = await ValidatePlugins(FrameworkState, LogManager, PluginInjector, loadedPlugins)
+  let validatedPlugins = await ValidatePlugins(FrameworkState, LogManager, GlobalInjector, loadedPlugins)
 
   /*
    * Extract global configuration data from all plugins, including the master required plugin array.
    */
   let FullConfig = await updateFrameworkMeta(LogManager, frameworkMetrics, FutureFrameworkState, validatedPlugins)
 
+  GlobalInjector.anything('PomConfig', FullConfig)
   /*
    * Updates plugins with global state. Attaches all needed properties for downstream use.
    */
-  let compPlugins = composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, PluginInjector)
+  let compPlugins = composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, GlobalInjector)
   let composed = await compPlugins(validatedPlugins)
 
-  let finalPlugins = PopulateCliInjectors(PluginInjector, composed)
+  let finalPlugins = PopulateCliInjectors(GlobalInjector, composed)
 
   return {Plugins: finalPlugins, Config: FullConfig}
 }
@@ -99,9 +103,15 @@ export async function RunCLI(baseDirectory: string, config: PomegranateConfigura
 
 export async function Pomegranate(baseDirectory: string, config: PomegranateConfiguration): Promise<PomegranateRuntime> {
   let FrameworkEvents = new EventEmitter()
-  let RuntimeState = <any>{}
-  let PluginInjector = new MagnumDI()
-  PluginInjector.service('Env', process.env)
+  let RuntimeState = <any>{
+    loadedPlugins: [],
+    startedPlugins: [],
+    stoppedPlugins: [],
+    isFailed: false,
+    failureError: null
+  }
+  let GlobalInjector = new MagnumDI()
+  GlobalInjector.anything('Env', process.env)
   let frameworkMetrics = FrameworkMetrics()
 
   /*
@@ -117,28 +127,30 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
   /*
    * Loads plugins from all sources: Framework, Local and Namespaced.
    */
-  let loadedPlugins = await LoadPlugins(FrameworkState, LogManager)
-
+  let allPlugins = await LoadPlugins(FrameworkState, LogManager)
+  let loadedPlugins = filter((plugin) => {
+    return !isCommand(plugin)
+  }, allPlugins)
   /*
    * Validates plugin types, values and usage constraints.
    */
-  let validatedPlugins = await ValidatePlugins(FrameworkState, LogManager, PluginInjector, loadedPlugins )
+  let validatedPlugins = await ValidatePlugins(FrameworkState, LogManager, GlobalInjector, loadedPlugins )
 
   /*
    * Extract global configuration data from all plugins, including the master required plugin array.
    */
   let FullConfig = await updateFrameworkMeta(LogManager, frameworkMetrics, FutureFrameworkState, validatedPlugins)
-
+  GlobalInjector.anything('PomConfig', FullConfig)
   /*
    * Updates plugins with global state. Attaches all needed properties for downstream use.
    */
-  let compPlugins = composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, PluginInjector)
+  let compPlugins = composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, GlobalInjector)
   let composed = await compPlugins(validatedPlugins)
 
   /*
    * Validate our current plugins, load config files, ensure directories are available.
    */
-  let ensure = EnsureResources(PomConfig, LogManager, frameworkMetrics, PluginInjector)
+  let ensure = EnsureResources(PomConfig, LogManager, frameworkMetrics, GlobalInjector)
   let resourcesEnsured = await ensure(composed)
 
 
@@ -150,7 +162,7 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
   /*
    * Create and populate Magnum-Di child injectors for each plugin.
    */
-  let finalPlugins = PopulateInjectors(LogManager, frameworkMetrics,PluginInjector, FrameworkEvents, readyPlugins)
+  let finalPlugins = PopulateInjectors(LogManager, frameworkMetrics,GlobalInjector, FrameworkEvents, readyPlugins)
 
 
   /**
@@ -165,12 +177,11 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
 
 
   let orderedPlugins = OrderPlugins(LogManager, frameworkMetrics,finalPlugins)
-
   // Create the Doubly linked list.
   let PList = DLinkedList.fromArray<ComposedPlugin>(orderedPlugins)
 
-  let {runLoadHook, runStartHook, runStopHook} = composeHookRunners(PomConfig, LogManager,PluginInjector)
-  LogManager.use('system').log('Pomegranate Ready.')
+  let {runLoadHook, runStartHook, runStopHook} = composeHookRunners(PomConfig, LogManager,GlobalInjector)
+  LogManager.use('system').log('Pomegranate Ready.', 2)
 
   return {
     events: FrameworkEvents,
@@ -189,14 +200,20 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
         }, RuntimeState)
 
         LogManager.use('pomegranate').log(`Load Hooks complete with no errors in  ${frameworkMetrics.stopFrameworkPhase('LoadHook')}ms.`, 3)
-        LogManager.use('system').log('Pomegranate loaded...',4 )
+        LogManager.use('system').log('Pomegranate loaded...',2 )
         return RuntimeState
       } catch (e) {
-        console.log(e)
-        console.log(e.message)
+
+        RuntimeState.isFailed = true
+        RuntimeState.failureError = e
+        LogManager.use('pomegranate').error(e.message, 0)
+        return RuntimeState
       }
     },
     start: async function runStartHooks() {
+      if(RuntimeState.isFailed){
+        return RuntimeState
+      }
       try {
         rightBar(LogManager.use('system')).run({msg: 'Running Start hooks.'})
         frameworkMetrics.startFrameworkPhase('StartHook')
@@ -219,17 +236,21 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
         }, RuntimeState)
 
         if(RuntimeState.startError){
+          RuntimeState.isFailed = true
+          LogManager.use('pomegranate').error(RuntimeState.startError, 0)
           frameworkLogger.error(`${RuntimeState.startFailed.join()} failed on Start hook.`, 0)
-          frameworkLogger.error('Stop hooks running automatically on started plugins.', 0)
-          return this.stop()
-          // return RuntimeState
+          // frameworkLogger.error('Stop hooks running automatically on started plugins.', 0)
+          // return this.stop()
+          return RuntimeState
         }
 
         LogManager.use('pomegranate').log(`Start Hooks complete with no errors in  ${frameworkMetrics.stopFrameworkPhase('StartHook')}ms.`, 3)
-        LogManager.use('system').log('Pomegranate started...',4 )
+        LogManager.use('system').log('Pomegranate started...',2 )
         return RuntimeState
       } catch (e) {
-        console.log(e.message)
+        RuntimeState.isFailed = true
+        RuntimeState.failureError = e
+        return RuntimeState
       }
     },
     stop: async function runStopHooks() {
@@ -241,6 +262,8 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
         return RuntimeState.startedPlugins.indexOf(getFqShortname(p)) >= 0
       })
 
+      let startedCount = startedPlugins.length
+      LogManager.use('pomegranate').log(`Stopping ${startedCount} ${pluginPluralizer(startedCount)}.`, 3)
       let results = await startedPlugins.asyncReduceRight(async (acc, composedPlugin) => {
         try {
           let result = await runStopHook(composedPlugin);
@@ -254,7 +277,7 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
       }, RuntimeState)
 
       LogManager.use('pomegranate').log(`Stop Hooks complete with no errors in  ${frameworkMetrics.stopFrameworkPhase('StopHook')}ms.`, 3)
-      LogManager.use('system').log('Pomegranate finished...', 4)
+      LogManager.use('system').log('Pomegranate finished...', 2)
       return RuntimeState
     }
   }

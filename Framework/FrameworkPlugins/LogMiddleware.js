@@ -11,11 +11,10 @@ const plugin_tools_1 = require("@pomegranate/plugin-tools");
  *
  * @module LoggingMiddleware
  */
-exports.Plugin = plugin_tools_1.InjectablePlugin()
+exports.Plugin = plugin_tools_1.CreatePlugin('merge')
     .variables({})
     .configuration({
     name: 'LoggingMiddleware',
-    type: 'merge',
     injectableParam: 'LogMiddleware',
     frameworkPlugin: true
 })

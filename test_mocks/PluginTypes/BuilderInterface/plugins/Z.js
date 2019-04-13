@@ -1,5 +1,5 @@
 "use strict";
-const {InjectablePlugin} = require('@pomegranate/plugin-tools')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 const {strictEqual, equal, ok} = require('assert')
 
 // exports.variables = {a: 1, b: 2};
@@ -18,12 +18,11 @@ const {strictEqual, equal, ok} = require('assert')
 // }
 // exports.commands = {};
 
-exports.Plugin = InjectablePlugin()
+exports.Plugin = CreatePlugin('anything')
   .variables({a: 1})
   .configuration({
     name: 'Z',
-    injectableParam: 'Z',
-    type: 'anything'
+    injectableParam: 'Z'
   })
   .hooks({
     load: async (PluginLogger, PluginVariables, PluginTimer) => {

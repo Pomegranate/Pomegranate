@@ -10,8 +10,8 @@ import {RequirePlugins} from "../RequirePlugins";
 import {rightBar} from "../Common/frameworkOutputs";
 import {LogManager} from "../FrameworkLogger/LogManager";
 
-export async function LoadPlugins(PomConfig: RuntimeFrameworkState, LogManager: LogManager) {
 
+export async function LoadPlugins(PomConfig: RuntimeFrameworkState, LogManager: LogManager) {
   try {
     rightBar(LogManager.use('system')).run({msg: 'Discovering plugin modules.'})
     PomConfig.FrameworkMetrics.startFrameworkPhase('LoadPlugins')

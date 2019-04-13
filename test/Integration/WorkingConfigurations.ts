@@ -4,7 +4,7 @@
  * @project @framework
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-import {RunPomegranate} from "../../src";
+import {Run} from "../../src";
 import {readdirSync} from 'fs-extra'
 import {join} from 'path'
 import {normalize} from 'path'
@@ -17,7 +17,7 @@ describe('Pomegranate Functionality', () => {
     test(filePath, async () => {
       let AppDirectory =  join(mockDirectory, filePath)
       let settings = require(join(AppDirectory, 'PomegranateSettings.js'))
-      let Pom = await RunPomegranate(settings, AppDirectory)
+      let Pom = await Run(settings, AppDirectory)
       await Pom.start()
       await Pom.stop()
     })

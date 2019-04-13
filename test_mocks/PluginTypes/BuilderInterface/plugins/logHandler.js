@@ -1,13 +1,12 @@
 'use strict';
 
-const {LoghandlerPlugin} = require('@pomegranate/plugin-tools')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 const {strictEqual, equal, ok} = require('assert')
 
-exports.Plugin = LoghandlerPlugin()
+exports.Plugin = CreatePlugin('loghandler')
   .variables({a: 1})
   .configuration({
-    name: 'LogHandler',
-    type: 'loghandler'
+    name: 'LogHandler'
   })
   .hooks({
     load: async (PluginLogger, PluginVariables, PluginTimer) => {

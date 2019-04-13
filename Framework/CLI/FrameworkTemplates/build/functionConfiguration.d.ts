@@ -1,1 +1,0 @@
-export declare const template = "/*\n * Runtime settings for plugin: {{configName}}\n *\n * Created On: {{configDate}}\n *\n * The Env parameter in the function below refers to process.env\n * feel free to use it as such.\n */\n\nmodule.exports = function(Env){\n  return {{{configObject}}}\n}\n";

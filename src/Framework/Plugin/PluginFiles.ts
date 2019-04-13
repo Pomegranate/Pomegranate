@@ -5,16 +5,24 @@
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 
-import {reduce, toPairs} from 'lodash/fp'
-import {PluginFileHandler} from "../FileHelpers";
+import {map, reduce, toPairs} from 'lodash/fp'
+// import {PluginFileHandler} from "../FileHelpers";
+import {PluginFileHandler} from "@pomegranate/plugin-tools";
 
-export const PluginFilesFactory = (dirs:any) => {
-  let arr = toPairs(dirs)
+export const PluginFilesFactory = (plugin:any) => {
+  let runtimeDirs = plugin.runtimeDirectories
+  let projectDirs = plugin.projectDirectories
+  let runtimePaths = toPairs(runtimeDirs)
 
-  let pluginDirs = reduce((obj, [key, path]) => {
-    obj[key] = PluginFileHandler(path)
+  let paths = map(([key, path]: [string, string]) => {
+    return [key, {runtimeDir: path, projectDir: projectDirs[key]}]
+  }, runtimePaths)
+
+  let pluginDirs = reduce((obj, [key, {runtimeDir, projectDir}]: [string, {runtimeDir: string, projectDir: string}]) => {
+    obj[key] = PluginFileHandler(runtimeDir, projectDir)
     return obj
-  }, {}, arr)
+  }, {}, paths)
+
   return function (prop: string) {
     let fileHandlers = pluginDirs[prop]
     if(fileHandlers){

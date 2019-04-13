@@ -9,27 +9,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fp_1 = require("lodash/fp");
 const Timers_1 = require("../Plugin/Timers");
 const PluginFiles_1 = require("../Plugin/PluginFiles");
-const helpers_1 = require("../Plugin/helpers");
 const frameworkOutputs_1 = require("../Common/frameworkOutputs");
-exports.PopulateInjectors = (LogManager, frameworkMetrics, PluginDI, FrameworkEvents, composed) => {
+const plugin_tools_1 = require("@pomegranate/plugin-tools");
+exports.PopulateInjectors = (LogManager, frameworkMetrics, GlobalInjector, FrameworkEvents, composed) => {
     frameworkOutputs_1.rightBar(LogManager.use('system')).run({ msg: 'Populating Plugin child injectors' });
     frameworkMetrics.startFrameworkPhase('PopulateInjectors');
     let results = fp_1.map((plugin) => {
-        let PluginName = helpers_1.getFqShortname(plugin);
+        let ParentName = plugin_tools_1.getFqParentname(plugin);
+        let PluginName = plugin_tools_1.getFqShortname(plugin);
         plugin.logger.log('Populating Child injector.');
-        let ChildInjector = PluginDI.createChild();
-        ChildInjector.service('PluginStore', {});
-        ChildInjector.service('PluginVariables', plugin.runtimeVariables);
-        ChildInjector.service('PluginLogger', plugin.logger);
-        ChildInjector.service('PluginTimer', Timers_1.PluginTimer(plugin.logger, plugin.timeout));
-        ChildInjector.service('PluginLateError', (error) => {
+        let ChildInjector = GlobalInjector.createChain(plugin_tools_1.getFqn(plugin));
+        ChildInjector.anything('PluginStore', {});
+        ChildInjector.anything('PluginVariables', plugin.runtimeVariables);
+        ChildInjector.anything('PluginLogger', plugin.logger);
+        ChildInjector.anything('PluginTimer', Timers_1.PluginTimer(plugin.logger, plugin.timeout));
+        ChildInjector.anything('PluginLateError', (error) => {
             plugin.logger.error('Encountered a late error.');
             plugin.logger.error(error);
             FrameworkEvents.emit('lateError', { name: PluginName });
         });
         if (plugin.runtimeDirectories) {
             plugin.logger.log(`Has directories, adding PluginFiles to the injector.`);
-            ChildInjector.service('PluginFiles', PluginFiles_1.PluginFilesFactory(plugin.runtimeDirectories));
+            ChildInjector.anything('PluginFiles', PluginFiles_1.PluginFilesFactory(plugin));
         }
         plugin.injector = ChildInjector;
         return plugin;

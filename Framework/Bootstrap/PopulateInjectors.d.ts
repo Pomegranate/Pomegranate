@@ -9,4 +9,4 @@ import { MagnumDI } from "magnum-di";
 import { ComposedPlugin } from "../Plugin";
 import { EventEmitter } from 'events';
 import { LogManager } from "../FrameworkLogger/LogManager";
-export declare const PopulateInjectors: (LogManager: LogManager, frameworkMetrics: any, PluginDI: MagnumDI, FrameworkEvents: EventEmitter, composed: ComposedPlugin[]) => ComposedPlugin[];
+export declare const PopulateInjectors: (LogManager: LogManager, frameworkMetrics: any, GlobalInjector: MagnumDI, FrameworkEvents: EventEmitter, composed: ComposedPlugin[]) => ComposedPlugin[];

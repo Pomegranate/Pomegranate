@@ -6,9 +6,9 @@
  */
 
 'use strict';
-const {InjectablePlugin, ApplicationPlugin} = require('@pomegranate/plugin-tools')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 
-let external1 = InjectablePlugin({
+let external1 = CreatePlugin({
   variables: {name: 'external1'},
   directories: ['External1-work'],
   configuration: {
@@ -24,7 +24,7 @@ let external1 = InjectablePlugin({
   },
   commands: {}
 })
-let external2 = InjectablePlugin({
+let external2 = CreatePlugin({
   variables: {},
   directories: ['External2-work'],
   configuration: {
@@ -41,13 +41,13 @@ let external2 = InjectablePlugin({
   commands: {}
 })
 
-let external3 = ApplicationPlugin({
+let external3 = CreatePlugin({
   configuration: {
     name: 'External3',
     type: "application",
   },
   applicationPlugins: [
-    InjectablePlugin({
+    CreatePlugin({
       variables: {},
       directories: ['ExternalChild1-work'],
       configuration: {
@@ -63,7 +63,7 @@ let external3 = ApplicationPlugin({
       },
       commands: {}
     }),
-    InjectablePlugin({
+    CreatePlugin({
       variables: {name: 'Child2-default'},
       // directories: [],
       configuration: {
@@ -82,9 +82,8 @@ let external3 = ApplicationPlugin({
   ]
 })
 
-exports.Plugin = ApplicationPlugin().configuration({
-  name: 'ExternalApplication',
-  type: 'application'
+exports.Plugin = CreatePlugin('application').configuration({
+  name: 'ExternalApplication'
 })
 .applicationPlugins([
   external1,

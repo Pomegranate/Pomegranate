@@ -8,4 +8,4 @@
  *
  * @module LoggingMiddleware
  */
-export declare const Plugin: import("@pomegranate/plugin-tools").InjectableBuilder<any>;
+export declare const Plugin: import("@pomegranate/plugin-tools").InjectableBuilder;

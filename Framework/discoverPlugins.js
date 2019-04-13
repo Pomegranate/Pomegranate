@@ -23,7 +23,6 @@ const fs_extra_1 = require("fs-extra");
 const monet_1 = require("monet");
 const bluebird_1 = __importDefault(require("bluebird"));
 const helpers_1 = require("./Configuration/helpers");
-// import {isInjectableBuilder, isApplicationBuilder} from "@pomegranate/plugin-tools";
 const parentRequire = function (id) {
     try {
         return require(id);
@@ -72,10 +71,10 @@ function isSingleExport(plugin) {
     return fp_1.isObject(plugin.plugin);
 }
 function isInjectableBuilder(builder) {
-    return builder.builderType === 'InjectablePlugin';
+    return builder.builder === 'InjectableBuilder';
 }
 function isApplicationBuilder(builder) {
-    return builder.builderType === 'ApplicationPlugin';
+    return builder.builder === 'ApplicationBuilder';
 }
 const unrollWrapper = (ns, loadSrc, moduleSrc) => {
     return (function unroll(parents = []) {
@@ -84,61 +83,22 @@ const unrollWrapper = (ns, loadSrc, moduleSrc) => {
             let plugin = builder.getPlugin();
             if (isApplicationBuilder(plugin)) {
                 parents.push(plugin.state.configuration.name);
-                return fp_1.flattenDeep(fp_1.map(unroll(parents), plugin.state.applicationPlugins));
+                let applicationPlugins = fp_1.map(p => { p.application = true; return p; }, fp_1.flattenDeep(fp_1.map(unroll(parents), plugin.state.applicationPlugins)));
+                return applicationPlugins;
             }
-            // if (isInjectableBuilder(plugin)) {
-            //   let r = Right(plugin.state).map((v) => {
-            //     v.parents = lineage
-            //     v.moduleSrc = moduleSrc
-            //     v.namespace = ns
-            //     v.loadSrc = loadSrc
-            //     return v
-            //   })
-            //     .cata(
-            //       fail => {
-            //         throw fail
-            //       },
-            //       identity
-            //     )
-            //   return [r]
-            // }
             // This is everything but application Plugins
             let r = monet_1.Right(plugin.state).map((v) => {
                 v.parents = lineage;
                 v.moduleSrc = moduleSrc;
                 v.namespace = ns;
                 v.loadSrc = loadSrc;
+                v.application = false;
                 return v;
             })
                 .cata(fail => {
                 throw fail;
             }, fp_1.identity);
             return [r];
-            // if (isApplicationBuilder(plugin)) {
-            //   parents.push(plugin.state.configuration.name)
-            //   return flattenDeep(map(unroll(parents), plugin.state.applicationPlugins))
-            // }
-        };
-    })();
-};
-const unrollPlugin = () => {
-    return (function unroll(parents = []) {
-        let lineage = fp_1.clone(parents);
-        return (plugin) => {
-            if (isApplication(plugin)) {
-                parents.push(plugin.configuration.name);
-                return fp_1.flattenDeep(fp_1.map(unroll(parents), plugin.applicationPlugins));
-            }
-            if (isSingleExport(plugin)) {
-                plugin = plugin.plugin;
-            }
-            if (isStandard(plugin)) {
-            }
-            let m = monet_1.Right(plugin).map((v) => {
-                v.parents = lineage;
-                return v;
-            });
-            return [m];
         };
     })();
 };
@@ -156,44 +116,10 @@ exports.discoverFramework = (plugins) => {
         }, fp_1.identity);
     });
 };
-// export const discoverNamespaced = (dependencies): Bluebird<any[]> => {
-//   let onlyNs = onlyNamespaced(toPairs(dependencies))
-//   return Bluebird.map(onlyNs, (i) => {
-//     let ns = first(i)
-//     let plugin = eitherObjArrayOrErr(require(ns), i)
-//       .cata(
-//         fail => {
-//           throw fail
-//         },
-//         identity
-//       )
-//
-//     let unroll = unrollPlugin()
-//     let unrolled = unroll(plugin)
-//     let unwrapLocal = appendUnwrap(getNamespace(ns), 'namespaced', ns)
-//     return unwrapLocal(unrolled)
-//   })
-//     .then((plugins) => {
-//       return flattenDeep(plugins)
-//     })
-//
-// }
 exports.discoverNamespaced = (dependencies) => {
     let onlyNs = onlyNamespaced(fp_1.toPairs(dependencies));
     return bluebird_1.default.map(onlyNs, (i) => {
         let ns = fp_1.first(i);
-        // let plugin = eitherObjArrayOrErr(require(ns), i)
-        //   .cata(
-        //     fail => {
-        //       throw fail
-        //     },
-        //     identity
-        //   )
-        //
-        // let unroll = unrollPlugin()
-        // let unrolled = unroll(plugin)
-        // let unwrapLocal = appendUnwrap(getNamespace(ns), 'namespaced', ns)
-        // return unwrapLocal(unrolled)
         let plugin = eitherUnwrapOrFail(parentRequire(ns), i)
             .cata(fail => {
             throw fail;

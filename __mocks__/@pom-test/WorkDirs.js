@@ -6,9 +6,9 @@
  */
 
 'use strict';
-const {InjectablePlugin} = require('@pomegranate/plugin-tools')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 
-exports.Plugin = InjectablePlugin({
+exports.Plugin = CreatePlugin({
   variables: {name: 'WorkDirs'},
   directories: ['someDir'],
   configuration: {

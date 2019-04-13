@@ -6,7 +6,7 @@
  */
 
 import {map, every, negate} from 'lodash/fp'
-import {validParameter, reservedWords} from "../../Framework/Common/stringFuns";
+import {validParameter, reservedWords, pluralizer} from "../../src/Framework/Common/stringFuns";
 
 
 describe('String Functions', () => {
@@ -31,5 +31,13 @@ describe('String Functions', () => {
 
     expect(allPassing).toBeTruthy()
     expect(allFailing).toBeTruthy()
+  })
+
+  test('pluralizer', () => {
+    let pluginCount = pluralizer({negative: 'negative',zero: 'zero', many: 'many', one: 'one'})
+    expect(pluginCount(-1)).toEqual('negative')
+    expect(pluginCount(0)).toEqual('zero')
+    expect(pluginCount(1)).toEqual('one')
+    expect(pluginCount(2)).toEqual('many')
   })
 });

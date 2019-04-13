@@ -6,8 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MODULE_VERSIONS = [
-    ['Pomegranate', '7.0.0_beta.1'],
-    ['MagnumDI', '4.2.0'],
+    ['Pomegranate', '7.0.0-beta.4'],
+    ['MagnumDI', '6.0.0'],
     ['Immutable-DLL', '3.0.0']
 ];
 //# sourceMappingURL=__MODULE_VERSIONS.js.map

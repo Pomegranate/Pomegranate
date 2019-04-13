@@ -20,9 +20,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Configuration_1 = require("./Configuration");
 const fp_1 = require("lodash/fp");
 const bluebird_1 = __importDefault(require("bluebird"));
-exports.buildPluginSkeletons = (FrameworkState, LogManager, PluginInjector) => {
+exports.buildCLIPluginSkeletons = (FrameworkState, PluginInjector) => {
     let applicationDirectory = fp_1.get('applicationDirectory', FrameworkState);
     let SkeletonValidator = Configuration_1.pluginConfig(FrameworkState, PluginInjector);
+    return function (skeletons) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return bluebird_1.default.map(skeletons, (p) => {
+                return SkeletonValidator(p);
+            });
+        });
+    };
+};
+exports.buildPluginSkeletons = (FrameworkState, LogManager, GlobalInjector) => {
+    let applicationDirectory = fp_1.get('applicationDirectory', FrameworkState);
+    let SkeletonValidator = Configuration_1.pluginConfig(FrameworkState, GlobalInjector);
     return function (skeletons) {
         return __awaiter(this, void 0, void 0, function* () {
             return bluebird_1.default.map(skeletons, (p) => {

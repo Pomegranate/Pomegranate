@@ -4,7 +4,7 @@
  * @project @framework
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-import {get, map, each, flattenDeep, isFunction} from 'lodash/fp'
+import {get, getOr, map, each, flattenDeep, has, clone, set} from 'lodash/fp'
 import {MagnumDI} from "magnum-di";
 import {ComposedPlugin} from ".";
 import {Defer} from "../Common/Defer";
@@ -14,39 +14,44 @@ import {PomegranateLogger} from "../FrameworkLogger";
 import {LogManager} from "../FrameworkLogger/LogManager";
 import {switchWith} from "lodash-fun";
 
+
+const buildInjectorChain = (plugin: any) => {
+  let ns = get('plugin.namespace', plugin)
+  let parents = get('plugin.parents', plugin)
+  return  ns ? [ns, ...parents] : parents
+
+}
+
+const selectInjector = (GlobalInjector: MagnumDI, plugin): MagnumDI => {
+  let scope = get('plugin.configuration.injectableScope', plugin)
+
+  if(scope === 'global'){
+    return GlobalInjector
+  }
+
+  if(scope === 'namespace'){
+    let ns = get('plugin.namespace', plugin)
+    return ns ? GlobalInjector.findChain([ns]) : GlobalInjector
+  }
+
+  if(scope === 'application'){
+    let chain = buildInjectorChain(plugin)
+    let application = get('plugin.application', plugin)
+    return GlobalInjector.findChain(chain)
+  }
+
+  throw new Error(`Unable to compute and injection scope for this plugin, "config.injectableScope" must be global, namespace, or application
+  If You are seeing this error something serious has gone wrong.`)
+}
+
 let computeCase = get('type')
-
-function composite(plugin, LogManager?) {
-  let injectables = get('result', plugin)
-  return flattenDeep(map((result) => {
-    let type = result.type ? result.type : 'anything'
-    return structure(type, result.injectableParam, result.value)
-  }, injectables))
-}
-
-function injectable(plugin, type){
-  return (parentInjector, LogManager) => {
-    let injectableParam = get('injectableParam', plugin) //?
-    let injectableValue = get('result', plugin)
-    parentInjector[type](injectableParam, injectableValue)
-    return injectableParam
-  }
-}
-
-function loghandler(plugin){
-  return (parentInjector, LogManager) => {
-    let injectableValue = get('result', plugin)
-    LogManager.addHandler(injectableValue)
-    return null
-  }
-}
 
 const typeFuns = {
   action: (v) => {
     return []
   },
   anything: (v) => {
-    return [injectable(v, 'service')]
+    return [injectable(v, 'anything')]
   },
   composite: (v) => {
     return composite(v)
@@ -67,67 +72,81 @@ const typeFuns = {
 
 const handleInjectable = switchWith(computeCase, typeFuns)
 
-function structure(type: any, injectableParam: any, result) {
-  return handleInjectable({type, injectableParam, result})
+function newStructure(pluginData) {
+  return handleInjectable(pluginData)
 }
 
-// export function switchInjectables(type: string, injectableParam: string, value: any) {
-//   switch (type) {
-//     case 'action':
-//       return []
-//     case 'anything':
-//       return [{type: 'service', injectableParam, value}]
-//     case 'composite':
-//       return flattenDeep(map((iResult) => {
-//
-//         let type = iResult.type ? iResult.type : 'anything'
-//         return switchInjectables(type, iResult.injectableParam, iResult.value)
-//       }, value))
-//     case 'factory':
-//       return [{type: 'factory', injectableParam, value}]
-//     case 'instance':
-//       return [{type: 'instance', injectableParam, value}]
-//     case 'merge':
-//       return [{type: 'merge', injectableParam, value}]
-//     case 'loghandler':
-//       return [(LogManager) => {
-//         LogManager.addHandler(value)
-//       }]
-//     default:
-//       throw new Error('Unable to handle this plugins dependency.')
-//
-//   }
-// }
-
-export function structureInjectables(result: any, composedPlugin: ComposedPlugin, pluginLogger: PomegranateLogger, pluginInjector: MagnumDI, LogManager) {
+function structure(composedPlugin: any, result) {
   let type = get('configuration.type', composedPlugin)
-  let injectableParam = get('configuration.injectableParam', composedPlugin)
-  let parentInjector = pluginInjector.getParent(true)
 
-  let toInject = structure(type, injectableParam, result)
-  each((i) => {
-    let addedParam = i(parentInjector, LogManager)
-
-    if(addedParam){
-      composedPlugin.logger.log(`Added ${type} as ${addedParam} to injector.`)
-    }
-  },toInject)
-
-  // console.log(composedPlugin)
-  // let injectables = switchInjectables(type, injectableParam, result)
-  // console.log(injectables)
-  // each((injectable) => {
-  //   if(isFunction(injectable) ){
-  //     injectable(LogManager)
-  //     return
-  //   }
-  //   pluginLogger.log(`Adding ${injectable.type} as ${injectable.injectableParam} to injector.`)
-  //   parentInjector[injectable.type](injectable.injectableParam, injectable.value)
-  // }, injectables)
-  return null
+  return handleInjectable({type, composedPlugin, result})
 }
 
-function composeLoadRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, PluginInjector: MagnumDI) {
+function composite(plugin, LogManager?) {
+  // console.log(plugin)
+  let injectables = get('hookResult', plugin)
+  return flattenDeep(map((result) => {
+    let type = getOr('anything', 'type', result)
+    let clonePlugin = clone(plugin.plugin)
+    let n = set('configuration.type',type, clonePlugin)
+    let o = set('configuration.injectableParam',get('injectableParam', result),n)
+    let p = set('configuration.injectableScope',getOr('global','injectableScope', result),o)
+
+    let newHandler = {
+      type,
+      plugin: p,
+      hookResult: get('load', result)
+    }
+    return handleInjectable(newHandler)
+  }, injectables))
+}
+
+function injectable(plugin, type) {
+  return (globalInjector, LogManager) => {
+    let injectableParam = get('plugin.configuration.injectableParam', plugin)
+    let injectableValue = get('hookResult', plugin)
+
+    let scopedInjector = selectInjector(globalInjector, plugin)
+    scopedInjector[type](injectableParam, injectableValue)
+    return {type, injectableParam}
+  }
+}
+
+function loghandler(plugin) {
+  return (globalInjector, LogManager) => {
+    let injectableValue = get('hookResult', plugin)
+    LogManager.addHandler(injectableValue)
+    return null
+  }
+}
+
+
+export function placeInjectables(composedPlugin, hookResult, pluginLogger, GlobalInjector: MagnumDI, LogManager) {
+  let type = get('configuration.type', composedPlugin)
+  let data = {
+    type,
+    plugin: {
+      configuration: get('configuration', composedPlugin),
+      parents: get('parents', composedPlugin),
+      namespace: get('namespace', composedPlugin),
+      application: get('application', composedPlugin),
+    },
+    hookResult
+  }
+
+  let toInject = handleInjectable(data)
+  each((i) => {
+    let output = i(GlobalInjector, LogManager)
+    if (output) {
+      composedPlugin.logger.log(`Added ${output.injectableParam} - ${output.type} to injector.`)
+    }
+  }, toInject)
+
+  return null
+
+}
+
+function composeLoadRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, GlobalInjector: MagnumDI) {
   return async function loadRunner(composedPlugin: ComposedPlugin) {
     let pluginName = get('configuration.name', composedPlugin)
     frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'load')
@@ -147,7 +166,8 @@ function composeLoadRunner(frameworkConf: ValidatedConfiguration, LogManager: Lo
     return Bluebird.race([result, racer])
       .then((result) => {
         PluginTimer.reset()
-        return structureInjectables(result, composedPlugin, PluginLogger, ChildInjector, LogManager)
+        return placeInjectables(composedPlugin, result, PluginLogger, GlobalInjector, LogManager)
+        // return structureInjectables(result, composedPlugin, PluginLogger, GlobalInjector, LogManager)
       })
       .then((result) => {
         let elapsed = frameworkConf.FrameworkMetrics.stopPluginPhase(pluginName, 'load')
@@ -157,7 +177,7 @@ function composeLoadRunner(frameworkConf: ValidatedConfiguration, LogManager: Lo
   }
 }
 
-function composeStartRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, PluginInjector: MagnumDI) {
+function composeStartRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, GlobalInjector: MagnumDI) {
   return async function startRunner(composedPlugin: ComposedPlugin) {
     let pluginName = get('configuration.name', composedPlugin)
     frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'start')
@@ -184,7 +204,7 @@ function composeStartRunner(frameworkConf: ValidatedConfiguration, LogManager: L
   }
 }
 
-function composeStopRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, PluginInjector: MagnumDI) {
+function composeStopRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, GlobalInjector: MagnumDI) {
   return async function stopRunner(composedPlugin: ComposedPlugin) {
     let pluginName = get('configuration.name', composedPlugin)
     frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'stop')
@@ -214,12 +234,12 @@ function composeStopRunner(frameworkConf: ValidatedConfiguration, LogManager: Lo
   }
 }
 
-export function composeHookRunners(frameworkConf: ValidatedConfiguration, LogManager: LogManager, PluginInjector: MagnumDI) {
+export function composeHookRunners(frameworkConf: ValidatedConfiguration, LogManager: LogManager, GlobalInjector: MagnumDI) {
 
   return {
-    runLoadHook: composeLoadRunner(frameworkConf, LogManager, PluginInjector),
-    runStartHook: composeStartRunner(frameworkConf, LogManager, PluginInjector),
-    runStopHook: composeStopRunner(frameworkConf, LogManager, PluginInjector)
+    runLoadHook: composeLoadRunner(frameworkConf, LogManager, GlobalInjector),
+    runStartHook: composeStartRunner(frameworkConf, LogManager, GlobalInjector),
+    runStopHook: composeStopRunner(frameworkConf, LogManager, GlobalInjector)
   }
 
 }

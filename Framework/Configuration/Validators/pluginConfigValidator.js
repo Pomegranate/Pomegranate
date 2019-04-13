@@ -14,6 +14,7 @@ const stringFuns_1 = require("../../Common/stringFuns");
 const path_1 = require("path");
 const Plugin_1 = require("../../Plugin");
 const hasHookFuns = lodash_fun_1.hasKeysWith(['load', 'start', 'stop'], fp_1.isFunction);
+const isCommand = fp_1.matchesProperty('configuration.type', 'command');
 const isOverride = fp_1.matchesProperty('configuration.type', 'override');
 const isInstaller = fp_1.matchesProperty('configuration.type', 'installer');
 const isNullOrUndefined = v => (fp_1.isNull(v) || fp_1.isUndefined(v));
@@ -28,6 +29,10 @@ const mustHaveInjectable = ['anything', 'factory', 'instance', 'merge'];
 const requiresInjectableParam = (srcPlugin) => {
     return fp_1.includes(srcPlugin.configuration.type, mustHaveInjectable);
 };
+const mustHaveInjectableScope = ['global', 'namespace', 'application'];
+const hasValidInjectableScope = (injectableScope) => {
+    return fp_1.includes(injectableScope, mustHaveInjectableScope);
+};
 const validateInjectableParam = (injectableParam, errMsg) => {
     return stringFuns_1.validParameter(injectableParam) ? injectableParam : new Error(errMsg);
 };
@@ -41,7 +46,7 @@ const getConfigMeta = fp_1.memoize((srcPlugin) => {
     let pluginType = fp_1.getOr('unknown', 'configuration.type', srcPlugin);
     return { loadSource, moduleName, pluginName, pluginType };
 });
-exports.pluginConfigValidators = (FrameworkState, PluginInjector) => {
+exports.pluginConfigValidators = (FrameworkState, GlobalInjector) => {
     return {
         variables: (variables, srcPlugin) => __awaiter(this, void 0, void 0, function* () {
             // Optional Plugin Parameter.
@@ -100,6 +105,14 @@ exports.pluginConfigValidators = (FrameworkState, PluginInjector) => {
                 }
                 return injectableParam;
             },
+            injectableScope: (injectableScope, srcPlugin) => {
+                let scope = !injectableScope ?
+                    'global' :
+                    hasValidInjectableScope(injectableScope) ?
+                        injectableScope :
+                        new Error('config.injectableScope must be either "global", "namespace", or "application"');
+                return scope;
+            },
             frameworkPlugin: (frameworkPlugin) => {
                 return frameworkPlugin;
             },
@@ -108,8 +121,8 @@ exports.pluginConfigValidators = (FrameworkState, PluginInjector) => {
             optional: (optional) => defaultArrayFromNull(optional, 'configuration.optional must be string[]'),
         },
         hooks: {
-            load: (hook) => {
-                return fp_1.isFunction(hook) ? hook : new Error('Load Hook must be a function.');
+            load: (hook, srcPlugin) => {
+                return fp_1.isFunction(hook) ? hook : isCommand(srcPlugin) ? () => { } : new Error(`Load Hook must be a function.`);
             },
             start: (hook, srcPlugin) => {
                 return fp_1.isFunction(hook) ? hook : isOverride(srcPlugin) ? null : () => { };
@@ -125,6 +138,9 @@ exports.pluginConfigValidators = (FrameworkState, PluginInjector) => {
         loadSrc: fp_1.identity,
         moduleSrc: fp_1.identity,
         parents: fp_1.identity,
+        application: (application, src) => {
+            return application ? true : false;
+        },
         baseDirectory: _ => path_1.normalize(FrameworkState.baseDirectory),
         projectDirectory: _ => path_1.normalize(FrameworkState.projectDirectory),
         buildDirectory: _ => path_1.normalize(FrameworkState.buildDirectory),

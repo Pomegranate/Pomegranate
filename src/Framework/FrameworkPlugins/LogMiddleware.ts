@@ -5,7 +5,7 @@
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 
-import {InjectablePlugin} from "@pomegranate/plugin-tools"
+import {CreatePlugin} from "@pomegranate/plugin-tools"
 
 
 /**
@@ -14,12 +14,11 @@ import {InjectablePlugin} from "@pomegranate/plugin-tools"
  */
 
 
-export const Plugin = InjectablePlugin()
+export const Plugin = CreatePlugin('merge')
   .variables({
   })
   .configuration({
     name: 'LoggingMiddleware',
-    type: 'merge',
     injectableParam: 'LogMiddleware',
     frameworkPlugin: true
   })

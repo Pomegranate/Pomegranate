@@ -11,26 +11,25 @@ import {ComposedPlugin} from "../Plugin";
 import {PluginTimer} from "../Plugin/Timers";
 import {PluginFilesFactory} from "../Plugin/PluginFiles";
 import {EventEmitter} from 'events'
-import {getFqShortname} from "../Plugin/helpers";
+
 import {rightBar} from "../Common/frameworkOutputs";
 import {LogManager} from "../FrameworkLogger/LogManager";
+import {getFqShortname, getFqParentname, getFqn} from "@pomegranate/plugin-tools";
 
-export const PopulateInjectors = (LogManager: LogManager, frameworkMetrics, PluginDI: MagnumDI, FrameworkEvents: EventEmitter, composed: ComposedPlugin[]) => {
+export const PopulateInjectors = (LogManager: LogManager, frameworkMetrics, GlobalInjector: MagnumDI, FrameworkEvents: EventEmitter, composed: ComposedPlugin[]) => {
   rightBar(LogManager.use('system')).run({msg: 'Populating Plugin child injectors'})
   frameworkMetrics.startFrameworkPhase('PopulateInjectors')
 
   let results = map((plugin) => {
+    let ParentName = getFqParentname(plugin)
     let PluginName = getFqShortname(plugin)
     plugin.logger.log('Populating Child injector.')
-    let ChildInjector = PluginDI.createChild()
-
-
-
-    ChildInjector.service('PluginStore', {})
-    ChildInjector.service('PluginVariables', plugin.runtimeVariables)
-    ChildInjector.service('PluginLogger', plugin.logger)
-    ChildInjector.service('PluginTimer', PluginTimer(plugin.logger, plugin.timeout))
-    ChildInjector.service('PluginLateError', (error) => {
+    let ChildInjector = GlobalInjector.createChain(getFqn(plugin))
+    ChildInjector.anything('PluginStore', {})
+    ChildInjector.anything('PluginVariables', plugin.runtimeVariables)
+    ChildInjector.anything('PluginLogger', plugin.logger)
+    ChildInjector.anything('PluginTimer', PluginTimer(plugin.logger, plugin.timeout))
+    ChildInjector.anything('PluginLateError', (error) => {
       plugin.logger.error('Encountered a late error.')
       plugin.logger.error(error)
       FrameworkEvents.emit('lateError', {name: PluginName})
@@ -38,7 +37,7 @@ export const PopulateInjectors = (LogManager: LogManager, frameworkMetrics, Plug
 
     if(plugin.runtimeDirectories){
       plugin.logger.log(`Has directories, adding PluginFiles to the injector.`)
-      ChildInjector.service('PluginFiles', PluginFilesFactory(plugin.runtimeDirectories))
+      ChildInjector.anything('PluginFiles', PluginFilesFactory(plugin))
     }
     plugin.injector = ChildInjector
     return plugin

@@ -17,13 +17,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const buildPluginSkeletons_1 = require("../buildPluginSkeletons");
 const ErrorReporters_1 = require("../Common/ErrorReporters");
 const frameworkOutputs_1 = require("../Common/frameworkOutputs");
-function ValidatePlugins(PomConfig, LogManager, PluginInjector, loadedPlugins) {
+function ValidatePlugins(PomConfig, LogManager, GlobalInjector, loadedPlugins) {
     return __awaiter(this, void 0, void 0, function* () {
         frameworkOutputs_1.rightBar(LogManager.use('system')).run({ msg: 'Validating Plugins' });
         PomConfig.FrameworkMetrics.startFrameworkPhase('CreatePluginValidator');
         function PluginValidator(rawModules) {
             return __awaiter(this, void 0, void 0, function* () {
-                let createSkeletons = buildPluginSkeletons_1.buildPluginSkeletons(PomConfig, LogManager, PluginInjector);
+                let createSkeletons = buildPluginSkeletons_1.buildPluginSkeletons(PomConfig, LogManager, GlobalInjector);
                 let skeletons = yield createSkeletons(rawModules);
                 return skeletons;
             });

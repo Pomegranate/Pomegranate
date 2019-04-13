@@ -5,7 +5,7 @@
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 
-import {includes, negate} from 'lodash/fp'
+import {includes, negate, curry} from 'lodash/fp'
 
 export const reservedWords = [
   'abstract',
@@ -78,3 +78,7 @@ const validParameterRegXp = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
 export const validParameter = (p: string) => {
   return (negate(containsReserved)(p) && validParameterRegXp.test(p))
 }
+
+export const pluralizer = curry(({negative, zero, one, many}: {negative: string, zero: string, one: string, many: string }, count: number) => {
+  return count < 0 ? negative : count > 1 ? many : count ? one : zero
+})

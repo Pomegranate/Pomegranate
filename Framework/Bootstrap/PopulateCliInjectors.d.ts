@@ -6,4 +6,4 @@ import { ComposedPlugin } from "../Plugin";
  * @project @framework
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-export declare const PopulateCliInjectors: (PluginDI: MagnumDI, composed: ComposedPlugin[]) => ComposedPlugin[];
+export declare const PopulateCliInjectors: (GlobalInjector: MagnumDI, composed: ComposedPlugin[]) => ComposedPlugin[];

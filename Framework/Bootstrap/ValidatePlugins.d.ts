@@ -7,4 +7,4 @@
 import { RuntimeFrameworkState } from "../Configuration";
 import { MagnumDI } from "magnum-di";
 import { LogManager } from "../FrameworkLogger/LogManager";
-export declare function ValidatePlugins(PomConfig: RuntimeFrameworkState, LogManager: LogManager, PluginInjector: MagnumDI, loadedPlugins: any): Promise<any[]>;
+export declare function ValidatePlugins(PomConfig: RuntimeFrameworkState, LogManager: LogManager, GlobalInjector: MagnumDI, loadedPlugins: any): Promise<any[]>;

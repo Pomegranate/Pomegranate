@@ -19,7 +19,6 @@ const injectableParams = (pluginArray: ValidatedPlugin[]) => {
   }, pluginArray))
 }
 
-
 export const updateFrameworkMeta = (LogManager: LogManager, frameworkMetrics, futureConf: IFutureState<RuntimeFrameworkState>, skeletons: ValidatedPlugin[]): Promise<ComposedFrameworkState> => {
   frameworkMetrics.startFrameworkPhase('RuntimeState')
   return futureConf

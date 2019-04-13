@@ -7,13 +7,19 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const fp_1 = require("lodash/fp");
-const FileHelpers_1 = require("../FileHelpers");
-exports.PluginFilesFactory = (dirs) => {
-    let arr = fp_1.toPairs(dirs);
-    let pluginDirs = fp_1.reduce((obj, [key, path]) => {
-        obj[key] = FileHelpers_1.PluginFileHandler(path);
+// import {PluginFileHandler} from "../FileHelpers";
+const plugin_tools_1 = require("@pomegranate/plugin-tools");
+exports.PluginFilesFactory = (plugin) => {
+    let runtimeDirs = plugin.runtimeDirectories;
+    let projectDirs = plugin.projectDirectories;
+    let runtimePaths = fp_1.toPairs(runtimeDirs);
+    let paths = fp_1.map(([key, path]) => {
+        return [key, { runtimeDir: path, projectDir: projectDirs[key] }];
+    }, runtimePaths);
+    let pluginDirs = fp_1.reduce((obj, [key, { runtimeDir, projectDir }]) => {
+        obj[key] = plugin_tools_1.PluginFileHandler(runtimeDir, projectDir);
         return obj;
-    }, {}, arr);
+    }, {}, paths);
     return function (prop) {
         let fileHandlers = pluginDirs[prop];
         if (fileHandlers) {

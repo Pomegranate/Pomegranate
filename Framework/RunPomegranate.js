@@ -89,12 +89,18 @@ exports.RunPomegranate = (settings, workingDirectory = process.cwd()) => __await
                 yield Pom.load();
             }
             catch (err) {
+                console.log(err);
                 return;
             }
             try {
-                yield Pom.start();
+                let results = yield Pom.start();
+                if (results.isFailed) {
+                    yield Pom.stop();
+                    process.exit(0);
+                }
             }
             catch (err) {
+                console.log(err);
                 return;
             }
         }),
@@ -103,4 +109,4 @@ exports.RunPomegranate = (settings, workingDirectory = process.cwd()) => __await
         })
     };
 });
-//# sourceMappingURL=RunPomegranate.js.map
+//# sourceMappingURL=Run.js.map

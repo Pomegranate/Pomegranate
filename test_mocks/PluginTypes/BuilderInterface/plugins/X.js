@@ -1,16 +1,16 @@
 'use strict';
-const {InjectablePlugin} = require('@pomegranate/plugin-tools')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 const {strictEqual, equal, ok} = require('assert')
 
-exports.Plugin = InjectablePlugin()
+exports.Plugin = CreatePlugin('anything')
   .variables({a: 1})
   .configuration({
     name: 'X',
     injectableParam: 'X',
-    type: 'anything'
+    injectableScope: 'global',
   })
   .hooks({
-    load: async (PluginLogger, PluginVariables, PluginTimer) => {
+    load: async (PluginLogger, PluginVariables, PluginTimer, HelloPomegranate) => {
       ok(PluginVariables)
       return {name: 'X'}
     }

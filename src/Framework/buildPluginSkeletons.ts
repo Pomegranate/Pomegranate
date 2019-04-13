@@ -14,11 +14,22 @@ import {PomegranatePlugin} from "@pomegranate/plugin-tools"
 import {MagnumDI} from "magnum-di";
 import {LogManager} from "./FrameworkLogger/LogManager";
 
-
-export const buildPluginSkeletons = (FrameworkState: RuntimeFrameworkState, LogManager: LogManager, PluginInjector: MagnumDI) => {
+export const buildCLIPluginSkeletons = (FrameworkState: RuntimeFrameworkState, PluginInjector: MagnumDI) => {
   let applicationDirectory = get('applicationDirectory', FrameworkState)
 
   let SkeletonValidator = pluginConfig(FrameworkState, PluginInjector)
+  return async function (skeletons: PomegranatePlugin[]) {
+    return Bluebird.map(skeletons, (p) => {
+      return SkeletonValidator(p)
+    })
+  }
+
+}
+
+export const buildPluginSkeletons = (FrameworkState: RuntimeFrameworkState, LogManager: LogManager, GlobalInjector: MagnumDI) => {
+  let applicationDirectory = get('applicationDirectory', FrameworkState)
+
+  let SkeletonValidator = pluginConfig(FrameworkState, GlobalInjector)
   return async function (skeletons: PomegranatePlugin[]) {
     return Bluebird.map(skeletons, (p) => {
       return SkeletonValidator(p)

@@ -14,7 +14,7 @@
     "LICENCE"
   ],
   "scripts": {
-    "prepublishOnly": "tsc",
+    "prepublishOnly": "npm run script:updateVersionFile && tsc",
     "script:updateVersionFile": "./__scripts/updateTsVersionFile.js",
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc --watch",
@@ -53,7 +53,7 @@
     "typescript": "^3.3.4000"
   },
   "dependencies": {
-    "@pomegranate/plugin-tools": "^0.0.9",
+    "@pomegranate/plugin-tools": "^1.2.2",
     "bluebird": "^3.5.1",
     "chalk": "^2.4.2",
     "fs-extra": "^7.0.0",
@@ -61,7 +61,7 @@
     "immutable-dll": "^3.0.0",
     "lodash": "^4.17.11",
     "lodash-fun": "^1.6.1",
-    "magnum-di": "^4.2.0",
+    "magnum-di": "^6.0.0",
     "monet": "^0.9.0",
     "stringify-object": "^3.3.0",
     "uuid": "^3.3.2",

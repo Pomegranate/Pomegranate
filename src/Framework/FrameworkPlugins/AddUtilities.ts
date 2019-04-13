@@ -7,7 +7,8 @@
 
 import {transform, toPairs} from 'lodash/fp'
 import {PluginConfiguration} from "../Plugin";
-import {CompositePlugin} from "@pomegranate/plugin-tools"
+import {CreatePlugin} from "@pomegranate/plugin-tools"
+
 // @ts-ignore
 const uncappedTransform = transform.convert({cap: false})
 
@@ -20,7 +21,7 @@ function hasType(item) {
   return ({}).toString.call(item).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
 }
 
-export const Plugin = CompositePlugin()
+export const Plugin = CreatePlugin('composite')
   .variables({
     Utilities: {
       HelloPomegranate: () => {
@@ -31,14 +32,13 @@ export const Plugin = CompositePlugin()
   })
   .configuration({
     name: 'AddUtilities',
-    type: 'composite',
     frameworkPlugin: true
   })
   .hooks({
     load: (PluginLogger, PluginVariables, Whoa) => {
-      let Utils = transform((acc, [injectableParam, value]) => {
-        PluginLogger.log(`Found property '${injectableParam}' with type: ${hasType(value)}`)
-        acc.push({value, injectableParam})
+      let Utils = transform((acc, [injectableParam, load]) => {
+        PluginLogger.log(`Found property '${injectableParam}' with type: ${hasType(load)}`)
+        acc.push({load, injectableParam})
       }, [])(toPairs(PluginVariables.Utilities))
 
       return Utils

@@ -75,4 +75,7 @@ const validParameterRegXp = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/;
 exports.validParameter = (p) => {
     return (fp_1.negate(containsReserved)(p) && validParameterRegXp.test(p));
 };
+exports.pluralizer = fp_1.curry(({ negative, zero, one, many }, count) => {
+    return count < 0 ? negative : count > 1 ? many : count ? one : zero;
+});
 //# sourceMappingURL=stringFuns.js.map

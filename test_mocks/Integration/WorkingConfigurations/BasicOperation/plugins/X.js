@@ -1,8 +1,8 @@
 'use strict';
-const {InjectablePlugin, ApplicationPlugin} = require('../../../../../Framework/Plugin/Builders')
+const {InjectablePlugin, ApplicationPlugin,CreatePlugin} = require('@pomegranate/plugin-tools')
 const {strictEqual, equal, ok} = require('assert')
 
-exports.Plugin = InjectablePlugin({
+exports.Plugin = CreatePlugin({
   variables: {a: 1},
   configuration: {
     name: 'X',

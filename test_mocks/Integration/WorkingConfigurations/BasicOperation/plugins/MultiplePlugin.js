@@ -1,9 +1,9 @@
-const {InjectablePlugin, ApplicationPlugin} = require('../../../../../Framework/Plugin/Builders')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 
 
 
 
-let plugin1 = InjectablePlugin({
+let plugin1 = CreatePlugin({
   variables: {},
   directories: ['Multiple1-work'],
   configuration: {
@@ -19,7 +19,7 @@ let plugin1 = InjectablePlugin({
   },
   commands: {}
 })
-let plugin2 = InjectablePlugin({
+let plugin2 = CreatePlugin({
   variables: {},
   directories: ['Multiple2-work'],
   configuration: {
@@ -35,13 +35,13 @@ let plugin2 = InjectablePlugin({
   },
   commands: {}
 })
-let plugin3 = ApplicationPlugin({
+let plugin3 = CreatePlugin({
   configuration: {
     name: 'Multiple3',
     type: "application",
   },
   applicationPlugins: [
-    InjectablePlugin({
+    CreatePlugin({
       variables: {},
       directories: ['Child1-work'],
       configuration: {
@@ -57,7 +57,7 @@ let plugin3 = ApplicationPlugin({
       },
       commands: {}
     }),
-    InjectablePlugin({
+    CreatePlugin({
       variables: {name: 'Child2-default'},
       directories: [],
       configuration: {
@@ -76,7 +76,7 @@ let plugin3 = ApplicationPlugin({
   ]
 })
 
-exports.Plugin = ApplicationPlugin({
+exports.Plugin = CreatePlugin({
   configuration: {
     name: 'MultiplePlugin',
     type: 'application'

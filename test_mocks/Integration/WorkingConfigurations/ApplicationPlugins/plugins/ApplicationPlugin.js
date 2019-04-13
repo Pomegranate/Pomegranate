@@ -1,7 +1,7 @@
 const {strictEqual, equal, ok} = require('assert')
-const {InjectablePlugin, ApplicationPlugin} = require('../../../../../Framework/Plugin/Builders')
+const {CreatePlugin} = require('@pomegranate/plugin-tools')
 
-let plugin1 = InjectablePlugin({
+let plugin1 = CreatePlugin({
   variables: {},
   directories: [{prop: 'main', path: '.'}],
   configuration: {
@@ -18,7 +18,7 @@ let plugin1 = InjectablePlugin({
   },
   commands: {}
 })
-let plugin2 = InjectablePlugin({
+let plugin2 = CreatePlugin({
   variables: {},
   directories: ['PomApp2-inner'],
   configuration: {
@@ -34,13 +34,13 @@ let plugin2 = InjectablePlugin({
   },
   commands: {}
 })
-let plugin3 = ApplicationPlugin({
+let plugin3 = CreatePlugin({
   configuration: {
     name: 'PomApp3',
     type: "application",
   },
   applicationPlugins: [
-    InjectablePlugin({
+    CreatePlugin({
       variables: {},
       directories: [{prop: 'main', path: '.'}],
       configuration: {
@@ -56,7 +56,7 @@ let plugin3 = ApplicationPlugin({
       },
       commands: {}
     }),
-    InjectablePlugin({
+    CreatePlugin({
       variables: {name: 'PomChild2'},
       directories: [],
       configuration: {
@@ -76,7 +76,7 @@ let plugin3 = ApplicationPlugin({
   ]
 })
 
-exports.Plugin = ApplicationPlugin({
+exports.Plugin = CreatePlugin({
   configuration: {
     name: 'ApplicationPlugin',
     type: 'application'
