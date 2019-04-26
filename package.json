@@ -66,8 +66,5 @@
     "stringify-object": "^3.3.0",
     "uuid": "^3.3.2",
     "yargs": "^13.2.1"
-  },
-  "peerDependencies": {
-    "typescript": "^3.3.4000"
   }
 }

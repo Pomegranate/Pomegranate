@@ -5,7 +5,7 @@
  */
 
 export const MODULE_VERSIONS = [
-    ['Pomegranate', '7.0.0-beta.5'],
+    ['Pomegranate', '7.0.0-beta.6'],
     ['MagnumDI', '6.0.0'],
     ['Immutable-DLL', '3.0.0']
   ]

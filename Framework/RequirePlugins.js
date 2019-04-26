@@ -19,10 +19,8 @@ const AddUtilities_1 = require("./FrameworkPlugins/AddUtilities");
 const fp_1 = require("lodash/fp");
 const startsWithAt = fp_1.startsWith('@');
 const getNamespace = mod => startsWithAt(mod) ? fp_1.split('/', mod)[0] : null;
-// Adds @pomOfficial to the namespace search list if it is missing.
-let normalizeNamespaces = fp_1.compose((namespaces) => {
-    return fp_1.includes('@pomOfficial', namespaces) ? namespaces : fp_1.concat(['@pomOfficial'], namespaces);
-}, fp_1.map((ns) => {
+// No longer - Adds @pomOfficial to the namespace search list if it is missing.
+let normalizeNamespaces = fp_1.compose(fp_1.map((ns) => {
     return startsWithAt(ns) ? ns : `@${ns}`;
 }), fp_1.get('pluginNamespaces'));
 const filterNamespaces = namespaces => fp_1.compose(fp_1.fromPairs, fp_1.filter(([module, version]) => {
