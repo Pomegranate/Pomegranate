@@ -26,11 +26,8 @@ import {LogManager} from "./FrameworkLogger/LogManager";
 const startsWithAt = startsWith('@')
 const getNamespace = mod => startsWithAt(mod) ? split('/', mod)[0] : null
 
-// Adds @pomOfficial to the namespace search list if it is missing.
+// No longer - Adds @pomOfficial to the namespace search list if it is missing.
 let normalizeNamespaces = compose(
-  (namespaces) => {
-    return includes('@pomOfficial', namespaces) ? namespaces : concat(['@pomOfficial'], namespaces)
-  },
   map((ns: string) => {
     return startsWithAt(ns) ? ns : `@${ns}`
   }),
