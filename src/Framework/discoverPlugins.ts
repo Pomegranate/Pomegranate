@@ -118,7 +118,7 @@ const unrollWrapper = (ns, loadSrc, moduleSrc) => {
         lineage = [...lineage, ...appMemberArr]
         appPlugin = true
       }
-      console.log(ns, lineage, plugin.state.configuration.name)
+      // console.log(ns, lineage, plugin.state.configuration.name)
 
       // This is everything but application Plugins
       let r = Right(plugin.state).map((v) => {
