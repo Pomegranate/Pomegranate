@@ -1,0 +1,38 @@
+{
+  "name": "@pomegranate/plugin-tools",
+  "version": "1.2.3-e86a46b3",
+  "description": "Everything needed to create, export and publish a Pomegranate plugin.",
+  "main": "index.js",
+  "files": [
+    "index.d.ts",
+    "index.js.map",
+    "PluginTools/**/*",
+    "Readme.md",
+    "LICENCE"
+  ],
+  "scripts": {
+    "prepublishOnly": "tsc",
+    "test": "jest",
+    "docs": "typedoc --mode file --theme minimal --target ES6 --out docs src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Pomegranate/Tools.git"
+  },
+  "keywords": [
+    "Pomegranate",
+    "Publishing"
+  ],
+  "author": "Jim Bulkowski <jim.b@paperelectron.com> (http://paperelectron.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Pomegranate/Tools/issues"
+  },
+  "homepage": "https://github.com/Pomegranate/Tools#readme",
+  "dependencies": {
+    "@types/lodash": "^4.14.123",
+    "bluebird": "^3.5.3",
+    "fs-extra": "^7.0.1",
+    "lodash": "^4.17.11"
+  }
+}

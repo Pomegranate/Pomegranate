@@ -18,11 +18,12 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@pomegranate/plugin-tools@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-tools/-/plugin-tools-1.2.2.tgz#4d84adcf50acdbae89572c99137c5c3315c70533"
-  integrity sha512-9jz6Q02tCjMq/2Dxd8doaOzVJGUup9xq67R82FvQykEEoB0+GiRKSX6DoXTO17C3/duneU4a9q4L1zFEifs1yA==
+"@pomegranate/plugin-tools@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-tools/-/plugin-tools-1.2.4.tgz#bf26c0f6fb173431f65b07e0176a3561989070c9"
+  integrity sha512-cBBulkITPn7nPgFmVYANqWOGJAT3bL1x7krmhH5YXzyQ40+nuXukA35ln+p0/qmvgLP7upHOw9pkEqgwD0l2eg==
   dependencies:
+    "@types/lodash" "^4.14.123"
     bluebird "^3.5.3"
     fs-extra "^7.0.1"
     lodash "^4.17.11"
@@ -44,7 +45,7 @@
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.14.tgz#37daaf78069e7948520474c87b80092ea912520a"
   integrity sha512-Q5hTcfdudEL2yOmluA1zaSyPbzWPmJ3XfSWeP3RyoYvS9hnje1ZyagrZOuQ6+1nQC1Gw+7gap3pLNL3xL6UBug==
 
-"@types/lodash@^4.14.119":
+"@types/lodash@^4.14.119", "@types/lodash@^4.14.123":
   version "4.14.123"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.123.tgz#39be5d211478c8dd3bdae98ee75bb7efe4abfe4d"
   integrity sha512-pQvPkc4Nltyx7G1Ww45OjVqUsJP4UsZm+GWJpigXgkikZqJgRm4c48g027o6tdgubWHwFRF15iFd+Y4Pmqv6+Q==

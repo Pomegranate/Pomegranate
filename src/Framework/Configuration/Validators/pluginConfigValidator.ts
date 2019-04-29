@@ -148,6 +148,9 @@ export const pluginConfigValidators = (FrameworkState: RuntimeFrameworkState, Gl
 
         return scope
       },
+      applicationMember: (applicationMember) => {
+        return isArray(applicationMember) ? applicationMember : []
+      },
       frameworkPlugin: (frameworkPlugin) => {
         return frameworkPlugin
       },

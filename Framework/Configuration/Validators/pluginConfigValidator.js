@@ -113,6 +113,9 @@ exports.pluginConfigValidators = (FrameworkState, GlobalInjector) => {
                         new Error('config.injectableScope must be either "global", "namespace", or "application"');
                 return scope;
             },
+            applicationMember: (applicationMember) => {
+                return fp_1.isArray(applicationMember) ? applicationMember : [];
+            },
             frameworkPlugin: (frameworkPlugin) => {
                 return frameworkPlugin;
             },

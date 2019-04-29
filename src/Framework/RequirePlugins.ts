@@ -58,7 +58,6 @@ export async function RequirePlugins(pomConfig: ValidatedConfiguration, LogManag
   let nsdeps = namespaceFilter(pomConfig)
 
   let externalNamespaced = await discoverNamespaced(nsdeps)
-
   LogManager.use('pomegranate').log(`Found ${externalNamespaced.length} namespaced plugins.`)
 
   let localPlugins = await discoverLocal(get('pluginDirectory', pomConfig))

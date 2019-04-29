@@ -11,6 +11,7 @@ export declare const pluginConfigValidators: (FrameworkState: RuntimeFrameworkSt
         type: (type: any, srcPlugin: any) => any;
         injectableParam: (injectableParam: any, srcPlugin: any) => any;
         injectableScope: (injectableScope: any, srcPlugin: any) => any;
+        applicationMember: (applicationMember: any) => any[];
         frameworkPlugin: (frameworkPlugin: any) => any;
         depends: (depends: any) => any[] | Error;
         provides: (provides: any) => any[] | Error;

@@ -86,13 +86,21 @@ const unrollWrapper = (ns, loadSrc, moduleSrc) => {
                 let applicationPlugins = fp_1.map(p => { p.application = true; return p; }, fp_1.flattenDeep(fp_1.map(unroll(parents), plugin.state.applicationPlugins)));
                 return applicationPlugins;
             }
+            let appPlugin = false;
+            let appMemberArr = fp_1.get('state.configuration.applicationMember', plugin);
+            if (appMemberArr && appMemberArr.length) {
+                // lineage.push(get('state.configuration.applicationMember', plugin))
+                lineage = [...lineage, ...appMemberArr];
+                appPlugin = true;
+            }
+            console.log(ns, lineage, plugin.state.configuration.name);
             // This is everything but application Plugins
             let r = monet_1.Right(plugin.state).map((v) => {
                 v.parents = lineage;
                 v.moduleSrc = moduleSrc;
                 v.namespace = ns;
                 v.loadSrc = loadSrc;
-                v.application = false;
+                v.application = appPlugin;
                 return v;
             })
                 .cata(fail => {

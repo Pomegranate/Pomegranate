@@ -111,6 +111,14 @@ const unrollWrapper = (ns, loadSrc, moduleSrc) => {
         return applicationPlugins
       }
 
+      let appPlugin = false
+      let appMemberArr = get('state.configuration.applicationMember', plugin)
+      if(appMemberArr && appMemberArr.length){
+        // lineage.push(get('state.configuration.applicationMember', plugin))
+        lineage = [...lineage, ...appMemberArr]
+        appPlugin = true
+      }
+      console.log(ns, lineage, plugin.state.configuration.name)
 
       // This is everything but application Plugins
       let r = Right(plugin.state).map((v) => {
@@ -118,7 +126,7 @@ const unrollWrapper = (ns, loadSrc, moduleSrc) => {
         v.moduleSrc = moduleSrc
         v.namespace = ns
         v.loadSrc = loadSrc
-        v.application = false
+        v.application = appPlugin
         return v
       })
         .cata(
@@ -166,6 +174,7 @@ export const discoverNamespaced = (dependencies): Bluebird<any[]> => {
       )
 
     let unroll = unrollWrapper(getNamespace(ns), 'namespaced', ns)
+
     return unroll(plugin)
   })
     .then((plugins) => {

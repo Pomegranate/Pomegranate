@@ -6,7 +6,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MODULE_VERSIONS = [
-    ['Pomegranate', '7.0.0-beta.6'],
+    ['Pomegranate', '7.0.0-beta.7'],
     ['MagnumDI', '6.0.0'],
     ['Immutable-DLL', '3.0.0']
 ];

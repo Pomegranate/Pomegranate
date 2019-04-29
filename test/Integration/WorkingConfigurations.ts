@@ -10,8 +10,8 @@ import {join} from 'path'
 import {normalize} from 'path'
 import {each} from 'lodash/fp'
 const mockDirectory = normalize(`${__dirname}/../../test_mocks/Integration/WorkingConfigurations`)
-const fileList = readdirSync(mockDirectory)
-
+let fileList = readdirSync(mockDirectory)
+fileList = ['ApplicationPlugins']
 describe('Pomegranate Functionality', () => {
   each((filePath) => {
     test(filePath, async () => {
@@ -21,5 +21,5 @@ describe('Pomegranate Functionality', () => {
       await Pom.start()
       await Pom.stop()
     })
-  }, fileList)
+  },fileList)
 });

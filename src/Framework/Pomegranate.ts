@@ -128,6 +128,7 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
    * Loads plugins from all sources: Framework, Local and Namespaced.
    */
   let allPlugins = await LoadPlugins(FrameworkState, LogManager)
+
   let loadedPlugins = filter((plugin) => {
     return !isCommand(plugin)
   }, allPlugins)
@@ -135,7 +136,6 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
    * Validates plugin types, values and usage constraints.
    */
   let validatedPlugins = await ValidatePlugins(FrameworkState, LogManager, GlobalInjector, loadedPlugins )
-
   /*
    * Extract global configuration data from all plugins, including the master required plugin array.
    */
