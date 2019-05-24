@@ -5,6 +5,7 @@
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 /// <reference types="lodash" />
+export declare const joinBP: import("lodash").CurriedFunction2<string, string, string>;
 export declare function joinBasePath(basePath: string, path?: string): any;
 export declare const settingPath: (fullPath: any, confProp: any) => import("lodash").Dictionary<any>;
 export declare function joinPluginWorkBase(basepath: string, workBase: string): any;

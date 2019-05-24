@@ -13,13 +13,15 @@ import {LogManager} from "../FrameworkLogger/LogManager";
 
 function onlyOverridePlugins(plugins: ComposedPlugin[]) {
   return filter((plugin) => {
-    return plugin.configuration.type === 'override'
+    //@ts-ignore
+    return plugin.state.configuration.type === 'override'
   }, plugins)
 }
 
 function onlyRuntimePlugins(plugins: ComposedPlugin[]) {
   return filter((plugin) => {
-    let type = plugin.configuration.type
+    //@ts-ignore
+    let type = plugin.state.configuration.type
     return (type !== 'override')
   }, plugins)
 }

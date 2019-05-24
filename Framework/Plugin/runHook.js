@@ -71,7 +71,7 @@ function newStructure(pluginData) {
     return handleInjectable(pluginData);
 }
 function structure(composedPlugin, result) {
-    let type = fp_1.get('configuration.type', composedPlugin);
+    let type = fp_1.get('state.configuration.type', composedPlugin);
     return handleInjectable({ type, composedPlugin, result });
 }
 function composite(plugin, LogManager) {
@@ -108,14 +108,14 @@ function loghandler(plugin) {
     };
 }
 function placeInjectables(composedPlugin, hookResult, pluginLogger, GlobalInjector, LogManager) {
-    let type = fp_1.get('configuration.type', composedPlugin);
+    let type = fp_1.get('state.configuration.type', composedPlugin);
     let data = {
         type,
         plugin: {
-            configuration: fp_1.get('configuration', composedPlugin),
-            parents: fp_1.get('parents', composedPlugin),
-            namespace: fp_1.get('namespace', composedPlugin),
-            application: fp_1.get('application', composedPlugin),
+            configuration: fp_1.get('state.configuration', composedPlugin),
+            parents: fp_1.get('loadMetadata.parents', composedPlugin),
+            namespace: fp_1.get('loadMetadata.namespace', composedPlugin),
+            application: fp_1.get('loadMetadata.application', composedPlugin),
         },
         hookResult
     };
@@ -137,7 +137,8 @@ function composeLoadRunner(frameworkConf, LogManager, GlobalInjector) {
             let ChildInjector = composedPlugin.injector;
             let PluginTimer = ChildInjector.get('PluginTimer');
             let PluginLogger = ChildInjector.get('PluginLogger');
-            let hookFn = composedPlugin.hooks['load'];
+            //@ts-ignore
+            let hookFn = composedPlugin.state.hooks['load'];
             PluginLogger.log('Loading');
             let racer = PluginTimer.start();
             let result = bluebird_1.default.try(() => {
@@ -160,12 +161,13 @@ function composeLoadRunner(frameworkConf, LogManager, GlobalInjector) {
 function composeStartRunner(frameworkConf, LogManager, GlobalInjector) {
     return function startRunner(composedPlugin) {
         return __awaiter(this, void 0, void 0, function* () {
-            let pluginName = fp_1.get('configuration.name', composedPlugin);
+            let pluginName = fp_1.get('state.configuration.name', composedPlugin);
             frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'start');
             let ChildInjector = composedPlugin.injector;
             let PluginTimer = ChildInjector.get('PluginTimer');
             let PluginLogger = ChildInjector.get('PluginLogger');
-            let hookFn = composedPlugin.hooks['start'];
+            //@ts-ignore
+            let hookFn = composedPlugin.state.hooks['start'];
             PluginLogger.log('Starting');
             let racer = PluginTimer.start();
             let result = bluebird_1.default.try(() => {
@@ -184,12 +186,13 @@ function composeStartRunner(frameworkConf, LogManager, GlobalInjector) {
 function composeStopRunner(frameworkConf, LogManager, GlobalInjector) {
     return function stopRunner(composedPlugin) {
         return __awaiter(this, void 0, void 0, function* () {
-            let pluginName = fp_1.get('configuration.name', composedPlugin);
+            let pluginName = fp_1.get('state.configuration.name', composedPlugin);
             frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'stop');
             let ChildInjector = composedPlugin.injector;
             let PluginTimer = ChildInjector.get('PluginTimer');
             let PluginLogger = ChildInjector.get('PluginLogger');
-            let hookFn = composedPlugin.hooks['stop'];
+            //@ts-ignore
+            let hookFn = composedPlugin.state.hooks['stop'];
             PluginLogger.log('Stopping');
             let racer = PluginTimer.start();
             let result = bluebird_1.default.try(() => {

@@ -5,12 +5,14 @@ const helpers_1 = require("../Plugin/helpers");
 const frameworkOutputs_1 = require("../Common/frameworkOutputs");
 function onlyOverridePlugins(plugins) {
     return fp_1.filter((plugin) => {
-        return plugin.configuration.type === 'override';
+        //@ts-ignore
+        return plugin.state.configuration.type === 'override';
     }, plugins);
 }
 function onlyRuntimePlugins(plugins) {
     return fp_1.filter((plugin) => {
-        let type = plugin.configuration.type;
+        //@ts-ignore
+        let type = plugin.state.configuration.type;
         return (type !== 'override');
     }, plugins);
 }

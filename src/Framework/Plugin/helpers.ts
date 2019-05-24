@@ -8,15 +8,15 @@
 import {compose, first, get, initial, join, last, memoize, startsWith, tail, curry} from 'lodash/fp'
 import {append} from "../Common/ArrayMethods";
 
-export const getName = get('configuration.name')
-export const getDirectories = get('directories')
-export const getParents = get('parents')
-export const getNamespace = get('namespace')
+export const getName = get('computedMetadata.name')
+export const getDirectories = get('state.directories')
+export const getParents = get('loadMetadata.parents')
+export const getNamespace = get('loadMetadata.namespace')
 export const hasParents = (parents) => {
   return !!(parents.length)
 }
 
-export const getFqn = get('configuration.name')
+export const getFqn = get('computedMetadata.fqn')
 
 export const fqDeclaredName = memoize((fqn: string[]): string => {
   return last(fqn)
@@ -52,18 +52,18 @@ export const directoryBasePath = (plugin) => {
 export const configObjectPath = curry((plugin, appendPath) => {
   let parents = getParents(plugin)
   // return hasParents(parents) ? append([...tail(parents), last(plugin.configuration.name)]) : append([])
-  return append((hasParents(parents) ? [...tail(parents), last(plugin.configuration.name)] : []), [appendPath]).join('.')
+  return append((hasParents(parents) ? [...tail(parents), last(plugin.computedMetadata.name)] : []), [appendPath]).join('.')
 })
 
 export const configPath = (plugin) => {
  let parents = getParents(plugin)
-  return (hasParents(parents) ? [...tail(parents), last(plugin.configuration.name)] : [])
+  return (hasParents(parents) ? [...tail(parents), last(plugin.state.configuration.name)] : [])
 }
 
 export const getConfigFilePath = (plugin): string => {
-  let Parents = get('parents', plugin)
-  let BaseFile: string = Parents.length ? first(Parents) : fqDeclaredName(plugin.configuration.name)
-  let Namespace = get('namespace', plugin)
+  let Parents = get('loadMetadata.parents', plugin)
+  let BaseFile: string = Parents.length ? first(Parents) : fqDeclaredName(plugin.computedMetadata.name)
+  let Namespace = get('loadMetadata.namespace', plugin)
   return Namespace ? `${Namespace}/${BaseFile}` : BaseFile
 }
 

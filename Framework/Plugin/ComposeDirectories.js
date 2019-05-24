@@ -19,7 +19,6 @@ exports.ComposeDirectories = (FrameworkState) => {
             let joinToWorkBase = helpers_2.joinBasePath(workBasePath);
             let joinToProjectBase = helpers_2.joinBasePath(projectBasePath);
             let runtimeDirs = fp_1.reduce((acc, directory) => {
-                // console.log(directory)
                 if (index_1.isPluginDirectory(directory)) {
                     acc['runtimeDirs'][directory.prop] = joinToWorkBase(directory.path);
                     acc['projectDirs'][directory.prop] = joinToProjectBase(directory.path);
@@ -28,7 +27,7 @@ exports.ComposeDirectories = (FrameworkState) => {
                 acc['runtimeDirs'][directory] = joinToWorkBase(directory);
                 acc['projectDirs'][directory] = joinToProjectBase(directory);
                 return acc;
-            }, { runtimeDirs: {}, projectDirs: {} }, skeleton.directories);
+            }, { runtimeDirs: {}, projectDirs: {} }, skeleton.state.directories);
             collector.runtimeDirectories = runtimeDirs.runtimeDirs;
             collector.projectDirectories = runtimeDirs.projectDirs;
             return collector;

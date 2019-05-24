@@ -59,7 +59,7 @@ export const frameworkConfigValidators = (basePath) => {
     },
     logLevel: (level) => {
       if(isNull(level)){ return 0 }
-      return (level && inRange(0,5, level)) ? level : new Error(`config.logLevel must be between 0-4 - Provided: ${level}`)
+      return (inRange(0,5, level)) ? level : new Error(`config.logLevel must be between 0-4 - Provided: ${level}`)
     },
     colorOutput: (color: boolean) => {
       return !!color

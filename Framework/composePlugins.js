@@ -18,8 +18,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 const FutureState_1 = require("./Common/FutureState");
-const fp_1 = require("lodash/fp");
 const lodash_fun_1 = require("lodash-fun");
+const fp_1 = require("lodash/fp");
+const lodash_fun_2 = require("lodash-fun");
 const bluebird_1 = __importDefault(require("bluebird"));
 const Dependency_1 = require("./Dependency");
 const helpers_1 = require("./Configuration/helpers");
@@ -27,6 +28,8 @@ const helpers_2 = require("./Plugin/helpers");
 const ComposeDirectories_1 = require("./Plugin/ComposeDirectories");
 const frameworkOutputs_1 = require("./Common/frameworkOutputs");
 exports.composePlugins = (pomConf, LogManager, frameworkMetrics, loggerFactory, PluginDI) => {
+    const composePlugin = lodash_fun_1.composeP((plugin) => __awaiter(this, void 0, void 0, function* () {
+    }));
     return function (skeletons) {
         frameworkOutputs_1.rightBar(LogManager.use('system')).run({ msg: 'Initializing Plugins.' });
         frameworkMetrics.startFrameworkPhase('InitializePlugins');
@@ -39,11 +42,11 @@ exports.composePlugins = (pomConf, LogManager, frameworkMetrics, loggerFactory, 
                 .map((skeleton, collector) => __awaiter(this, void 0, void 0, function* () {
                 let fileVars = yield helpers_1.requireFile(pomConf.pluginConfigDirectory, `${helpers_2.getConfigFilePath(skeleton)}.js`);
                 let inject = fp_1.isFunction(fileVars) ? PluginDI.inject(fileVars) : fileVars;
-                let vars = fp_1.getOr(skeleton.variables, pullProp('variables'), inject);
+                let vars = fp_1.getOr(skeleton.state.variables, pullProp('variables'), inject);
                 let conf = fp_1.getOr({ disabled: false }, pullProp('config'), inject);
-                let missingKeys = lodash_fun_1.missingKeysDeep(skeleton.variables, vars);
+                let missingKeys = lodash_fun_2.missingKeysDeep(skeleton.state.variables, vars);
                 if (missingKeys.length) {
-                    throw new Error(`Plugin "${skeleton.configuration.name}" config file does not conform with plugin defaults. \n Missing ${missingKeys.join(',')} keys.`);
+                    throw new Error(`Plugin "${skeleton.state.configuration.name}" config file does not conform with plugin defaults. \n Missing ${missingKeys.join(',')} keys.`);
                 }
                 collector.runtimeConfiguration = conf;
                 collector.runtimeVariables = vars;
@@ -60,8 +63,10 @@ exports.composePlugins = (pomConf, LogManager, frameworkMetrics, loggerFactory, 
             })
                 .map((skeleton, collector) => {
                 collector.timeout = pomConf.timeout;
-                let missingDeps = fp_1.difference(skeleton.configuration.depends, pomConf.allAvailable);
+                //@ts-ignore
+                let missingDeps = fp_1.difference(skeleton.state.configuration.depends, pomConf.allAvailable);
                 if (missingDeps.length) {
+                    //@ts-ignore
                     collector.logger.error(`Missing required dependencies: ${missingDeps.join(', ')}`, 0);
                     throw new Error('Missing dependencies');
                 }
@@ -73,8 +78,8 @@ exports.composePlugins = (pomConf, LogManager, frameworkMetrics, loggerFactory, 
                 return c;
             })
                 .map((skeleton, collector) => {
-                collector.configuration.depends =
-                    Dependency_1.provideDependencies(fp_1.get('configuration.name', collector), fp_1.getOr([], 'configuration.depends', collector), pomConf.providingPlugins);
+                collector.state.configuration.depends =
+                    Dependency_1.provideDependencies(fp_1.get('state.configuration.name', collector), fp_1.getOr([], 'state.configuration.depends', collector), pomConf.providingPlugins);
                 return collector;
             })
                 .run({})

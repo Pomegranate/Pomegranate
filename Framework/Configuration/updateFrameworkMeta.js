@@ -6,7 +6,7 @@ const helpers_1 = require("../Plugin/helpers");
 const FutureState_1 = require("../Common/FutureState");
 const injectableParams = (pluginArray) => {
     return fp_1.filter(Boolean, fp_1.map((plugin) => {
-        return helpers_1.getFqShortname(plugin) === plugin.configuration.injectableParam ? null : plugin.configuration.injectableParam;
+        return helpers_1.getFqShortname(plugin) === plugin.state.configuration.injectableParam ? null : plugin.state.configuration.injectableParam;
     }, pluginArray));
 };
 exports.updateFrameworkMeta = (LogManager, frameworkMetrics, futureConf, skeletons) => {

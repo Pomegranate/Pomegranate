@@ -66,7 +66,7 @@ exports.frameworkConfigValidators = (basePath) => {
             if (fp_1.isNull(level)) {
                 return 0;
             }
-            return (level && fp_1.inRange(0, 5, level)) ? level : new Error(`config.logLevel must be between 0-4 - Provided: ${level}`);
+            return (fp_1.inRange(0, 5, level)) ? level : new Error(`config.logLevel must be between 0-4 - Provided: ${level}`);
         },
         colorOutput: (color) => {
             return !!color;

@@ -18,6 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 const Configuration_1 = require("./Configuration");
+const Configuration_2 = require("./Configuration");
 const fp_1 = require("lodash/fp");
 const bluebird_1 = __importDefault(require("bluebird"));
 exports.buildCLIPluginSkeletons = (FrameworkState, PluginInjector) => {
@@ -33,12 +34,15 @@ exports.buildCLIPluginSkeletons = (FrameworkState, PluginInjector) => {
 };
 exports.buildPluginSkeletons = (FrameworkState, LogManager, GlobalInjector) => {
     let applicationDirectory = fp_1.get('applicationDirectory', FrameworkState);
-    let SkeletonValidator = Configuration_1.pluginConfig(FrameworkState, GlobalInjector);
+    // let SkeletonValidator = pluginConfig(FrameworkState, GlobalInjector)
+    let SkeletonValidator = Configuration_2.transformPlugin(FrameworkState, GlobalInjector);
     return function (skeletons) {
         return __awaiter(this, void 0, void 0, function* () {
-            return bluebird_1.default.map(skeletons, (p) => {
-                return SkeletonValidator(p);
-            })
+            return bluebird_1.default.map(skeletons, (p) => __awaiter(this, void 0, void 0, function* () {
+                p.computedMetadata = yield SkeletonValidator(p);
+                return p;
+                // return SkeletonValidator(p)
+            }))
                 .then((result) => {
                 LogManager.use('pomegranate').log(`${result.length} Plugins valid`, 2);
                 return result;

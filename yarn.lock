@@ -18,15 +18,16 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@pomegranate/plugin-tools@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-tools/-/plugin-tools-1.2.4.tgz#bf26c0f6fb173431f65b07e0176a3561989070c9"
-  integrity sha512-cBBulkITPn7nPgFmVYANqWOGJAT3bL1x7krmhH5YXzyQ40+nuXukA35ln+p0/qmvgLP7upHOw9pkEqgwD0l2eg==
+"@pomegranate/plugin-tools@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-tools/-/plugin-tools-2.0.2.tgz#4705b51a1ae8535236ce49898cd39033c9a3271c"
+  integrity sha512-GZ7PuDKIqwUbJ1JC3Pp5OYUiuTer5UFLVCshonmOj4dBFsUnV1ePDC+6Mjr8D216gJwRLhD6BcSFp+7fHLQTQg==
   dependencies:
     "@types/lodash" "^4.14.123"
     bluebird "^3.5.3"
     fs-extra "^7.0.1"
     lodash "^4.17.11"
+    lodash-fun "^1.7.0"
 
 "@types/bluebird@^3.5.23":
   version "3.5.26"
@@ -2323,10 +2324,10 @@ locate-path@^3.0.0:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
 
-lodash-fun@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/lodash-fun/-/lodash-fun-1.6.1.tgz#3affb8604d6efd91e76c0605db6d46742fbe4836"
-  integrity sha512-qwT/xM6RdwVs09S6X3dKJkpZvut9fgHeq6tAt7QS1AEdSLln7fBTkdHXajYTowp0LiyyTGrB7Xvbp8gXePxWyg==
+lodash-fun@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/lodash-fun/-/lodash-fun-1.7.0.tgz#a78727a395b86ff7d3048751369161df8973d7b7"
+  integrity sha512-sH4jC1a8eyUVuEQ4CXM4KBegNo5eIna1komjgpuFWWm6g4+IEgqRJuALbpwfdl2c85YTiS9zFRbwaZKARcc/hA==
   dependencies:
     bluebird "^3.5.3"
     lodash "^4.17.11"

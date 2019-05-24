@@ -5,6 +5,7 @@
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 import {FutureState} from "./Common/FutureState";
+import {composeP} from 'lodash-fun'
 import {ComposedPlugin, ValidatedPlugin} from "./Plugin";
 import {assign, difference, get, getOr, isFunction, isObject} from 'lodash/fp'
 import {missingKeysDeep} from "lodash-fun";
@@ -20,6 +21,11 @@ import {LogManager} from "./FrameworkLogger/LogManager";
 
 
 export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogManager, frameworkMetrics, loggerFactory, PluginDI: MagnumDI) => {
+
+  const composePlugin = composeP(async (plugin)=>{
+
+  })
+
   return function (skeletons: ValidatedPlugin[]) {
     rightBar(LogManager.use('system')).run({msg: 'Initializing Plugins.'})
     frameworkMetrics.startFrameworkPhase('InitializePlugins')
@@ -30,16 +36,16 @@ export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogM
 
 
       pomConf.FrameworkMetrics.startPluginPhase(PluginName, 'initialize')
-      return FutureState<ComposedPlugin>(skeleton)
-        .map(async (skeleton, collector) => { // Extract Plugin variables and runtime config.
 
+      return FutureState<any>(skeleton)
+        .map(async (skeleton, collector) => { // Extract Plugin variables and runtime config.
           let fileVars = await requireFile(pomConf.pluginConfigDirectory, `${getConfigFilePath(skeleton)}.js`)
           let inject = isFunction(fileVars) ? PluginDI.inject(fileVars) : fileVars
-          let vars = getOr(skeleton.variables, pullProp('variables'), inject)
+          let vars = getOr(skeleton.state.variables, pullProp('variables'), inject)
           let conf = getOr({disabled: false}, pullProp('config'), inject)
-          let missingKeys = missingKeysDeep(skeleton.variables, vars)
+          let missingKeys = missingKeysDeep(skeleton.state.variables, vars)
           if (missingKeys.length) {
-            throw new Error(`Plugin "${skeleton.configuration.name}" config file does not conform with plugin defaults. \n Missing ${missingKeys.join(',')} keys.`)
+            throw new Error(`Plugin "${skeleton.state.configuration.name}" config file does not conform with plugin defaults. \n Missing ${missingKeys.join(',')} keys.`)
           }
           collector.runtimeConfiguration = conf
           collector.runtimeVariables = vars
@@ -47,7 +53,6 @@ export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogM
         })
         .map(ComposeDirectories(pomConf))
         .map((skeleton, collector) => { // Create our custom Pom logger instance, to use downstream from here.
-
           let logLevel= get('runtimeConfiguration.logLevel', collector)
           let configFormatting = get('runtimeConfiguration.logFormat', collector)
           let formatting = isObject(configFormatting) ? configFormatting : {log: ['green']}
@@ -58,8 +63,10 @@ export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogM
         })
         .map((skeleton, collector) => {
           collector.timeout = pomConf.timeout
-          let missingDeps = difference(skeleton.configuration.depends, pomConf.allAvailable)
+          //@ts-ignore
+          let missingDeps = difference(skeleton.state.configuration.depends, pomConf.allAvailable)
           if (missingDeps.length) {
+            //@ts-ignore
             collector.logger.error(`Missing required dependencies: ${missingDeps.join(', ')}`, 0)
             throw new Error('Missing dependencies')
           }
@@ -71,8 +78,8 @@ export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogM
           return c
         })
         .map((skeleton, collector) => {
-          collector.configuration.depends =
-            provideDependencies(get('configuration.name', collector), getOr([], 'configuration.depends', collector), pomConf.providingPlugins)
+          collector.state.configuration.depends =
+            provideDependencies(get('state.configuration.name', collector), getOr([], 'state.configuration.depends', collector), pomConf.providingPlugins)
           return collector
         })
         .run({})

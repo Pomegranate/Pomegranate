@@ -99,7 +99,7 @@ exports.configFrameworkPlugin = (frameworkPlugin) => {
 };
 exports.configInjectorDeps = (prop) => depends => defaultArrayFromNull(depends, `configuration.${prop} must be string[]`);
 exports.hooksRequired = (prop) => (loadHook) => fp_1.isFunction(loadHook) ? loadHook : new Error(`${fp_1.toUpper(prop)} Hook must be a function.`);
-exports.hooksOptional = (prop) => (optionalHook, srcPlugin) => fp_1.isFunction(optionalHook) ? optionalHook : isNullOrUndefined(srcPlugin) ? () => {
+exports.hooksOptional = (prop) => (optionalHook, srcPlugin) => fp_1.isFunction(optionalHook) ? optionalHook : isNullOrUndefined(optionalHook) ? () => {
 } : new Error(`${fp_1.toUpper(prop)} Hook if defined, must be a function.`);
 exports.commands = (commands) => {
     return fp_1.isFunction(commands) ? commands : null;

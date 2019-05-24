@@ -3,10 +3,10 @@ import {EventEmitter} from "events";
 import {ComposedPlugin} from "../Plugin";
 import {rightBar} from "../Common/frameworkOutputs";
 import {map} from "lodash/fp";
-import {getFqShortname} from "../Plugin/helpers";
 import {PluginTimer} from "../Plugin/Timers";
 import {PluginFilesFactory} from "../Plugin/PluginFiles";
-import {getFqn} from "@pomegranate/plugin-tools";
+
+import {getFqShortname, getFqParentname, getFqn} from "../Plugin/helpers";
 
 /**
  * @file PopulateCliInjectors
@@ -19,8 +19,9 @@ export const PopulateCliInjectors = (GlobalInjector: MagnumDI, composed: Compose
 
   let results = map((plugin) => {
     let PluginName = getFqShortname(plugin)
+    let FQN = getFqn(plugin)
     plugin.logger.log('Populating Child injector.')
-    let ChildInjector = GlobalInjector.createChain(getFqn(plugin))
+    let ChildInjector = GlobalInjector.createChain(FQN)
     ChildInjector.anything('PluginStore', {})
     ChildInjector.anything('PluginVariables', plugin.runtimeVariables)
     ChildInjector.anything('PluginLogger', plugin.logger)

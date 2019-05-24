@@ -14,17 +14,19 @@ import {EventEmitter} from 'events'
 
 import {rightBar} from "../Common/frameworkOutputs";
 import {LogManager} from "../FrameworkLogger/LogManager";
-import {getFqShortname, getFqParentname, getFqn} from "@pomegranate/plugin-tools";
+// import {getFqShortname, getFqParentname, getFqn} from "@pomegranate/plugin-tools";
+import {getFqShortname, getFqParentname, getFqn} from "../Plugin/helpers";
 
 export const PopulateInjectors = (LogManager: LogManager, frameworkMetrics, GlobalInjector: MagnumDI, FrameworkEvents: EventEmitter, composed: ComposedPlugin[]) => {
   rightBar(LogManager.use('system')).run({msg: 'Populating Plugin child injectors'})
   frameworkMetrics.startFrameworkPhase('PopulateInjectors')
 
   let results = map((plugin) => {
-    let ParentName = getFqParentname(plugin)
+    // let ParentName = getFqParentname(plugin)
     let PluginName = getFqShortname(plugin)
+    let FQN = getFqn(plugin)
     plugin.logger.log('Populating Child injector.')
-    let ChildInjector = GlobalInjector.createChain(getFqn(plugin))
+    let ChildInjector = GlobalInjector.createChain(FQN)
     ChildInjector.anything('PluginStore', {})
     ChildInjector.anything('PluginVariables', plugin.runtimeVariables)
     ChildInjector.anything('PluginLogger', plugin.logger)

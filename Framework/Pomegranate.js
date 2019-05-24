@@ -36,7 +36,7 @@ const helpers_1 = require("./Plugin/helpers");
 const stringFuns_1 = require("./Common/stringFuns");
 const Handlebars = __importStar(require("handlebars"));
 const pluginPluralizer = stringFuns_1.pluralizer({ negative: 'plugins', zero: 'plugins', many: 'plugins', one: 'plugin' });
-const isCommand = fp_1.matchesProperty('configuration.type', 'command');
+const isCommand = fp_1.matchesProperty('state.configuration.type', 'command');
 const Bootstrap_1 = require("./Bootstrap");
 function installPlugins(plugins) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -124,6 +124,11 @@ function Pomegranate(baseDirectory, config) {
          */
         let compPlugins = composePlugins_1.composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, GlobalInjector);
         let composed = yield compPlugins(validatedPlugins);
+        // let outdatedTools = reduce((acc, plugin) => {
+        //   //@ts-ignore
+        //   console.log(plugin.computedMetadata)
+        //   return acc
+        // }, [],composed)
         /*
          * Validate our current plugins, load config files, ensure directories are available.
          */

@@ -77,7 +77,7 @@ function newStructure(pluginData) {
 }
 
 function structure(composedPlugin: any, result) {
-  let type = get('configuration.type', composedPlugin)
+  let type = get('state.configuration.type', composedPlugin)
 
   return handleInjectable({type, composedPlugin, result})
 }
@@ -122,14 +122,14 @@ function loghandler(plugin) {
 
 
 export function placeInjectables(composedPlugin, hookResult, pluginLogger, GlobalInjector: MagnumDI, LogManager) {
-  let type = get('configuration.type', composedPlugin)
+  let type = get('state.configuration.type', composedPlugin)
   let data = {
     type,
     plugin: {
-      configuration: get('configuration', composedPlugin),
-      parents: get('parents', composedPlugin),
-      namespace: get('namespace', composedPlugin),
-      application: get('application', composedPlugin),
+      configuration: get('state.configuration', composedPlugin),
+      parents: get('loadMetadata.parents', composedPlugin),
+      namespace: get('loadMetadata.namespace', composedPlugin),
+      application: get('loadMetadata.application', composedPlugin),
     },
     hookResult
   }
@@ -154,7 +154,8 @@ function composeLoadRunner(frameworkConf: ValidatedConfiguration, LogManager: Lo
     let ChildInjector = composedPlugin.injector
     let PluginTimer = ChildInjector.get('PluginTimer')
     let PluginLogger = ChildInjector.get('PluginLogger')
-    let hookFn = composedPlugin.hooks['load']
+    //@ts-ignore
+    let hookFn = composedPlugin.state.hooks['load']
 
     PluginLogger.log('Loading')
     let racer = PluginTimer.start()
@@ -179,13 +180,14 @@ function composeLoadRunner(frameworkConf: ValidatedConfiguration, LogManager: Lo
 
 function composeStartRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, GlobalInjector: MagnumDI) {
   return async function startRunner(composedPlugin: ComposedPlugin) {
-    let pluginName = get('configuration.name', composedPlugin)
+    let pluginName = get('state.configuration.name', composedPlugin)
     frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'start')
 
     let ChildInjector = composedPlugin.injector
     let PluginTimer = ChildInjector.get('PluginTimer')
     let PluginLogger = ChildInjector.get('PluginLogger')
-    let hookFn = composedPlugin.hooks['start']
+    //@ts-ignore
+    let hookFn = composedPlugin.state.hooks['start']
 
     PluginLogger.log('Starting')
     let racer = PluginTimer.start()
@@ -206,13 +208,14 @@ function composeStartRunner(frameworkConf: ValidatedConfiguration, LogManager: L
 
 function composeStopRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, GlobalInjector: MagnumDI) {
   return async function stopRunner(composedPlugin: ComposedPlugin) {
-    let pluginName = get('configuration.name', composedPlugin)
+    let pluginName = get('state.configuration.name', composedPlugin)
     frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'stop')
 
     let ChildInjector = composedPlugin.injector
     let PluginTimer = ChildInjector.get('PluginTimer')
     let PluginLogger = ChildInjector.get('PluginLogger')
-    let hookFn = composedPlugin.hooks['stop']
+    //@ts-ignore
+    let hookFn = composedPlugin.state.hooks['stop']
     PluginLogger.log('Stopping')
     let racer = PluginTimer.start()
 

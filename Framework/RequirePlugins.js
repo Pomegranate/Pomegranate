@@ -29,7 +29,8 @@ const filterNamespaces = namespaces => fp_1.compose(fp_1.fromPairs, fp_1.filter(
 }), fp_1.toPairs, fp_1.get('pkgDependencies'));
 function RequirePlugins(pomConfig, LogManager) {
     return __awaiter(this, void 0, void 0, function* () {
-        let frameworkPlugins = yield discoverPlugins_1.discoverFramework([AddUtilities_1.Plugin.getPlugin().state]);
+        let p = yield AddUtilities_1.Plugin.getPlugin();
+        let frameworkPlugins = yield discoverPlugins_1.discoverFramework([p]);
         LogManager.use('pomegranate').log(`Found ${frameworkPlugins.length} framework plugins.`);
         let namespaces = normalizeNamespaces(pomConfig);
         LogManager.use('pomegranate').log(`Loading namespaced plugins from ${namespaces.join(', ')}.`);

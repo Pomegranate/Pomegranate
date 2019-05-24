@@ -12,15 +12,28 @@ import {reportEarlyErrors} from "../Common/ErrorReporters";
 import {PomLogManager} from "../FrameworkLogger/LogManager";
 import {CreateFrameworkLogHandler} from "../FrameworkLogger/FrameworkLogHandler";
 
+import {transformFrameworkConfig, frameworkConfigValid} from "../Validation";
+
 export async function Configure(frameworkMetrics, baseDirectory: string, config: PomegranateConfiguration) {
+
+  let transformConfig = transformFrameworkConfig(baseDirectory)
+
   try {
     frameworkMetrics.startFrameworkPhase('FrameworkConfig')
+    let FrameworkConfiguration = await transformConfig(config)
+    if(!frameworkConfigValid(FrameworkConfiguration)){
+      console.log(FrameworkConfiguration)
+    }
+
+
 
     let PomConfig = await PomegranateConfig(baseDirectory, config)
 
+
     PomConfig.FrameworkMetrics = frameworkMetrics
 
-    let FrameworkConfiguration = FutureState<ValidatedConfiguration>(PomConfig)
+    // let FrameworkConfiguration = FutureState<ValidatedConfiguration>(PomConfig)
+    console.log(FrameworkConfiguration)
     let loggerFactory = createLoggerFactory(PomConfig)
     // let frameworkLogger = loggerFactory.run({appendString: 'Pomegranate:', colors: {log: 'magenta'}})
 

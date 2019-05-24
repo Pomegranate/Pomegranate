@@ -39,6 +39,7 @@ const parentRequire = function (id) {
         throw new Error("Cannot find module '" + id + "' from parent...");
     }
 };
+// Ensures that the plugin file we are trying to load exports a plugin on the `exports.Plugin` property
 const eitherUnwrapOrFail = (o, filename) => {
     return (fp_1.isFunction(fp_1.get('Plugin.getPlugin', o)))
         ? monet_1.Right(o.Plugin)
@@ -79,12 +80,16 @@ function isApplicationBuilder(builder) {
 const unrollWrapper = (ns, loadSrc, moduleSrc) => {
     return (function unroll(parents = []) {
         let lineage = fp_1.clone(parents);
-        return (builder) => {
-            let plugin = builder.getPlugin();
+        return (builder) => __awaiter(this, void 0, void 0, function* () {
+            let plugin = yield builder.getPlugin();
             if (isApplicationBuilder(plugin)) {
                 parents.push(plugin.state.configuration.name);
-                let applicationPlugins = fp_1.map(p => { p.application = true; return p; }, fp_1.flattenDeep(fp_1.map(unroll(parents), plugin.state.applicationPlugins)));
-                return applicationPlugins;
+                let applicationPlugins = fp_1.map((p) => __awaiter(this, void 0, void 0, function* () {
+                    let g = yield p;
+                    g.application = true;
+                    return g;
+                }), fp_1.flattenDeep(fp_1.map(unroll(parents), plugin.state.applicationPlugins)));
+                return bluebird_1.default.all(applicationPlugins);
             }
             let appPlugin = false;
             let appMemberArr = fp_1.get('state.configuration.applicationMember', plugin);
@@ -93,31 +98,45 @@ const unrollWrapper = (ns, loadSrc, moduleSrc) => {
                 lineage = [...lineage, ...appMemberArr];
                 appPlugin = true;
             }
-            console.log(ns, lineage, plugin.state.configuration.name);
             // This is everything but application Plugins
-            let r = monet_1.Right(plugin.state).map((v) => {
-                v.parents = lineage;
-                v.moduleSrc = moduleSrc;
-                v.namespace = ns;
-                v.loadSrc = loadSrc;
-                v.application = appPlugin;
-                return v;
+            // let r = Right(plugin.state).map((v) => {
+            //
+            //   v.parents = lineage
+            //   v.moduleSrc = moduleSrc
+            //   v.namespace = ns
+            //   v.loadSrc = loadSrc
+            //   v.application = appPlugin
+            //   return v
+            // })
+            let r = monet_1.Right(plugin).map((p) => {
+                p.loadMetadata = {
+                    parents: lineage,
+                    moduleSrc: moduleSrc,
+                    namespace: ns,
+                    loadSrc: loadSrc,
+                    application: appPlugin
+                };
+                return p;
             })
                 .cata(fail => {
                 throw fail;
             }, fp_1.identity);
             return [r];
-        };
+        });
     })();
 };
 exports.discoverFramework = (plugins) => {
     return bluebird_1.default.map(plugins, (i) => {
         return monet_1.Right(i)
-            .map((o) => {
-            o.namespace = null;
-            o.loadSrc = 'framework';
-            o.parents = [];
-            return o;
+            .map((p) => {
+            p.loadMetadata = {
+                parents: [],
+                moduleSrc: null,
+                namespace: null,
+                loadSrc: 'framework',
+                application: false
+            };
+            return p;
         })
             .cata(fail => {
             throw fail;
@@ -126,30 +145,19 @@ exports.discoverFramework = (plugins) => {
 };
 exports.discoverNamespaced = (dependencies) => {
     let onlyNs = onlyNamespaced(fp_1.toPairs(dependencies));
-    return bluebird_1.default.map(onlyNs, (i) => {
+    return bluebird_1.default.map(onlyNs, (i) => __awaiter(this, void 0, void 0, function* () {
         let ns = fp_1.first(i);
         let plugin = eitherUnwrapOrFail(parentRequire(ns), i)
             .cata(fail => {
             throw fail;
         }, fp_1.identity);
         let unroll = unrollWrapper(getNamespace(ns), 'namespaced', ns);
-        return unroll(plugin);
-    })
+        // return unroll(plugin)
+        // let u = await
+        return bluebird_1.default.all(unroll(plugin));
+    }))
         .then((plugins) => {
         return fp_1.flattenDeep(plugins);
-    });
-};
-const appendUnwrap = (ns, loadSrc, moduleSrc) => {
-    return fp_1.map((p) => {
-        return p.map((o) => {
-            o.moduleSrc = moduleSrc;
-            o.namespace = ns;
-            o.loadSrc = loadSrc;
-            return o;
-        })
-            .cata(fail => {
-            throw fail;
-        }, fp_1.identity);
     });
 };
 exports.discoverLocal = (pluginDirPath) => {
@@ -157,14 +165,14 @@ exports.discoverLocal = (pluginDirPath) => {
         .then((files) => __awaiter(this, void 0, void 0, function* () {
         let jsFiles = onlyJs(files);
         let dirPathPlugins = yield helpers_1.filterIndexedDirs(pluginDirPath, files);
-        return fp_1.map((i) => {
+        return bluebird_1.default.map([...jsFiles, ...dirPathPlugins], (i) => __awaiter(this, void 0, void 0, function* () {
             let plugin = eitherUnwrapOrFail(require(path_1.join(pluginDirPath, i)), i)
                 .cata(fail => {
                 throw fail;
             }, fp_1.identity);
             let unroll = unrollWrapper(null, 'local', i);
-            return unroll(plugin);
-        }, [...jsFiles, ...dirPathPlugins]);
+            return bluebird_1.default.all(unroll(plugin));
+        }));
     }))
         .then((plugins) => {
         return fp_1.flattenDeep(plugins);

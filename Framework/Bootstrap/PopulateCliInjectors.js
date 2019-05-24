@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const fp_1 = require("lodash/fp");
-const helpers_1 = require("../Plugin/helpers");
 const PluginFiles_1 = require("../Plugin/PluginFiles");
-const plugin_tools_1 = require("@pomegranate/plugin-tools");
+const helpers_1 = require("../Plugin/helpers");
 /**
  * @file PopulateCliInjectors
  * @author Jim Bulkowski <jim.b@paperelectron.com>
@@ -13,8 +12,9 @@ const plugin_tools_1 = require("@pomegranate/plugin-tools");
 exports.PopulateCliInjectors = (GlobalInjector, composed) => {
     let results = fp_1.map((plugin) => {
         let PluginName = helpers_1.getFqShortname(plugin);
+        let FQN = helpers_1.getFqn(plugin);
         plugin.logger.log('Populating Child injector.');
-        let ChildInjector = GlobalInjector.createChain(plugin_tools_1.getFqn(plugin));
+        let ChildInjector = GlobalInjector.createChain(FQN);
         ChildInjector.anything('PluginStore', {});
         ChildInjector.anything('PluginVariables', plugin.runtimeVariables);
         ChildInjector.anything('PluginLogger', plugin.logger);

@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Topological_1 = require("./Topological");
 const fp_1 = require("lodash/fp");
 const helpers_1 = require("../Plugin/helpers");
-const getInjectableParam = fp_1.get('configuration.injectableParam');
+const getInjectableParam = fp_1.get('state.configuration.injectableParam');
 const getName = helpers_1.getFqShortname;
-const getDepends = fp_1.getOr([], 'configuration.depends');
-const getOptional = fp_1.getOr([], 'configuration.optional');
-const getProvides = fp_1.getOr([], 'configuration.provides');
+const getDepends = fp_1.getOr([], 'state.configuration.depends');
+const getOptional = fp_1.getOr([], 'state.configuration.optional');
+const getProvides = fp_1.getOr([], 'state.configuration.provides');
 const extractDeps = fp_1.map((p) => {
     if (getInjectableParam(p)) {
         return { injectableParam: getInjectableParam(p), name: getName(p) };
@@ -31,7 +31,7 @@ const extractPluginOrder = (plugins) => {
     //@ts-ignore
     return fp_1.compose(fp_1.map(helpers_1.getFqShortname), fp_1.filter(fp_1.isObject), mapFn);
 };
-const getFramework = p => p.configuration.frameworkPlugin;
+const getFramework = p => p.state.configuration.frameworkPlugin;
 const noFramework = fp_1.filter(fp_1.negate(getFramework));
 const onlyFramework = fp_1.filter(getFramework);
 function solveOrdering(plugins) {
@@ -53,7 +53,7 @@ function solveOrdering(plugins) {
                 if (p !== name) {
                     topo.add(p, name);
                 }
-            }, plugin.configuration.provides);
+            }, plugin.state.configuration.provides);
         }
     }, noFramework(plugins));
     let extract = extractPluginOrder(plugins);

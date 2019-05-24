@@ -5,7 +5,7 @@
  * @project @framework
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-import {filter, map, find, merge, negate, isNull, toPairs, fromPairs, pickBy, matchesProperty} from 'lodash/fp'
+import {filter, map, find, merge, negate, isNull, toPairs, fromPairs, pickBy, matchesProperty, reduce, has} from 'lodash/fp'
 import {EventEmitter} from 'events'
 
 import {DLinkedList} from "immutable-dll";
@@ -25,7 +25,7 @@ import * as Handlebars from 'handlebars'
 
 const pluginPluralizer = pluralizer({negative: 'plugins',zero: 'plugins', many: 'plugins', one: 'plugin'})
 
-const isCommand = matchesProperty('configuration.type', 'command')
+const isCommand = matchesProperty('state.configuration.type', 'command')
 
 import {
   Configure,
@@ -39,6 +39,7 @@ import {
   OrderPlugins,
 } from './Bootstrap'
 import {IFutureState} from "./Common/FutureState";
+import {CreationMetadata} from "@pomegranate/plugin-tools/PluginTools/builders/Builder";
 
 export interface PomegranateRuntime {
   events: EventEmitter
@@ -132,10 +133,12 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
   let loadedPlugins = filter((plugin) => {
     return !isCommand(plugin)
   }, allPlugins)
+
   /*
    * Validates plugin types, values and usage constraints.
    */
   let validatedPlugins = await ValidatePlugins(FrameworkState, LogManager, GlobalInjector, loadedPlugins )
+
   /*
    * Extract global configuration data from all plugins, including the master required plugin array.
    */
@@ -147,6 +150,11 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
   let compPlugins = composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, GlobalInjector)
   let composed = await compPlugins(validatedPlugins)
 
+  // let outdatedTools = reduce((acc, plugin) => {
+  //   //@ts-ignore
+  //   console.log(plugin.computedMetadata)
+  //   return acc
+  // }, [],composed)
   /*
    * Validate our current plugins, load config files, ensure directories are available.
    */
@@ -177,10 +185,13 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
 
 
   let orderedPlugins = OrderPlugins(LogManager, frameworkMetrics,finalPlugins)
+
+
   // Create the Doubly linked list.
   let PList = DLinkedList.fromArray<ComposedPlugin>(orderedPlugins)
 
   let {runLoadHook, runStartHook, runStopHook} = composeHookRunners(PomConfig, LogManager,GlobalInjector)
+
   LogManager.use('system').log('Pomegranate Ready.', 2)
 
   return {
@@ -203,7 +214,6 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
         LogManager.use('system').log('Pomegranate loaded...',2 )
         return RuntimeState
       } catch (e) {
-
         RuntimeState.isFailed = true
         RuntimeState.failureError = e
         LogManager.use('pomegranate').error(e.message, 0)

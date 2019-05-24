@@ -16,7 +16,7 @@ const isDir = memoize((path: string): boolean => {
   return pathExistsSync(path) && statSync(path).isDirectory()
 })
 
-const joinBP = curry((basePath: string, path: string): string => {
+export const joinBP = curry((basePath: string, path: string): string => {
   return join(normalize(basePath), path)
 })
 

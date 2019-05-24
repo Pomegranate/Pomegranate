@@ -21,7 +21,7 @@ export const findMissingDeps = compose(filter(removeEmpty), map(missingDep))
 
 
 const providesDep = (plugin) => {
-  return [getFqShortname(plugin), plugin.configuration.provides]
+  return [getFqShortname(plugin), plugin.state.configuration.provides]
 }
 
 export const getProvidingPlugins = compose(filter(removeEmpty), map(providesDep))

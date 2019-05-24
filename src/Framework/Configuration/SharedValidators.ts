@@ -131,7 +131,7 @@ export const configInjectorDeps = (prop: 'depends' | 'provides' | 'optional') =>
 
 export const hooksRequired = (prop: 'load') => (loadHook) => isFunction(loadHook) ? loadHook : new Error(`${toUpper(prop)} Hook must be a function.`)
 
-export const hooksOptional = (prop: 'start' | 'stop') => (optionalHook, srcPlugin) => isFunction(optionalHook) ? optionalHook : isNullOrUndefined(srcPlugin) ? () => {
+export const hooksOptional = (prop: 'start' | 'stop') => (optionalHook, srcPlugin) => isFunction(optionalHook) ? optionalHook : isNullOrUndefined(optionalHook) ? () => {
 } : new Error(`${toUpper(prop)} Hook if defined, must be a function.`)
 
 export const commands = (commands) => {

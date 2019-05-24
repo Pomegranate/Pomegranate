@@ -13,9 +13,9 @@ import {getFqShortname} from "../Plugin/helpers";
 import {FutureState} from "../Common/FutureState";
 import {LogManager} from "../FrameworkLogger/LogManager";
 
-const injectableParams = (pluginArray: ValidatedPlugin[]) => {
+const injectableParams = (pluginArray: any[]) => {
   return filter(Boolean,map((plugin) => {
-    return getFqShortname(plugin) === plugin.configuration.injectableParam ? null : plugin.configuration.injectableParam
+    return getFqShortname(plugin) === plugin.state.configuration.injectableParam ? null : plugin.state.configuration.injectableParam
   }, pluginArray))
 }
 

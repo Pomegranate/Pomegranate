@@ -25,12 +25,12 @@ const bluebird_1 = __importDefault(require("bluebird"));
 const isDir = fp_1.memoize((path) => {
     return fs_extra_1.pathExistsSync(path) && fs_extra_1.statSync(path).isDirectory();
 });
-const joinBP = fp_1.curry((basePath, path) => {
+exports.joinBP = fp_1.curry((basePath, path) => {
     return path_1.join(path_1.normalize(basePath), path);
 });
 function joinBasePath(basePath, path) {
     // @ts-ignore
-    return joinBP(...arguments);
+    return exports.joinBP(...arguments);
 }
 exports.joinBasePath = joinBasePath;
 const pathIs = lodash_fun_1.ifElseWith(isDir);

@@ -1,11 +1,11 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @file merge
  * @author Jim Bulkowski <jim.b@paperelectron.com>
  * @project Pomegranate
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-Object.defineProperty(exports, "__esModule", { value: true });
 const SharedValidators_1 = require("../SharedValidators");
 exports.InjectableValidator = {
     variables: SharedValidators_1.variables,

@@ -9,11 +9,11 @@ import {Topological} from "./Topological";
 import {compose, each, filter, flatten, groupBy, map, getOr, get, keyBy, isObject, isArray, negate} from "lodash/fp";
 import {getFqShortname} from "../Plugin/helpers";
 
-const getInjectableParam = get('configuration.injectableParam')
+const getInjectableParam = get('state.configuration.injectableParam')
 const getName = getFqShortname
-const getDepends = getOr([], 'configuration.depends')
-const getOptional = getOr([], 'configuration.optional')
-const getProvides = getOr([], 'configuration.provides')
+const getDepends = getOr([], 'state.configuration.depends')
+const getOptional = getOr([], 'state.configuration.optional')
+const getProvides = getOr([], 'state.configuration.provides')
 
 const extractDeps = map((p: any) => {
   if(getInjectableParam(p)){
@@ -46,7 +46,7 @@ const extractPluginOrder = (plugins) => {
   return compose(map(getFqShortname),filter(isObject), mapFn )
 }
 
-const getFramework = p => p.configuration.frameworkPlugin
+const getFramework = p => p.state.configuration.frameworkPlugin
 const noFramework = filter(negate(getFramework))
 const onlyFramework = filter(getFramework)
 
@@ -74,7 +74,7 @@ export function solveOrdering(plugins: any){
           topo.add(p, name)
         }
 
-      }, plugin.configuration.provides)
+      }, plugin.state.configuration.provides)
     }
 
   }, noFramework(plugins))

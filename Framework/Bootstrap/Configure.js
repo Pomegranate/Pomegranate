@@ -21,10 +21,14 @@ const FrameworkLogger_1 = require("../FrameworkLogger");
 const ErrorReporters_1 = require("../Common/ErrorReporters");
 const LogManager_1 = require("../FrameworkLogger/LogManager");
 const FrameworkLogHandler_1 = require("../FrameworkLogger/FrameworkLogHandler");
+const Validation_1 = require("../Validation");
 function Configure(frameworkMetrics, baseDirectory, config) {
     return __awaiter(this, void 0, void 0, function* () {
+        let transformConfig = Validation_1.transformFrameworkConfig(baseDirectory);
         try {
             frameworkMetrics.startFrameworkPhase('FrameworkConfig');
+            let fConf = yield transformConfig(config);
+            console.log(fConf);
             let PomConfig = yield Configuration_1.PomegranateConfig(baseDirectory, config);
             PomConfig.FrameworkMetrics = frameworkMetrics;
             let FrameworkConfiguration = FutureState_1.FutureState(PomConfig);

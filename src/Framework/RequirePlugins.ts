@@ -46,7 +46,8 @@ const filterNamespaces = namespaces => compose(
 )
 
 export async function RequirePlugins(pomConfig: ValidatedConfiguration, LogManager: LogManager) {
-  let frameworkPlugins = await discoverFramework([AddUtilities.getPlugin().state])
+  let p = await AddUtilities.getPlugin()
+  let frameworkPlugins = await discoverFramework([p])
   LogManager.use('pomegranate').log(`Found ${frameworkPlugins.length} framework plugins.`)
 
   let namespaces = normalizeNamespaces(pomConfig)

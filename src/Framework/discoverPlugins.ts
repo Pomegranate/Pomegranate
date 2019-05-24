@@ -50,6 +50,8 @@ const parentRequire = function(id) {
 
 };
 
+// Ensures that the plugin file we are trying to load exports a plugin on the `exports.Plugin` property
+
 const eitherUnwrapOrFail = (o, filename): Either<Error, Builder> => {
   return (isFunction(get('Plugin.getPlugin', o)))
     ? Right(o.Plugin)
@@ -103,12 +105,18 @@ function isApplicationBuilder(builder: Builder): builder is ApplicationBuilder {
 const unrollWrapper = (ns, loadSrc, moduleSrc) => {
   return (function unroll(parents = []) {
     let lineage = clone(parents)
-    return (builder: any) => {
-      let plugin = builder.getPlugin()
+    return async (builder: any) => {
+      let plugin = await builder.getPlugin()
       if (isApplicationBuilder(plugin)) {
         parents.push(plugin.state.configuration.name)
-        let applicationPlugins = map(p => {p.application = true; return p}, flattenDeep(map(unroll(parents), plugin.state.applicationPlugins)))
-        return applicationPlugins
+        let applicationPlugins = map(async (p) => {
+          let g = await p
+          g.application = true
+          return g
+        }, flattenDeep(map(unroll(parents), plugin.state.applicationPlugins)))
+
+
+        return Bluebird.all(applicationPlugins)
       }
 
       let appPlugin = false
@@ -118,16 +126,27 @@ const unrollWrapper = (ns, loadSrc, moduleSrc) => {
         lineage = [...lineage, ...appMemberArr]
         appPlugin = true
       }
-      // console.log(ns, lineage, plugin.state.configuration.name)
 
       // This is everything but application Plugins
-      let r = Right(plugin.state).map((v) => {
-        v.parents = lineage
-        v.moduleSrc = moduleSrc
-        v.namespace = ns
-        v.loadSrc = loadSrc
-        v.application = appPlugin
-        return v
+      // let r = Right(plugin.state).map((v) => {
+      //
+      //   v.parents = lineage
+      //   v.moduleSrc = moduleSrc
+      //   v.namespace = ns
+      //   v.loadSrc = loadSrc
+      //   v.application = appPlugin
+      //   return v
+      // })
+      let r = Right(plugin).map((p) => {
+        p.loadMetadata = {
+          parents: lineage,
+          moduleSrc: moduleSrc,
+          namespace: ns,
+          loadSrc: loadSrc,
+          application: appPlugin
+        }
+
+        return p
       })
         .cata(
           fail => {
@@ -141,14 +160,19 @@ const unrollWrapper = (ns, loadSrc, moduleSrc) => {
 }
 
 
-export const discoverFramework = (plugins: PomegranatePlugin[]): Bluebird<any[]> => {
+export const discoverFramework = (plugins: any[]): Bluebird<any[]> => {
   return Bluebird.map(plugins, (i) => {
     return Right(i)
-      .map((o: ValidatedPlugin) => {
-        o.namespace = null
-        o.loadSrc = 'framework'
-        o.parents = []
-        return o
+      .map((p: any) => {
+        p.loadMetadata = {
+          parents: [],
+          moduleSrc: null,
+          namespace: null,
+          loadSrc: 'framework',
+          application: false
+        }
+
+        return p
       })
       .cata(
         fail => {
@@ -162,7 +186,7 @@ export const discoverFramework = (plugins: PomegranatePlugin[]): Bluebird<any[]>
 
 export const discoverNamespaced = (dependencies): Bluebird<any[]> => {
   let onlyNs = onlyNamespaced(toPairs(dependencies))
-  return Bluebird.map(onlyNs, (i) => {
+  return Bluebird.map(onlyNs, async (i) => {
     let ns = first(i)
 
     let plugin = eitherUnwrapOrFail(parentRequire(ns), i)
@@ -175,7 +199,9 @@ export const discoverNamespaced = (dependencies): Bluebird<any[]> => {
 
     let unroll = unrollWrapper(getNamespace(ns), 'namespaced', ns)
 
-    return unroll(plugin)
+    // return unroll(plugin)
+    // let u = await
+    return Bluebird.all(unroll(plugin))
   })
     .then((plugins) => {
       return flattenDeep(plugins)
@@ -183,29 +209,12 @@ export const discoverNamespaced = (dependencies): Bluebird<any[]> => {
 
 }
 
-const appendUnwrap = (ns, loadSrc, moduleSrc) => {
-  return map((p: Either<Error, ValidatedPlugin>) => {
-    return p.map((o) => {
-      o.moduleSrc = moduleSrc
-      o.namespace = ns
-      o.loadSrc = loadSrc
-      return o
-    })
-      .cata(
-        fail => {
-          throw fail
-        },
-        identity
-      )
-  })
-}
-
 export const discoverLocal = (pluginDirPath): Promise<any[]> | Bluebird<any[]> => {
   return readdir(pluginDirPath)
     .then(async (files: string[]) => {
       let jsFiles = onlyJs(files)
       let dirPathPlugins = await filterIndexedDirs(pluginDirPath, files)
-      return map((i) => {
+      return Bluebird.map([...jsFiles, ...dirPathPlugins], async (i) => {
         let plugin = eitherUnwrapOrFail(require(join(pluginDirPath, i)), i)
           .cata(
             fail => {
@@ -214,8 +223,8 @@ export const discoverLocal = (pluginDirPath): Promise<any[]> | Bluebird<any[]> =
             identity
           )
         let unroll = unrollWrapper(null, 'local', i)
-        return unroll(plugin)
-      }, [...jsFiles, ...dirPathPlugins])
+        return Bluebird.all(unroll(plugin))
+      })
     })
     .then((plugins) => {
       return flattenDeep(plugins)

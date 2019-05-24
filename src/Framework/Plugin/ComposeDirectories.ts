@@ -25,7 +25,6 @@ export const ComposeDirectories = (FrameworkState: ComposedFrameworkState)=>{
 
 
       let runtimeDirs = reduce((acc, directory) => {
-        // console.log(directory)
         if (isPluginDirectory(directory)) {
           acc['runtimeDirs'][directory.prop] = joinToWorkBase(directory.path)
           acc['projectDirs'][directory.prop] = joinToProjectBase(directory.path)
@@ -35,11 +34,10 @@ export const ComposeDirectories = (FrameworkState: ComposedFrameworkState)=>{
         acc['projectDirs'][directory] = joinToProjectBase(directory)
 
         return acc
-      }, {runtimeDirs: {}, projectDirs: {}}, skeleton.directories)
+      }, {runtimeDirs: {}, projectDirs: {}}, skeleton.state.directories)
 
       collector.runtimeDirectories = runtimeDirs.runtimeDirs
       collector.projectDirectories = runtimeDirs.projectDirs
-
       return collector
     }
     collector.runtimeDirectories = null

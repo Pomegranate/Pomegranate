@@ -4,10 +4,11 @@
  * @project @framework
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-import {FutureState} from '../Common/FutureState'
+
 import {frameworkConfigValidators} from "./Validators/frameworkConfigValidators";
 import {pluginConfigValidators} from "./Validators/pluginConfigValidator";
-import {conformDeep} from 'lodash-fun'
+import {conformDeep, transformKeys} from 'lodash-fun'
+import {transformer} from "./Validators/pluginTransformer";
 import {Metrics} from "../FrameworkMetrics";
 import {MagnumDI} from "magnum-di";
 
@@ -70,12 +71,18 @@ export interface ComposedFrameworkState extends RuntimeFrameworkState {
 
 export const PomegranateConfig = (searchDirectory, conf: PomegranateConfiguration): any => {
   let configValidator = frameworkConfigValidators(searchDirectory)
+
   return conformDeep(configValidator, conf)
 }
 
 export const pluginConfig = (FrameworkState: RuntimeFrameworkState, GlobalInjector: MagnumDI): any => {
   let configValidator = pluginConfigValidators(FrameworkState, GlobalInjector)
   return conformDeep(configValidator)
+}
+
+export const transformPlugin = (FrameworkState: RuntimeFrameworkState, GlobalInjector: MagnumDI) : any => {
+  let pluginTransformer = transformer(FrameworkState, GlobalInjector)
+  return transformKeys(pluginTransformer)
 }
 
 export {updateFrameworkMeta} from './updateFrameworkMeta'

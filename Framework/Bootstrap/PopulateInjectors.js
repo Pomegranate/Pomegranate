@@ -10,15 +10,17 @@ const fp_1 = require("lodash/fp");
 const Timers_1 = require("../Plugin/Timers");
 const PluginFiles_1 = require("../Plugin/PluginFiles");
 const frameworkOutputs_1 = require("../Common/frameworkOutputs");
-const plugin_tools_1 = require("@pomegranate/plugin-tools");
+// import {getFqShortname, getFqParentname, getFqn} from "@pomegranate/plugin-tools";
+const helpers_1 = require("../Plugin/helpers");
 exports.PopulateInjectors = (LogManager, frameworkMetrics, GlobalInjector, FrameworkEvents, composed) => {
     frameworkOutputs_1.rightBar(LogManager.use('system')).run({ msg: 'Populating Plugin child injectors' });
     frameworkMetrics.startFrameworkPhase('PopulateInjectors');
     let results = fp_1.map((plugin) => {
-        let ParentName = plugin_tools_1.getFqParentname(plugin);
-        let PluginName = plugin_tools_1.getFqShortname(plugin);
+        // let ParentName = getFqParentname(plugin)
+        let PluginName = helpers_1.getFqShortname(plugin);
+        let FQN = helpers_1.getFqn(plugin);
         plugin.logger.log('Populating Child injector.');
-        let ChildInjector = GlobalInjector.createChain(plugin_tools_1.getFqn(plugin));
+        let ChildInjector = GlobalInjector.createChain(FQN);
         ChildInjector.anything('PluginStore', {});
         ChildInjector.anything('PluginVariables', plugin.runtimeVariables);
         ChildInjector.anything('PluginLogger', plugin.logger);
