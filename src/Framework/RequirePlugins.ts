@@ -22,18 +22,22 @@ import {
 } from "lodash/fp";
 import {ValidatedConfiguration} from "./Configuration";
 import {LogManager} from "./FrameworkLogger/LogManager";
+import {ValidatedTransformer} from "./Validation";
 
 const startsWithAt = startsWith('@')
 const getNamespace = mod => startsWithAt(mod) ? split('/', mod)[0] : null
 
 // No longer - Adds @pomOfficial to the namespace search list if it is missing.
-let normalizeNamespaces = compose(
-  map((ns: string) => {
-    return startsWithAt(ns) ? ns : `@${ns}`
-  }),
-  get('pluginNamespaces')
-)
+// let normalizeNamespaces = compose(
+//   map((ns: string) => {
+//     return startsWithAt(ns) ? ns : `@${ns}`
+//   }),
+//   get('pluginNamespaces')
+// )
 
+let normalizeNamespaces = map((ns: string) => {
+    return startsWithAt(ns) ? ns : `@${ns}`
+  })
 
 const filterNamespaces = namespaces => compose(
   fromPairs,
@@ -41,27 +45,26 @@ const filterNamespaces = namespaces => compose(
     let ns = getNamespace(module)
     return ns && includes(ns, namespaces)
   }),
-  toPairs,
-  get('pkgDependencies')
+  toPairs
 )
 
-export async function RequirePlugins(pomConfig: ValidatedConfiguration, LogManager: LogManager) {
+export async function RequirePlugins(FrameworkConfiguration: ValidatedTransformer, LogManager: LogManager) {
   let p = await AddUtilities.getPlugin()
   let frameworkPlugins = await discoverFramework([p])
   LogManager.use('pomegranate').log(`Found ${frameworkPlugins.length} framework plugins.`)
 
-  let namespaces = normalizeNamespaces(pomConfig)
+  let namespaces = normalizeNamespaces(FrameworkConfiguration.getKey('pluginNamespaces'))
 
   LogManager.use('pomegranate').log(`Loading namespaced plugins from ${namespaces.join(', ')}.`)
 
   // Extract only the plugins with namespaces in config.pluginNamespaces
   let namespaceFilter = filterNamespaces(namespaces)
-  let nsdeps = namespaceFilter(pomConfig)
+  let nsdeps = namespaceFilter(FrameworkConfiguration.getKey('pkgDependencies'))
 
   let externalNamespaced = await discoverNamespaced(nsdeps)
   LogManager.use('pomegranate').log(`Found ${externalNamespaced.length} namespaced plugins.`)
 
-  let localPlugins = await discoverLocal(get('pluginDirectory', pomConfig))
+  let localPlugins = await discoverLocal(FrameworkConfiguration.getKey('buildDirs.pluginDirectory'))
   LogManager.use('pomegranate').log(`Found ${localPlugins.length} local plugins.`)
 
 

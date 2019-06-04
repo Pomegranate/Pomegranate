@@ -18,9 +18,10 @@ import {configObjectPath, getConfigFilePath, getFqShortname} from "./Plugin/help
 import {ComposeDirectories} from "./Plugin/ComposeDirectories";
 import {rightBar} from "./Common/frameworkOutputs";
 import {LogManager} from "./FrameworkLogger/LogManager";
+import {ValidatedTransformer} from "./Validation";
 
 
-export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogManager, frameworkMetrics, loggerFactory, PluginDI: MagnumDI) => {
+export const composePlugins = (FrameworkConfiguration: ValidatedTransformer, LogManager: LogManager, frameworkMetrics, loggerFactory, PluginDI: MagnumDI) => {
 
   const composePlugin = composeP(async (plugin)=>{
 
@@ -35,11 +36,11 @@ export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogM
       let pullProp = configObjectPath(skeleton)
 
 
-      pomConf.FrameworkMetrics.startPluginPhase(PluginName, 'initialize')
+      frameworkMetrics.startPluginPhase(PluginName, 'initialize')
 
       return FutureState<any>(skeleton)
         .map(async (skeleton, collector) => { // Extract Plugin variables and runtime config.
-          let fileVars = await requireFile(pomConf.pluginConfigDirectory, `${getConfigFilePath(skeleton)}.js`)
+          let fileVars = await requireFile(FrameworkConfiguration.getKey('buildDirs.pluginConfigDirectory'), `${getConfigFilePath(skeleton)}.js`)
           let inject = isFunction(fileVars) ? PluginDI.inject(fileVars) : fileVars
           let vars = getOr(skeleton.state.variables, pullProp('variables'), inject)
           let conf = getOr({disabled: false}, pullProp('config'), inject)
@@ -51,7 +52,7 @@ export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogM
           collector.runtimeVariables = vars
           return collector
         })
-        .map(ComposeDirectories(pomConf))
+        .map(ComposeDirectories(FrameworkConfiguration))
         .map((skeleton, collector) => { // Create our custom Pom logger instance, to use downstream from here.
           let logLevel= get('runtimeConfiguration.logLevel', collector)
           let configFormatting = get('runtimeConfiguration.logFormat', collector)
@@ -62,9 +63,9 @@ export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogM
           return collector
         })
         .map((skeleton, collector) => {
-          collector.timeout = pomConf.timeout
+          collector.timeout = FrameworkConfiguration.getKey('timeout')
           //@ts-ignore
-          let missingDeps = difference(skeleton.state.configuration.depends, pomConf.allAvailable)
+          let missingDeps = difference(skeleton.state.configuration.depends, FrameworkConfiguration.getKey('runtime.allAvailable'))
           if (missingDeps.length) {
             //@ts-ignore
             collector.logger.error(`Missing required dependencies: ${missingDeps.join(', ')}`, 0)
@@ -79,12 +80,12 @@ export const composePlugins = (pomConf: ComposedFrameworkState, LogManager: LogM
         })
         .map((skeleton, collector) => {
           collector.state.configuration.depends =
-            provideDependencies(get('state.configuration.name', collector), getOr([], 'state.configuration.depends', collector), pomConf.providingPlugins)
+            provideDependencies(get('state.configuration.name', collector), getOr([], 'state.configuration.depends', collector), FrameworkConfiguration.getKey('runtime.providingPlugins'))
           return collector
         })
         .run({})
         .then((result) => {
-          result.logger.log(`Initialized in ${pomConf.FrameworkMetrics.stopPluginPhase(PluginName, 'initialize')}ms`, 3)
+          result.logger.log(`Initialized in ${frameworkMetrics.stopPluginPhase(PluginName, 'initialize')}ms`, 3)
           return result
         })
     })

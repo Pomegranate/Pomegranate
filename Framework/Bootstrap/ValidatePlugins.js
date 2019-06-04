@@ -17,10 +17,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const buildPluginSkeletons_1 = require("../buildPluginSkeletons");
 const ErrorReporters_1 = require("../Common/ErrorReporters");
 const frameworkOutputs_1 = require("../Common/frameworkOutputs");
-function ValidatePlugins(PomConfig, LogManager, GlobalInjector, loadedPlugins) {
+function ValidatePlugins(PomConfig, frameworkMetrics, LogManager, GlobalInjector, loadedPlugins) {
     return __awaiter(this, void 0, void 0, function* () {
         frameworkOutputs_1.rightBar(LogManager.use('system')).run({ msg: 'Validating Plugins' });
-        PomConfig.FrameworkMetrics.startFrameworkPhase('CreatePluginValidator');
+        frameworkMetrics.startFrameworkPhase('CreatePluginValidator');
         function PluginValidator(rawModules) {
             return __awaiter(this, void 0, void 0, function* () {
                 let createSkeletons = buildPluginSkeletons_1.buildPluginSkeletons(PomConfig, LogManager, GlobalInjector);
@@ -30,7 +30,7 @@ function ValidatePlugins(PomConfig, LogManager, GlobalInjector, loadedPlugins) {
         }
         try {
             let validatedPlugins = yield PluginValidator(loadedPlugins);
-            LogManager.use('pomegranate').log(`Plugin validation took ${PomConfig.FrameworkMetrics.stopFrameworkPhase('CreatePluginValidator')}ms.`, 3);
+            LogManager.use('pomegranate').log(`Plugin validation took ${frameworkMetrics.stopFrameworkPhase('CreatePluginValidator')}ms.`, 3);
             return validatedPlugins;
         }
         catch (e) {

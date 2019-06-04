@@ -4,16 +4,19 @@
  * @project Pomegranate
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-import {isNull} from "lodash/fp";
+import {isNull, get, merge} from "lodash/fp";
 import {transformKeys, conformTransformed, isConformError, KeyTransformer} from "lodash-fun";
 import {transformer, conformer} from "./FrameworkConfig";
 
 export interface ValidatedTransformer {
-  originalValues: any
-  transformedValues: any
-  conformedValues: any,
-  transformErrors: null | {[key: string]: Error}
-  conformErrors: null | {[key: string]: Error}
+  originalValues: () => any
+  transformedValues: () => any
+  conformedValues: () => any,
+  transformErrors: () => null | {[key: string]: Error}
+  conformErrors: () => null | {[key: string]: Error}
+  isValid: () => boolean
+  getKey: (key: string) => any
+  mergeValues: (obj: any) => any
 }
 
 export const transformValidate = (transformer: KeyTransformer, conformer: KeyTransformer): (obj: any) => Promise<ValidatedTransformer> => {
@@ -46,11 +49,20 @@ export const transformValidate = (transformer: KeyTransformer, conformer: KeyTra
     }
 
     return {
-      originalValues: obj,
-      transformedValues: transformed,
-      conformedValues: conformed,
-      transformErrors,
-      conformErrors
+      originalValues: () => obj,
+      transformedValues: () => transformed,
+      conformedValues: () => conformed,
+      transformErrors: () => transformErrors,
+      conformErrors: () => conformErrors,
+      isValid: () => {
+        return (isNull(conformErrors) && isNull(transformErrors))
+      },
+      getKey: (key) => {
+        return get(key, conformed)
+      },
+      mergeValues: (obj: any) => {
+        conformed = merge(conformed, obj)
+      }
     }
   }
 }

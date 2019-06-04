@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fp_1 = require("lodash/fp");
 const lodash_fun_1 = require("lodash-fun");
 const stringFuns_1 = require("../../Common/stringFuns");
-const path_1 = require("path");
 const hasHookFuns = lodash_fun_1.hasKeysWith(['load', 'start', 'stop'], fp_1.isFunction);
 const isCommand = fp_1.matchesProperty('configuration.type', 'command');
 const isOverride = fp_1.matchesProperty('configuration.type', 'override');
@@ -38,6 +37,7 @@ const getConfigMeta = fp_1.memoize((srcPlugin) => {
     return { loadSource, moduleName, pluginName, pluginType };
 });
 exports.transformer = (FrameworkState, GlobalInjector) => {
+    let { baseDirectory, projectDirs, buildDirs } = FrameworkState.FrameworkConfiguration.conformedValues();
     return {
         fqn: (_, src) => {
             let ns = fp_1.get('loadMetadata.namespace', src);
@@ -50,9 +50,9 @@ exports.transformer = (FrameworkState, GlobalInjector) => {
             let name = fp_1.get('state.configuration.name', src);
             return fp_1.isString(name) ? [...fqn(src), name] : [];
         },
-        baseDirectory: _ => path_1.normalize(FrameworkState.baseDirectory),
-        projectDirectory: _ => path_1.normalize(FrameworkState.projectDirectory),
-        buildDirectory: _ => path_1.normalize(FrameworkState.buildDirectory),
+        baseDirectory: baseDirectory,
+        projectDirectory: projectDirs.base,
+        buildDirectory: buildDirs.base
     };
 };
 // fqn: (_, srcPlugin) => {

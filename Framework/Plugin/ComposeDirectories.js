@@ -10,12 +10,14 @@ const fp_1 = require("lodash/fp");
  * @project @framework
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-exports.ComposeDirectories = (FrameworkState) => {
+exports.ComposeDirectories = (FrameworkConfiguration) => {
     return (skeleton, collector) => {
         if (helpers_1.hasDirectories(skeleton)) {
             // Does the `./application/<ApplicationName>/<PluginName>/ dir exist?
-            let workBasePath = helpers_2.joinBasePath(FrameworkState.applicationDirectory, helpers_1.directoryBasePath(skeleton));
-            let projectBasePath = helpers_2.joinBasePath(FrameworkState.projectApplicationDirectory, helpers_1.directoryBasePath(skeleton));
+            //@ts-ignore
+            let workBasePath = helpers_2.joinBasePath(FrameworkConfiguration.getKey('buildDirs.applicationDirectory'), helpers_1.directoryBasePath(skeleton));
+            //@ts-ignore
+            let projectBasePath = helpers_2.joinBasePath(FrameworkConfiguration.getKey('projectDirs.applicationDirectory'), helpers_1.directoryBasePath(skeleton));
             let joinToWorkBase = helpers_2.joinBasePath(workBasePath);
             let joinToProjectBase = helpers_2.joinBasePath(projectBasePath);
             let runtimeDirs = fp_1.reduce((acc, directory) => {

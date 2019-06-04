@@ -29,6 +29,7 @@ const isCommand = matchesProperty('state.configuration.type', 'command')
 
 import {
   Configure,
+  ConfigureCLI,
   CreateFrameworkState,
   LoadPlugins,
   ValidatePlugins,
@@ -70,35 +71,47 @@ export async function RunCLI(baseDirectory: string, config: PomegranateConfigura
   /*
    * Loads and validates the application config, creates the pomegranate framework logger.
    */
-  const {PomConfig,FrameworkConfiguration, loggerFactory, frameworkLogger, systemLogger, LogManager} = await Configure(frameworkMetrics, baseDirectory, config)
-  const FutureFrameworkState: IFutureState<RuntimeFrameworkState> = await CreateFrameworkState(frameworkLogger, FrameworkConfiguration)
-  const FrameworkState = await FutureFrameworkState.getState()
+  const {PomConfig,FrameworkConfiguration, loggerFactory, frameworkLogger, systemLogger, LogManager} = await ConfigureCLI(frameworkMetrics, baseDirectory, config)
+  // const FutureFrameworkState: IFutureState<RuntimeFrameworkState> = await CreateFrameworkState(frameworkLogger, FrameworkConfiguration)
+  // const FrameworkState = await FutureFrameworkState.getState()
 
-  /*
-   * Loads plugins from all sources: Framework, Local and Namespaced.
-   */
-  let loadedPlugins = await LoadPlugins(FrameworkState, LogManager)
 
-  /*
-   * Validates plugin types, values and usage constraints.
-   */
-  let validatedPlugins = await ValidatePlugins(FrameworkState, LogManager, GlobalInjector, loadedPlugins)
+  let FrameworkState = {
+    frameworkMetrics,
+    FrameworkConfiguration
+  }
 
-  /*
-   * Extract global configuration data from all plugins, including the master required plugin array.
-   */
-  let FullConfig = await updateFrameworkMeta(LogManager, frameworkMetrics, FutureFrameworkState, validatedPlugins)
+  let finalPlugins = null
+  let FullConfig = null
+  try {
+    /*
+     * Loads plugins from all sources: Framework, Local and Namespaced.
+     */
+    let loadedPlugins = await LoadPlugins(FrameworkConfiguration, frameworkMetrics, LogManager)
+    /*
+     * Validates plugin types, values and usage constraints.
+     */
+    let validatedPlugins = await ValidatePlugins(FrameworkState, frameworkMetrics, LogManager, GlobalInjector, loadedPlugins)
 
-  GlobalInjector.anything('PomConfig', FullConfig)
-  /*
-   * Updates plugins with global state. Attaches all needed properties for downstream use.
-   */
-  let compPlugins = composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, GlobalInjector)
-  let composed = await compPlugins(validatedPlugins)
+    /*
+     * Extract global configuration data from all plugins, including the master required plugin array.
+     */
+    FullConfig = await updateFrameworkMeta(LogManager, FrameworkConfiguration, frameworkMetrics, validatedPlugins)
+    // let FullConfig = await updateFrameworkMeta(LogManager, frameworkMetrics, FrameworkState, validatedPlugins)
 
-  let finalPlugins = PopulateCliInjectors(GlobalInjector, composed)
+    GlobalInjector.anything('PomConfig', FullConfig)
+    /*
+     * Updates plugins with global state. Attaches all needed properties for downstream use.
+     */
+    let compPlugins = composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, GlobalInjector)
+    let composed = await compPlugins(validatedPlugins)
 
-  return {Plugins: finalPlugins, Config: FullConfig}
+    finalPlugins = PopulateCliInjectors(GlobalInjector, composed)
+  }
+  catch(e){
+
+  }
+  return {Plugins: finalPlugins, Config: FullConfig, FrameworkConfiguration}
 }
 
 
@@ -120,15 +133,21 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
    */
   const {PomConfig, FrameworkConfiguration, loggerFactory, frameworkLogger, LogManager} = await Configure(frameworkMetrics, baseDirectory, config)
 
-  const FutureFrameworkState: IFutureState<RuntimeFrameworkState> = await CreateFrameworkState(frameworkLogger, FrameworkConfiguration)
-  const FrameworkState = await FutureFrameworkState.getState()
+  let FrameworkState = {
+    frameworkMetrics,
+    FrameworkConfiguration
+  }
+
+  // const FutureFrameworkState: IFutureState<RuntimeFrameworkState> = await CreateFrameworkState(frameworkLogger, FrameworkConfiguration)
+  // const FrameworkState = await FutureFrameworkState.getState()
   // Log in use versions.
   Versions(LogManager.use('pomegranate'))
 
   /*
    * Loads plugins from all sources: Framework, Local and Namespaced.
    */
-  let allPlugins = await LoadPlugins(FrameworkState, LogManager)
+  // let allPlugins = await LoadPlugins(FrameworkState, LogManager)
+  let allPlugins = await LoadPlugins(FrameworkConfiguration, frameworkMetrics, LogManager)
 
   let loadedPlugins = filter((plugin) => {
     return !isCommand(plugin)
@@ -137,12 +156,13 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
   /*
    * Validates plugin types, values and usage constraints.
    */
-  let validatedPlugins = await ValidatePlugins(FrameworkState, LogManager, GlobalInjector, loadedPlugins )
+  let validatedPlugins = await ValidatePlugins(FrameworkState, frameworkMetrics,LogManager, GlobalInjector, loadedPlugins)
 
   /*
    * Extract global configuration data from all plugins, including the master required plugin array.
    */
-  let FullConfig = await updateFrameworkMeta(LogManager, frameworkMetrics, FutureFrameworkState, validatedPlugins)
+  let FullConfig = await updateFrameworkMeta(LogManager, FrameworkConfiguration, frameworkMetrics, validatedPlugins)
+  // let FullConfig = await updateFrameworkMeta(LogManager, frameworkMetrics, FrameworkState, validatedPlugins)
   GlobalInjector.anything('PomConfig', FullConfig)
   /*
    * Updates plugins with global state. Attaches all needed properties for downstream use.

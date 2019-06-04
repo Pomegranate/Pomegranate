@@ -4,6 +4,6 @@
  * @project @framework
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
-import { ValidatedConfiguration } from "./Configuration";
 import { LogManager } from "./FrameworkLogger/LogManager";
-export declare function RequirePlugins(pomConfig: ValidatedConfiguration, LogManager: LogManager): Promise<any[]>;
+import { ValidatedTransformer } from "./Validation";
+export declare function RequirePlugins(FrameworkConfiguration: ValidatedTransformer, LogManager: LogManager): Promise<any[]>;

@@ -8,7 +8,7 @@
 import {compose, first, get, initial, join, last, memoize, startsWith, tail, curry} from 'lodash/fp'
 import {append} from "../Common/ArrayMethods";
 
-export const getName = get('computedMetadata.name')
+export const getName =get('computedMetadata.name')
 export const getDirectories = get('state.directories')
 export const getParents = get('loadMetadata.parents')
 export const getNamespace = get('loadMetadata.namespace')

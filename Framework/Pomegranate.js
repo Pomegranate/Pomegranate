@@ -56,29 +56,40 @@ function RunCLI(baseDirectory, config) {
         /*
          * Loads and validates the application config, creates the pomegranate framework logger.
          */
-        const { PomConfig, FrameworkConfiguration, loggerFactory, frameworkLogger, systemLogger, LogManager } = yield Bootstrap_1.Configure(frameworkMetrics, baseDirectory, config);
-        const FutureFrameworkState = yield Bootstrap_1.CreateFrameworkState(frameworkLogger, FrameworkConfiguration);
-        const FrameworkState = yield FutureFrameworkState.getState();
-        /*
-         * Loads plugins from all sources: Framework, Local and Namespaced.
-         */
-        let loadedPlugins = yield Bootstrap_1.LoadPlugins(FrameworkState, LogManager);
-        /*
-         * Validates plugin types, values and usage constraints.
-         */
-        let validatedPlugins = yield Bootstrap_1.ValidatePlugins(FrameworkState, LogManager, GlobalInjector, loadedPlugins);
-        /*
-         * Extract global configuration data from all plugins, including the master required plugin array.
-         */
-        let FullConfig = yield Configuration_1.updateFrameworkMeta(LogManager, frameworkMetrics, FutureFrameworkState, validatedPlugins);
-        GlobalInjector.anything('PomConfig', FullConfig);
-        /*
-         * Updates plugins with global state. Attaches all needed properties for downstream use.
-         */
-        let compPlugins = composePlugins_1.composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, GlobalInjector);
-        let composed = yield compPlugins(validatedPlugins);
-        let finalPlugins = Bootstrap_1.PopulateCliInjectors(GlobalInjector, composed);
-        return { Plugins: finalPlugins, Config: FullConfig };
+        const { PomConfig, FrameworkConfiguration, loggerFactory, frameworkLogger, systemLogger, LogManager } = yield Bootstrap_1.ConfigureCLI(frameworkMetrics, baseDirectory, config);
+        // const FutureFrameworkState: IFutureState<RuntimeFrameworkState> = await CreateFrameworkState(frameworkLogger, FrameworkConfiguration)
+        // const FrameworkState = await FutureFrameworkState.getState()
+        let FrameworkState = {
+            frameworkMetrics,
+            FrameworkConfiguration
+        };
+        let finalPlugins = null;
+        let FullConfig = null;
+        try {
+            /*
+             * Loads plugins from all sources: Framework, Local and Namespaced.
+             */
+            let loadedPlugins = yield Bootstrap_1.LoadPlugins(FrameworkConfiguration, frameworkMetrics, LogManager);
+            /*
+             * Validates plugin types, values and usage constraints.
+             */
+            let validatedPlugins = yield Bootstrap_1.ValidatePlugins(FrameworkState, frameworkMetrics, LogManager, GlobalInjector, loadedPlugins);
+            /*
+             * Extract global configuration data from all plugins, including the master required plugin array.
+             */
+            FullConfig = yield Configuration_1.updateFrameworkMeta(LogManager, FrameworkConfiguration, frameworkMetrics, validatedPlugins);
+            // let FullConfig = await updateFrameworkMeta(LogManager, frameworkMetrics, FrameworkState, validatedPlugins)
+            GlobalInjector.anything('PomConfig', FullConfig);
+            /*
+             * Updates plugins with global state. Attaches all needed properties for downstream use.
+             */
+            let compPlugins = composePlugins_1.composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, GlobalInjector);
+            let composed = yield compPlugins(validatedPlugins);
+            finalPlugins = Bootstrap_1.PopulateCliInjectors(GlobalInjector, composed);
+        }
+        catch (e) {
+        }
+        return { Plugins: finalPlugins, Config: FullConfig, FrameworkConfiguration };
     });
 }
 exports.RunCLI = RunCLI;
@@ -99,25 +110,31 @@ function Pomegranate(baseDirectory, config) {
          * Loads and validates the application config, creates the pomegranate framework logger.
          */
         const { PomConfig, FrameworkConfiguration, loggerFactory, frameworkLogger, LogManager } = yield Bootstrap_1.Configure(frameworkMetrics, baseDirectory, config);
-        const FutureFrameworkState = yield Bootstrap_1.CreateFrameworkState(frameworkLogger, FrameworkConfiguration);
-        const FrameworkState = yield FutureFrameworkState.getState();
+        let FrameworkState = {
+            frameworkMetrics,
+            FrameworkConfiguration
+        };
+        // const FutureFrameworkState: IFutureState<RuntimeFrameworkState> = await CreateFrameworkState(frameworkLogger, FrameworkConfiguration)
+        // const FrameworkState = await FutureFrameworkState.getState()
         // Log in use versions.
         Versions_1.Versions(LogManager.use('pomegranate'));
         /*
          * Loads plugins from all sources: Framework, Local and Namespaced.
          */
-        let allPlugins = yield Bootstrap_1.LoadPlugins(FrameworkState, LogManager);
+        // let allPlugins = await LoadPlugins(FrameworkState, LogManager)
+        let allPlugins = yield Bootstrap_1.LoadPlugins(FrameworkConfiguration, frameworkMetrics, LogManager);
         let loadedPlugins = fp_1.filter((plugin) => {
             return !isCommand(plugin);
         }, allPlugins);
         /*
          * Validates plugin types, values and usage constraints.
          */
-        let validatedPlugins = yield Bootstrap_1.ValidatePlugins(FrameworkState, LogManager, GlobalInjector, loadedPlugins);
+        let validatedPlugins = yield Bootstrap_1.ValidatePlugins(FrameworkState, frameworkMetrics, LogManager, GlobalInjector, loadedPlugins);
         /*
          * Extract global configuration data from all plugins, including the master required plugin array.
          */
-        let FullConfig = yield Configuration_1.updateFrameworkMeta(LogManager, frameworkMetrics, FutureFrameworkState, validatedPlugins);
+        let FullConfig = yield Configuration_1.updateFrameworkMeta(LogManager, FrameworkConfiguration, frameworkMetrics, validatedPlugins);
+        // let FullConfig = await updateFrameworkMeta(LogManager, frameworkMetrics, FrameworkState, validatedPlugins)
         GlobalInjector.anything('PomConfig', FullConfig);
         /*
          * Updates plugins with global state. Attaches all needed properties for downstream use.

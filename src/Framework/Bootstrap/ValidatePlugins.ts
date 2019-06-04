@@ -12,11 +12,12 @@ import {MagnumDI} from "magnum-di";
 import {reportCommonErrors} from "../Common/ErrorReporters";
 import {rightBar} from "../Common/frameworkOutputs";
 import {LogManager} from "../FrameworkLogger/LogManager";
+import {Metrics} from "../FrameworkMetrics";
 
 
-export async function ValidatePlugins(PomConfig: RuntimeFrameworkState, LogManager: LogManager, GlobalInjector: MagnumDI, loadedPlugins){
+export async function ValidatePlugins(PomConfig: any, frameworkMetrics: Metrics, LogManager: LogManager, GlobalInjector: MagnumDI, loadedPlugins){
   rightBar(LogManager.use('system')).run({msg: 'Validating Plugins'})
-  PomConfig.FrameworkMetrics.startFrameworkPhase('CreatePluginValidator')
+  frameworkMetrics.startFrameworkPhase('CreatePluginValidator')
   async function PluginValidator(rawModules){
     let createSkeletons = buildPluginSkeletons(PomConfig, LogManager, GlobalInjector)
     let skeletons = await createSkeletons(rawModules)
@@ -24,7 +25,7 @@ export async function ValidatePlugins(PomConfig: RuntimeFrameworkState, LogManag
   }
   try {
     let validatedPlugins = await PluginValidator(loadedPlugins)
-    LogManager.use('pomegranate').log(`Plugin validation took ${PomConfig.FrameworkMetrics.stopFrameworkPhase('CreatePluginValidator')}ms.`, 3)
+    LogManager.use('pomegranate').log(`Plugin validation took ${frameworkMetrics.stopFrameworkPhase('CreatePluginValidator')}ms.`, 3)
     return validatedPlugins
   }
   catch(e){

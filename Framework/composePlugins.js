@@ -27,7 +27,7 @@ const helpers_1 = require("./Configuration/helpers");
 const helpers_2 = require("./Plugin/helpers");
 const ComposeDirectories_1 = require("./Plugin/ComposeDirectories");
 const frameworkOutputs_1 = require("./Common/frameworkOutputs");
-exports.composePlugins = (pomConf, LogManager, frameworkMetrics, loggerFactory, PluginDI) => {
+exports.composePlugins = (FrameworkConfiguration, LogManager, frameworkMetrics, loggerFactory, PluginDI) => {
     const composePlugin = lodash_fun_1.composeP((plugin) => __awaiter(this, void 0, void 0, function* () {
     }));
     return function (skeletons) {
@@ -37,10 +37,10 @@ exports.composePlugins = (pomConf, LogManager, frameworkMetrics, loggerFactory, 
             // console.log(skeleton)
             let PluginName = helpers_2.getFqShortname(skeleton);
             let pullProp = helpers_2.configObjectPath(skeleton);
-            pomConf.FrameworkMetrics.startPluginPhase(PluginName, 'initialize');
+            frameworkMetrics.startPluginPhase(PluginName, 'initialize');
             return FutureState_1.FutureState(skeleton)
                 .map((skeleton, collector) => __awaiter(this, void 0, void 0, function* () {
-                let fileVars = yield helpers_1.requireFile(pomConf.pluginConfigDirectory, `${helpers_2.getConfigFilePath(skeleton)}.js`);
+                let fileVars = yield helpers_1.requireFile(FrameworkConfiguration.getKey('buildDirs.pluginConfigDirectory'), `${helpers_2.getConfigFilePath(skeleton)}.js`);
                 let inject = fp_1.isFunction(fileVars) ? PluginDI.inject(fileVars) : fileVars;
                 let vars = fp_1.getOr(skeleton.state.variables, pullProp('variables'), inject);
                 let conf = fp_1.getOr({ disabled: false }, pullProp('config'), inject);
@@ -52,7 +52,7 @@ exports.composePlugins = (pomConf, LogManager, frameworkMetrics, loggerFactory, 
                 collector.runtimeVariables = vars;
                 return collector;
             }))
-                .map(ComposeDirectories_1.ComposeDirectories(pomConf))
+                .map(ComposeDirectories_1.ComposeDirectories(FrameworkConfiguration))
                 .map((skeleton, collector) => {
                 let logLevel = fp_1.get('runtimeConfiguration.logLevel', collector);
                 let configFormatting = fp_1.get('runtimeConfiguration.logFormat', collector);
@@ -62,9 +62,9 @@ exports.composePlugins = (pomConf, LogManager, frameworkMetrics, loggerFactory, 
                 return collector;
             })
                 .map((skeleton, collector) => {
-                collector.timeout = pomConf.timeout;
+                collector.timeout = FrameworkConfiguration.getKey('timeout');
                 //@ts-ignore
-                let missingDeps = fp_1.difference(skeleton.state.configuration.depends, pomConf.allAvailable);
+                let missingDeps = fp_1.difference(skeleton.state.configuration.depends, FrameworkConfiguration.getKey('runtime.allAvailable'));
                 if (missingDeps.length) {
                     //@ts-ignore
                     collector.logger.error(`Missing required dependencies: ${missingDeps.join(', ')}`, 0);
@@ -79,12 +79,12 @@ exports.composePlugins = (pomConf, LogManager, frameworkMetrics, loggerFactory, 
             })
                 .map((skeleton, collector) => {
                 collector.state.configuration.depends =
-                    Dependency_1.provideDependencies(fp_1.get('state.configuration.name', collector), fp_1.getOr([], 'state.configuration.depends', collector), pomConf.providingPlugins);
+                    Dependency_1.provideDependencies(fp_1.get('state.configuration.name', collector), fp_1.getOr([], 'state.configuration.depends', collector), FrameworkConfiguration.getKey('runtime.providingPlugins'));
                 return collector;
             })
                 .run({})
                 .then((result) => {
-                result.logger.log(`Initialized in ${pomConf.FrameworkMetrics.stopPluginPhase(PluginName, 'initialize')}ms`, 3);
+                result.logger.log(`Initialized in ${frameworkMetrics.stopPluginPhase(PluginName, 'initialize')}ms`, 3);
                 return result;
             });
         })

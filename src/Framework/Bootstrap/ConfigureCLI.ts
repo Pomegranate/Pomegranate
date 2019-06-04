@@ -1,9 +1,10 @@
 /**
- * @file Configure
+ * @file ConfigureCLI
  * @author Jim Bulkowski <jim.b@paperelectron.com>
- * @project @framework
+ * @project Pomegranate
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
+
 import {each} from 'lodash/fp'
 import {ValidatedConfiguration, PomegranateConfig, PomegranateConfiguration} from "../Configuration";
 import {FutureState} from "../Common/FutureState";
@@ -15,7 +16,7 @@ import {CreateFrameworkLogHandler} from "../FrameworkLogger/FrameworkLogHandler"
 
 import {transformFrameworkConfig, frameworkConfigValid} from "../Validation";
 
-export async function Configure(frameworkMetrics, baseDirectory: string, config: PomegranateConfiguration) {
+export async function ConfigureCLI(frameworkMetrics, baseDirectory: string, config: PomegranateConfiguration) {
 
   let transformConfig = transformFrameworkConfig(baseDirectory)
 
@@ -23,11 +24,7 @@ export async function Configure(frameworkMetrics, baseDirectory: string, config:
     frameworkMetrics.startFrameworkPhase('FrameworkConfig')
     let FrameworkConfiguration = await transformConfig(config)
     if(!FrameworkConfiguration.isValid()){
-      each((e) => {
-        console.log(e.message)
-      },FrameworkConfiguration.conformErrors())
 
-      throw new Error('Framework Configuration failed.')
     }
 
     let PomConfig = await PomegranateConfig(baseDirectory, config)

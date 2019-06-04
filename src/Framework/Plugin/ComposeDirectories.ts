@@ -6,6 +6,7 @@ import {isPluginDirectory, PluginDirectory,} from "./index";
 import {ComposedFrameworkState, RuntimeFrameworkState, ValidatedConfiguration} from "../Configuration";
 import {joinPluginWorkBase, joinBasePath} from "../Configuration/helpers";
 import {reduce} from 'lodash/fp'
+import {ValidatedTransformer} from "../Validation";
 /**
  * @file ComposeDirectories
  * @author Jim Bulkowski <jim.b@paperelectron.com>
@@ -14,12 +15,14 @@ import {reduce} from 'lodash/fp'
  */
 
 
-export const ComposeDirectories = (FrameworkState: ComposedFrameworkState)=>{
+export const ComposeDirectories = (FrameworkConfiguration: ValidatedTransformer)=>{
   return (skeleton, collector) => { // Assemble plugin directory objects
     if (hasDirectories(skeleton)) {
       // Does the `./application/<ApplicationName>/<PluginName>/ dir exist?
-      let workBasePath = joinBasePath(FrameworkState.applicationDirectory, directoryBasePath(skeleton))
-      let projectBasePath = joinBasePath(FrameworkState.projectApplicationDirectory, directoryBasePath(skeleton))
+      //@ts-ignore
+      let workBasePath = joinBasePath(FrameworkConfiguration.getKey('buildDirs.applicationDirectory'), directoryBasePath(skeleton))
+      //@ts-ignore
+      let projectBasePath = joinBasePath(FrameworkConfiguration.getKey('projectDirs.applicationDirectory'), directoryBasePath(skeleton))
       let joinToWorkBase = joinBasePath(workBasePath)
       let joinToProjectBase = joinBasePath(projectBasePath)
 

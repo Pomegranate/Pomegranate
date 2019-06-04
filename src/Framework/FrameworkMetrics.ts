@@ -44,7 +44,7 @@ export interface Metrics {
   getMetrics: () => {framework: any, plugins: any}
 }
 
-export function FrameworkMetrics(): Metrics{
+export function FrameworkMetrics(): Metrics {
   let PluginMetrics = {}
   let RuntimeMetrics = {}
 

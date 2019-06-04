@@ -10,13 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const RequirePlugins_1 = require("../RequirePlugins");
 const frameworkOutputs_1 = require("../Common/frameworkOutputs");
-function LoadPlugins(PomConfig, LogManager) {
+function LoadPlugins(FrameworkConfig, frameworkMetrics, LogManager) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             frameworkOutputs_1.rightBar(LogManager.use('system')).run({ msg: 'Discovering plugin modules.' });
-            PomConfig.FrameworkMetrics.startFrameworkPhase('LoadPlugins');
-            let loaded = yield RequirePlugins_1.RequirePlugins(PomConfig, LogManager);
-            LogManager.use('pomegranate').log(`Plugin module loading took ${PomConfig.FrameworkMetrics.stopFrameworkPhase('LoadPlugins')}ms.`, 3);
+            frameworkMetrics.startFrameworkPhase('LoadPlugins');
+            let loaded = yield RequirePlugins_1.RequirePlugins(FrameworkConfig, LogManager);
+            LogManager.use('pomegranate').log(`Plugin module loading took ${frameworkMetrics.stopFrameworkPhase('LoadPlugins')}ms.`, 3);
             return loaded;
         }
         catch (e) {

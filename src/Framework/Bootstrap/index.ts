@@ -6,6 +6,7 @@
  */
 
 export * from './Configure'
+export * from './ConfigureCLI'
 export * from './CreateFrameworkState'
 export * from './LoadPlugins'
 export * from './ValidatePlugins'

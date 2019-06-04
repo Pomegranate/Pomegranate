@@ -74,8 +74,8 @@ const getConfigMeta = memoize((srcPlugin) => {
   return {loadSource, moduleName, pluginName, pluginType}
 })
 
-export const transformer = (FrameworkState: RuntimeFrameworkState, GlobalInjector: MagnumDI) => {
-
+export const transformer = (FrameworkState: any, GlobalInjector: MagnumDI) => {
+  let {baseDirectory,projectDirs, buildDirs} = FrameworkState.FrameworkConfiguration.conformedValues()
   return {
     fqn: (_, src) => {
       let ns = get('loadMetadata.namespace', src)
@@ -88,9 +88,9 @@ export const transformer = (FrameworkState: RuntimeFrameworkState, GlobalInjecto
       let name = get('state.configuration.name', src)
       return isString(name) ? [...fqn(src), name] : []
     },
-    baseDirectory: _ => normalize(FrameworkState.baseDirectory),
-    projectDirectory: _ => normalize(FrameworkState.projectDirectory),
-    buildDirectory: _ => normalize(FrameworkState.buildDirectory),
+    baseDirectory: baseDirectory,
+    projectDirectory: projectDirs.base,
+    buildDirectory: buildDirs.base
   }
 
 }

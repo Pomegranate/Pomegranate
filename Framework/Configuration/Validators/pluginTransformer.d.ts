@@ -1,9 +1,8 @@
-import { RuntimeFrameworkState } from "../index";
 import { MagnumDI } from "magnum-di";
-export declare const transformer: (FrameworkState: RuntimeFrameworkState, GlobalInjector: MagnumDI) => {
+export declare const transformer: (FrameworkState: any, GlobalInjector: MagnumDI) => {
     fqn: (_: any, src: any) => any[];
     name: (_: any, src: any) => any[];
-    baseDirectory: (_: any) => string;
-    projectDirectory: (_: any) => string;
-    buildDirectory: (_: any) => string;
+    baseDirectory: any;
+    projectDirectory: any;
+    buildDirectory: any;
 };
