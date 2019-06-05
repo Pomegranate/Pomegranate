@@ -83,7 +83,6 @@ function structure(composedPlugin: any, result) {
 }
 
 function composite(plugin, LogManager?) {
-  // console.log(plugin)
   let injectables = get('hookResult', plugin)
   return flattenDeep(map((result) => {
     let type = getOr('anything', 'type', result)
@@ -148,6 +147,7 @@ export function placeInjectables(composedPlugin, hookResult, pluginLogger, Globa
 
 function composeLoadRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, GlobalInjector: MagnumDI) {
   return async function loadRunner(composedPlugin: ComposedPlugin) {
+    let computedName = get('computedMetadata.name', composedPlugin)
     let pluginName = get('configuration.name', composedPlugin)
     frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'load')
 
@@ -173,13 +173,14 @@ function composeLoadRunner(frameworkConf: ValidatedConfiguration, LogManager: Lo
       .then((result) => {
         let elapsed = frameworkConf.FrameworkMetrics.stopPluginPhase(pluginName, 'load')
         PluginLogger.log(`Loaded in ${elapsed}ms`, 3)
-        return pluginName
+        return computedName
       })
   }
 }
 
 function composeStartRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, GlobalInjector: MagnumDI) {
   return async function startRunner(composedPlugin: ComposedPlugin) {
+    let computedName = get('computedMetadata.name', composedPlugin)
     let pluginName = get('state.configuration.name', composedPlugin)
     frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'start')
 
@@ -201,13 +202,14 @@ function composeStartRunner(frameworkConf: ValidatedConfiguration, LogManager: L
         PluginTimer.reset()
         let elapsed = frameworkConf.FrameworkMetrics.stopPluginPhase(pluginName, 'start')
         PluginLogger.log(`Started in ${elapsed}ms`, 3)
-        return pluginName
+        return computedName
       })
   }
 }
 
 function composeStopRunner(frameworkConf: ValidatedConfiguration, LogManager: LogManager, GlobalInjector: MagnumDI) {
   return async function stopRunner(composedPlugin: ComposedPlugin) {
+    let computedName = get('computedMetadata.name', composedPlugin)
     let pluginName = get('state.configuration.name', composedPlugin)
     frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'stop')
 
@@ -228,7 +230,7 @@ function composeStopRunner(frameworkConf: ValidatedConfiguration, LogManager: Lo
         PluginTimer.reset()
         let elapsed = frameworkConf.FrameworkMetrics.stopPluginPhase(pluginName, 'stop')
         PluginLogger.log(`Stopped in ${elapsed}ms`, 3)
-        return pluginName
+        return computedName
       })
       .catch((err) => {
         PluginLogger.error(err.message)

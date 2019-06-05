@@ -17,7 +17,7 @@ import {ComposedPlugin} from "./Plugin";
 import {FrameworkMetrics} from "./FrameworkMetrics";
 import {composeHookRunners} from "./Plugin/runHook";
 import {rightBar} from "./Common/frameworkOutputs";
-import {getFqShortname, joinFqShortname} from "./Plugin/helpers";
+import {getFqShortname, joinFqShortname, fqShortName} from "./Plugin/helpers";
 import {RuntimeFrameworkState} from "./Configuration";
 import {pluralizer} from "./Common/stringFuns";
 
@@ -248,7 +248,6 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
         rightBar(LogManager.use('system')).run({msg: 'Running Start hooks.'})
         frameworkMetrics.startFrameworkPhase('StartHook')
         let results = await PList.asyncReduce(async (acc, composedPlugin) => {
-
           if(acc.startFailed){
             (acc.startSkipped || (acc.startSkipped = [])).push(getFqShortname(composedPlugin))
             return acc

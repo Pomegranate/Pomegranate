@@ -75,7 +75,6 @@ function structure(composedPlugin, result) {
     return handleInjectable({ type, composedPlugin, result });
 }
 function composite(plugin, LogManager) {
-    // console.log(plugin)
     let injectables = fp_1.get('hookResult', plugin);
     return fp_1.flattenDeep(fp_1.map((result) => {
         let type = fp_1.getOr('anything', 'type', result);
@@ -132,6 +131,7 @@ exports.placeInjectables = placeInjectables;
 function composeLoadRunner(frameworkConf, LogManager, GlobalInjector) {
     return function loadRunner(composedPlugin) {
         return __awaiter(this, void 0, void 0, function* () {
+            let computedName = fp_1.get('computedMetadata.name', composedPlugin);
             let pluginName = fp_1.get('configuration.name', composedPlugin);
             frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'load');
             let ChildInjector = composedPlugin.injector;
@@ -153,7 +153,7 @@ function composeLoadRunner(frameworkConf, LogManager, GlobalInjector) {
                 .then((result) => {
                 let elapsed = frameworkConf.FrameworkMetrics.stopPluginPhase(pluginName, 'load');
                 PluginLogger.log(`Loaded in ${elapsed}ms`, 3);
-                return pluginName;
+                return computedName;
             });
         });
     };
@@ -161,6 +161,7 @@ function composeLoadRunner(frameworkConf, LogManager, GlobalInjector) {
 function composeStartRunner(frameworkConf, LogManager, GlobalInjector) {
     return function startRunner(composedPlugin) {
         return __awaiter(this, void 0, void 0, function* () {
+            let computedName = fp_1.get('computedMetadata.name', composedPlugin);
             let pluginName = fp_1.get('state.configuration.name', composedPlugin);
             frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'start');
             let ChildInjector = composedPlugin.injector;
@@ -178,7 +179,7 @@ function composeStartRunner(frameworkConf, LogManager, GlobalInjector) {
                 PluginTimer.reset();
                 let elapsed = frameworkConf.FrameworkMetrics.stopPluginPhase(pluginName, 'start');
                 PluginLogger.log(`Started in ${elapsed}ms`, 3);
-                return pluginName;
+                return computedName;
             });
         });
     };
@@ -186,6 +187,7 @@ function composeStartRunner(frameworkConf, LogManager, GlobalInjector) {
 function composeStopRunner(frameworkConf, LogManager, GlobalInjector) {
     return function stopRunner(composedPlugin) {
         return __awaiter(this, void 0, void 0, function* () {
+            let computedName = fp_1.get('computedMetadata.name', composedPlugin);
             let pluginName = fp_1.get('state.configuration.name', composedPlugin);
             frameworkConf.FrameworkMetrics.startPluginPhase(pluginName, 'stop');
             let ChildInjector = composedPlugin.injector;
@@ -203,7 +205,7 @@ function composeStopRunner(frameworkConf, LogManager, GlobalInjector) {
                 PluginTimer.reset();
                 let elapsed = frameworkConf.FrameworkMetrics.stopPluginPhase(pluginName, 'stop');
                 PluginLogger.log(`Stopped in ${elapsed}ms`, 3);
-                return pluginName;
+                return computedName;
             })
                 .catch((err) => {
                 PluginLogger.error(err.message);
