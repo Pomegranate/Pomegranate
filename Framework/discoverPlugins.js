@@ -28,6 +28,7 @@ const parentRequire = function (id) {
         return require(id);
     }
     catch (err) {
+        console.log(err);
         let parent = module.parent;
         for (; parent; parent = parent.parent) {
             try {
@@ -147,7 +148,7 @@ exports.discoverNamespaced = (dependencies) => {
     let onlyNs = onlyNamespaced(fp_1.toPairs(dependencies));
     return bluebird_1.default.map(onlyNs, (i) => __awaiter(this, void 0, void 0, function* () {
         let ns = fp_1.first(i);
-        let plugin = eitherUnwrapOrFail(parentRequire(ns), i)
+        let plugin = eitherUnwrapOrFail(require(ns), i)
             .cata(fail => {
             throw fail;
         }, fp_1.identity);
