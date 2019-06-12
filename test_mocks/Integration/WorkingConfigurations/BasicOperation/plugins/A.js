@@ -39,7 +39,6 @@ exports.Plugin = CreatePlugin({
       PluginStore.server.listen(8080)
     },
     stop: (PluginLogger, PluginStore) => {
-      console.log('Stopping A')
       return new Promise((resolve) => {
         PluginStore.server.close((a, b) => {
           resolve(true)

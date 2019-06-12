@@ -5,9 +5,10 @@
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 
-import {map, reduce, toPairs} from 'lodash/fp'
+import {compose, filter, fromPairs, map, reduce, toPairs, get, isFunction} from 'lodash/fp'
 // import {PluginFileHandler} from "../FileHelpers";
-import {PluginFileHandler} from "@pomegranate/plugin-tools";
+import {getFqShortname, PluginFileHandler} from "@pomegranate/plugin-tools";
+import {ComposedPlugin} from "./index";
 
 export const PluginFilesFactory = (plugin:any) => {
   let runtimeDirs = plugin.runtimeDirectories
@@ -30,4 +31,14 @@ export const PluginFilesFactory = (plugin:any) => {
     }
     throw new Error(`Plugin Directory with property ${prop} does not exist.`)
   }
+}
+
+export const createPluginFilesObj = compose(fromPairs, map((p: ComposedPlugin) => [getFqShortname(p), PluginFilesFactory(p)]), filter((p: ComposedPlugin) => p.runtimeDirectories))
+
+export const pickDirectory = pluginDirObj => (pluginName, dirProp) => {
+  let pluginFiles = get(pluginName, pluginDirObj)
+  if(isFunction(pluginFiles)){
+    return pluginFiles(dirProp)
+  }
+  throw new Error(`No Plugin directories found for ${pluginName}`)
 }

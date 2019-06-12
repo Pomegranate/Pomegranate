@@ -1,12 +1,9 @@
 import {MagnumDI} from "magnum-di";
-import {EventEmitter} from "events";
 import {ComposedPlugin} from "../Plugin";
-import {rightBar} from "../Common/frameworkOutputs";
-import {map} from "lodash/fp";
-import {PluginTimer} from "../Plugin/Timers";
-import {PluginFilesFactory} from "../Plugin/PluginFiles";
+import {compose, filter, map, fromPairs, has, get} from "lodash/fp";
+import {pickDirectory, createPluginFilesObj} from "../Plugin/PluginFiles";
 
-import {getFqShortname, getFqParentname, getFqn} from "../Plugin/helpers";
+import {getFqShortname, getFqParentname, getFqn} from "@pomegranate/plugin-tools"
 
 /**
  * @file PopulateCliInjectors
@@ -15,7 +12,15 @@ import {getFqShortname, getFqParentname, getFqn} from "../Plugin/helpers";
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 
+
 export const PopulateCliInjectors = (GlobalInjector: MagnumDI, composed: ComposedPlugin[]) => {
+
+  let PluginFileHelpers = createPluginFilesObj(composed)
+  let PickDirs = pickDirectory(PluginFileHelpers)
+
+  GlobalInjector.anything('PluginDirectories', PluginFileHelpers)
+  GlobalInjector.anything('PluginPickDirectory', PickDirs)
+
 
   let results = map((plugin) => {
     let PluginName = getFqShortname(plugin)
@@ -26,10 +31,14 @@ export const PopulateCliInjectors = (GlobalInjector: MagnumDI, composed: Compose
     ChildInjector.anything('PluginVariables', plugin.runtimeVariables)
     ChildInjector.anything('PluginLogger', plugin.logger)
 
-    if(plugin.runtimeDirectories){
+    if(has(PluginName, PluginFileHelpers)){
       plugin.logger.log(`Has directories, adding PluginFiles to the injector.`)
-      ChildInjector.anything('PluginFiles', PluginFilesFactory(plugin))
+      ChildInjector.anything('PluginFiles', get(PluginName, PluginFileHelpers))
     }
+    // if(plugin.runtimeDirectories){
+    //   plugin.logger.log(`Has directories, adding PluginFiles to the injector.`)
+    //   ChildInjector.anything('PluginFiles', PluginFilesFactory(plugin))
+    // }
     plugin.injector = ChildInjector
     return plugin
 

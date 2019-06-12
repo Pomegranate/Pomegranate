@@ -5,11 +5,11 @@
  * @license MIT {@link http://opensource.org/licenses/MIT}
  */
 
-import {map} from 'lodash/fp'
+import {get, map} from 'lodash/fp'
 import {MagnumDI} from "magnum-di";
 import {ComposedPlugin} from "../Plugin";
 import {PluginTimer} from "../Plugin/Timers";
-import {PluginFilesFactory} from "../Plugin/PluginFiles";
+import {pickDirectory, createPluginFilesObj} from "../Plugin/PluginFiles";
 import {EventEmitter} from 'events'
 
 import {rightBar} from "../Common/frameworkOutputs";
@@ -20,6 +20,12 @@ import {getFqShortname, getFqParentname, getFqn} from "../Plugin/helpers";
 export const PopulateInjectors = (LogManager: LogManager, frameworkMetrics, GlobalInjector: MagnumDI, FrameworkEvents: EventEmitter, composed: ComposedPlugin[]) => {
   rightBar(LogManager.use('system')).run({msg: 'Populating Plugin child injectors'})
   frameworkMetrics.startFrameworkPhase('PopulateInjectors')
+
+  let PluginFileHelpers = createPluginFilesObj(composed)
+  let PickDirs = pickDirectory(PluginFileHelpers)
+
+  GlobalInjector.anything('PluginDirectories', PluginFileHelpers)
+  GlobalInjector.anything('PluginPickDirectory', PickDirs)
 
   let results = map((plugin) => {
     // let ParentName = getFqParentname(plugin)
@@ -39,7 +45,8 @@ export const PopulateInjectors = (LogManager: LogManager, frameworkMetrics, Glob
 
     if(plugin.runtimeDirectories){
       plugin.logger.log(`Has directories, adding PluginFiles to the injector.`)
-      ChildInjector.anything('PluginFiles', PluginFilesFactory(plugin))
+      // ChildInjector.anything('PluginFiles', PluginFilesFactory(plugin))
+      ChildInjector.anything('PluginFiles', get(PluginName, PluginFileHelpers))
     }
     plugin.injector = ChildInjector
     return plugin

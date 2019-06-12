@@ -106,6 +106,7 @@ export async function RunCLI(baseDirectory: string, config: PomegranateConfigura
     let compPlugins = composePlugins(FullConfig, LogManager, frameworkMetrics, loggerFactory, GlobalInjector)
     let composed = await compPlugins(validatedPlugins)
 
+
     finalPlugins = PopulateCliInjectors(GlobalInjector, composed)
   }
   catch(e){
@@ -236,7 +237,7 @@ export async function Pomegranate(baseDirectory: string, config: PomegranateConf
       } catch (e) {
         RuntimeState.isFailed = true
         RuntimeState.failureError = e
-        LogManager.use('pomegranate').error(e.message, 0)
+        LogManager.use('pomegranate').error(e, 0)
         return RuntimeState
       }
     },

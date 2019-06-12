@@ -193,7 +193,7 @@ function Pomegranate(baseDirectory, config) {
                     catch (e) {
                         RuntimeState.isFailed = true;
                         RuntimeState.failureError = e;
-                        LogManager.use('pomegranate').error(e.message, 0);
+                        LogManager.use('pomegranate').error(e, 0);
                         return RuntimeState;
                     }
                 });

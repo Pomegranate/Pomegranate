@@ -28,4 +28,12 @@ exports.PluginFilesFactory = (plugin) => {
         throw new Error(`Plugin Directory with property ${prop} does not exist.`);
     };
 };
+exports.createPluginFilesObj = fp_1.compose(fp_1.fromPairs, fp_1.map((p) => [plugin_tools_1.getFqShortname(p), exports.PluginFilesFactory(p)]), fp_1.filter((p) => p.runtimeDirectories));
+exports.pickDirectory = pluginDirObj => (pluginName, dirProp) => {
+    let pluginFiles = fp_1.get(pluginName, pluginDirObj);
+    if (fp_1.isFunction(pluginFiles)) {
+        return pluginFiles(dirProp);
+    }
+    throw new Error(`No Plugin directories found for ${pluginName}`);
+};
 //# sourceMappingURL=PluginFiles.js.map

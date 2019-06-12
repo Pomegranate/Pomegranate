@@ -15,6 +15,10 @@ const helpers_1 = require("../Plugin/helpers");
 exports.PopulateInjectors = (LogManager, frameworkMetrics, GlobalInjector, FrameworkEvents, composed) => {
     frameworkOutputs_1.rightBar(LogManager.use('system')).run({ msg: 'Populating Plugin child injectors' });
     frameworkMetrics.startFrameworkPhase('PopulateInjectors');
+    let PluginFileHelpers = PluginFiles_1.createPluginFilesObj(composed);
+    let PickDirs = PluginFiles_1.pickDirectory(PluginFileHelpers);
+    GlobalInjector.anything('PluginDirectories', PluginFileHelpers);
+    GlobalInjector.anything('PluginPickDirectory', PickDirs);
     let results = fp_1.map((plugin) => {
         // let ParentName = getFqParentname(plugin)
         let PluginName = helpers_1.getFqShortname(plugin);
@@ -32,7 +36,8 @@ exports.PopulateInjectors = (LogManager, frameworkMetrics, GlobalInjector, Frame
         });
         if (plugin.runtimeDirectories) {
             plugin.logger.log(`Has directories, adding PluginFiles to the injector.`);
-            ChildInjector.anything('PluginFiles', PluginFiles_1.PluginFilesFactory(plugin));
+            // ChildInjector.anything('PluginFiles', PluginFilesFactory(plugin))
+            ChildInjector.anything('PluginFiles', fp_1.get(PluginName, PluginFileHelpers));
         }
         plugin.injector = ChildInjector;
         return plugin;
