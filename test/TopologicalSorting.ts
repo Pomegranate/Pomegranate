@@ -7,17 +7,27 @@
 import {solveOrdering} from "../src/Framework/Common/solveOrdering";
 import * as mocks from '../test_mocks/Sorting'
 
+
 describe('Topological plugin sort', () => {
   test('Simple Ordering', () => {
     let expected = ['A', 'B','C','D','E','F','G','H']
     expect(solveOrdering(mocks.simpleOrdering) ).toEqual(expected)
+  })
+  test('Empty First Ordering', () => {
+    let expected = ['F','G','H', 'E', 'D', 'C', 'B', 'A']
+    expect(solveOrdering(mocks.emptyFirst) ).toEqual(expected)
+  })
+  test('Additional Runtime depends.', () => {
+    let expected = ['F','H', 'E', 'D', 'C', 'B','A','G']
+    expect(solveOrdering(mocks.runtimeAdditional) ).toEqual(expected)
   })
   test('Complex Ordering', () => {
     let expected = ['Env', 'SequelizePg', 'Models', 'Controllers', 'Passport', 'PreMiddleware', 'Router', 'PostMiddleware']
     expect(solveOrdering(mocks.complexOrdering) ).toEqual(expected)
   })
   test('Optional Ordering', () => {
-    let expected = ['Env', 'Merge', 'Passport', 'Strategy', 'Middleware', 'Routes', 'PreRouter', 'Setup']
+    // let expected = ['Env', 'Merge', 'Passport', 'Strategy', 'Middleware', 'Routes', 'PreRouter', 'Setup']
+    let expected = ['Env', 'Merge', 'Passport', 'Strategy', 'Middleware', 'Routes', 'Setup','PreRouter' ]
     expect(solveOrdering(mocks.optionalOrdering) ).toEqual(expected)
   })
   test('Parameter Ordering', () => {
@@ -25,7 +35,8 @@ describe('Topological plugin sort', () => {
     expect(solveOrdering(mocks.parameterOrdering) ).toEqual(expected)
   })
   test('Provides Ordering', () => {
-    let expected = ['Env', 'Merge', 'Passport', 'Strategy', 'Middleware', 'PreRouter', 'Setup']
+    // let expected = ['Env', 'Merge', 'Passport', 'Strategy', 'Middleware', 'PreRouter', 'Setup']
+    let expected = ['Env', 'Merge', 'Passport', 'Strategy', 'Middleware', 'Setup','PreRouter']
     expect(solveOrdering(mocks.providesOrdering) ).toEqual(expected)
   })
 

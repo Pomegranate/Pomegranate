@@ -11,7 +11,7 @@ import {normalize} from 'path'
 import {each} from 'lodash/fp'
 const mockDirectory = normalize(`${__dirname}/../../test_mocks/Integration/WorkingConfigurations`)
 let fileList = readdirSync(mockDirectory)
-// fileList = ['ApplicationPlugins']
+fileList = ['RuntimeConfiguration']
 describe('Pomegranate Functionality', () => {
   each((filePath) => {
     test(filePath, async () => {

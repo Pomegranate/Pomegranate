@@ -34,7 +34,6 @@ exports.composePlugins = (FrameworkConfiguration, LogManager, frameworkMetrics, 
         frameworkOutputs_1.rightBar(LogManager.use('system')).run({ msg: 'Initializing Plugins.' });
         frameworkMetrics.startFrameworkPhase('InitializePlugins');
         return bluebird_1.default.map(skeletons, (skeleton) => {
-            // console.log(skeleton)
             let PluginName = helpers_2.getFqShortname(skeleton);
             let pullProp = helpers_2.configObjectPath(skeleton);
             frameworkMetrics.startPluginPhase(PluginName, 'initialize');
@@ -43,7 +42,7 @@ exports.composePlugins = (FrameworkConfiguration, LogManager, frameworkMetrics, 
                 let fileVars = yield helpers_1.requireFile(FrameworkConfiguration.getKey('buildDirs.pluginConfigDirectory'), `${helpers_2.getConfigFilePath(skeleton)}.js`);
                 let inject = fp_1.isFunction(fileVars) ? PluginDI.inject(fileVars) : fileVars;
                 let vars = fp_1.getOr(skeleton.state.variables, pullProp('variables'), inject);
-                let conf = fp_1.getOr({ disabled: false }, pullProp('config'), inject);
+                let conf = fp_1.getOr({ disabled: false, additionalDependencies: [] }, pullProp('config'), inject);
                 let missingKeys = lodash_fun_2.missingKeysDeep(skeleton.state.variables, vars);
                 if (missingKeys.length) {
                     throw new Error(`Plugin "${skeleton.state.configuration.name}" config file does not conform with plugin defaults. \n Missing ${missingKeys.join(',')} keys.`);
@@ -65,6 +64,12 @@ exports.composePlugins = (FrameworkConfiguration, LogManager, frameworkMetrics, 
                 collector.timeout = FrameworkConfiguration.getKey('timeout');
                 //@ts-ignore
                 let missingDeps = fp_1.difference(skeleton.state.configuration.depends, FrameworkConfiguration.getKey('runtime.allAvailable'));
+                let missingAdditional = fp_1.difference(collector.runtimeConfiguration.additionalDependencies, FrameworkConfiguration.getKey('runtime.allAvailable'));
+                if (missingAdditional.length) {
+                    //@ts-ignore
+                    collector.logger.error(`Missing requested additionalDependencies from runtime config: ${missingAdditional.join(', ')}`, 0);
+                    throw new Error('Missing additionalDependencies');
+                }
                 if (missingDeps.length) {
                     //@ts-ignore
                     collector.logger.error(`Missing required dependencies: ${missingDeps.join(', ')}`, 0);

@@ -31,7 +31,6 @@ export const composePlugins = (FrameworkConfiguration: ValidatedTransformer, Log
     rightBar(LogManager.use('system')).run({msg: 'Initializing Plugins.'})
     frameworkMetrics.startFrameworkPhase('InitializePlugins')
     return Bluebird.map(skeletons, (skeleton: ValidatedPlugin) => {
-      // console.log(skeleton)
       let PluginName = getFqShortname(skeleton)
       let pullProp = configObjectPath(skeleton)
 
@@ -43,7 +42,7 @@ export const composePlugins = (FrameworkConfiguration: ValidatedTransformer, Log
           let fileVars = await requireFile(FrameworkConfiguration.getKey('buildDirs.pluginConfigDirectory'), `${getConfigFilePath(skeleton)}.js`)
           let inject = isFunction(fileVars) ? PluginDI.inject(fileVars) : fileVars
           let vars = getOr(skeleton.state.variables, pullProp('variables'), inject)
-          let conf = getOr({disabled: false}, pullProp('config'), inject)
+          let conf = getOr({disabled: false, additionalDependencies: []}, pullProp('config'), inject)
           let missingKeys = missingKeysDeep(skeleton.state.variables, vars)
           if (missingKeys.length) {
             throw new Error(`Plugin "${skeleton.state.configuration.name}" config file does not conform with plugin defaults. \n Missing ${missingKeys.join(',')} keys.`)
@@ -66,6 +65,13 @@ export const composePlugins = (FrameworkConfiguration: ValidatedTransformer, Log
           collector.timeout = FrameworkConfiguration.getKey('timeout')
           //@ts-ignore
           let missingDeps = difference(skeleton.state.configuration.depends, FrameworkConfiguration.getKey('runtime.allAvailable'))
+          let missingAdditional = difference(collector.runtimeConfiguration.additionalDependencies, FrameworkConfiguration.getKey('runtime.allAvailable'))
+
+          if (missingAdditional.length) {
+            //@ts-ignore
+            collector.logger.error(`Missing requested additionalDependencies from runtime config: ${missingAdditional.join(', ')}`, 0)
+            throw new Error('Missing additionalDependencies')
+          }
           if (missingDeps.length) {
             //@ts-ignore
             collector.logger.error(`Missing required dependencies: ${missingDeps.join(', ')}`, 0)
