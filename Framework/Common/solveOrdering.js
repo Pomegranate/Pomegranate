@@ -49,10 +49,10 @@ function solveOrdering(plugins) {
     let topo = new Topological_1.Topological();
     let groupedByInjectable = groupByParams(plugins);
     let flattenDeps = generateDeps(groupedByInjectable);
-    let framework = fp_1.filter(getFramework, plugins);
-    let encumbered = findEncumbered(noFramework(plugins));
-    let unEncumbered = findUnEncumbered(noFramework(plugins));
-    // Add Dependency free plugins to the toposorter first
+    // let framework = filter(getFramework, plugins)
+    //
+    // let encumbered = findEncumbered(noFramework(plugins))
+    // let unEncumbered = findUnEncumbered(noFramework(plugins))
     let top = fp_1.map((plugin) => {
         // console.log(plugin)
         let depends = [...flattenDeps(getDepends(plugin)), ...fp_1.getOr([], 'runtimeConfiguration.additionalDependencies', plugin)];
@@ -67,28 +67,25 @@ function solveOrdering(plugins) {
         };
         return [helpers_1.getFqShortname(plugin), deps];
     }, plugins);
-    // console.log(fromPairs(top))
-    let f = fp_1.filter(([name, plugin]) => {
+    let framework = fp_1.filter(([name, plugin]) => {
         //@ts-ignore
         return plugin.frameworkPlugin;
     }, top);
-    let u = fp_1.filter(([name, plugin]) => {
+    let unencumbered = fp_1.filter(([name, plugin]) => {
         //@ts-ignore
         return !plugin.encumbered && !plugin.frameworkPlugin;
     }, top);
-    let e = fp_1.filter(([name, plugin]) => {
+    let encumbered = fp_1.filter(([name, plugin]) => {
         //@ts-ignore
         return plugin.encumbered && !plugin.frameworkPlugin;
     }, top);
-    console.log(f, 'framework');
-    console.log(u, 'unencumberd');
-    console.log(e, 'encumbered');
+    // Add Dependency free plugins to the toposorter first
     fp_1.each(([name, plugin]) => {
         // console.log(name)
         topo.add(name, []);
-    }, u);
+    }, unencumbered);
+    // Followed by plugins that actually need to be sorted.
     fp_1.each(([name, plugin]) => {
-        console.log(name, plugin.depends);
         topo.add(name, plugin.depends);
         topo.add(name, plugin.optional);
         fp_1.each((provide) => {
@@ -96,7 +93,7 @@ function solveOrdering(plugins) {
                 topo.add(provide, name);
             }
         }, plugin.provides);
-    }, e);
+    }, encumbered);
     // each((plugin: any) => {
     //   let name = getFqShortname(plugin)
     //   topo.add(name, [])
@@ -128,18 +125,19 @@ function solveOrdering(plugins) {
     //
     // // }, noFramework(plugins))
     // }, encumbered)
-    let handleAdditional = fp_1.compose(fp_1.each(([name, deps]) => {
-        // console.log(name, deps)
-        fp_1.each((d) => {
-            topo.add(d, name);
-        }, deps);
-    }), fp_1.filter(([name, deps]) => {
-        return deps.length;
-    }), fp_1.map((plugin) => {
-        return [helpers_1.getFqShortname(plugin), fp_1.get('runtimeConfiguration.additionalDependencies', plugin)];
-    }));
+    // let handleAdditional = compose(each(([name, deps]) => {
+    //   // console.log(name, deps)
+    //   each((d) => {
+    //     topo.add(d, name)
+    //   }, deps)
+    // }), filter(([name, deps]) => {
+    //   return deps.length
+    // }),
+    //   map((plugin) => {
+    //     return [getFqShortname(plugin), get('runtimeConfiguration.additionalDependencies', plugin)]
+    //   }))
     let extract = extractPluginOrder(plugins);
-    let frameworkFirst = fp_1.map(helpers_1.getFqShortname, framework);
+    let frameworkFirst = fp_1.map((item) => fp_1.first(item), framework);
     let externalPlugins = extract(topo.sort());
     return [...frameworkFirst, ...externalPlugins];
 }

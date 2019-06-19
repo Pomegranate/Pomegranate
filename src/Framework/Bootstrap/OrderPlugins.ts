@@ -23,6 +23,7 @@ export function OrderPlugins(LogManager: LogManager, frameworkMetrics,plugins: C
   frameworkMetrics.startFrameworkPhase('SolveOrdering')
 
   let order = solveOrdering(plugins)
+  //@ts-ignore
   LogManager.use('pomegranate').log(`Computed plugin ordering - ${formatOrder(order)}`, 4)
 
   let sorted = sortBy((plugin): number => {

@@ -19,6 +19,7 @@ function OrderPlugins(LogManager, frameworkMetrics, plugins) {
     frameworkOutputs_1.rightBar(LogManager.use('system')).run({ msg: 'Ordering Plugins.' });
     frameworkMetrics.startFrameworkPhase('SolveOrdering');
     let order = solveOrdering_1.solveOrdering(plugins);
+    //@ts-ignore
     LogManager.use('pomegranate').log(`Computed plugin ordering - ${formatOrder(order)}`, 4);
     let sorted = fp_1.sortBy((plugin) => {
         return order.indexOf(helpers_1.getFqShortname(plugin));
