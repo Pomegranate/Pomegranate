@@ -30,18 +30,24 @@ exports.OverridePlugins = (LogManager, frameworkMetrics, composed) => {
     let overriddenPlugins = fp_1.map((plugin) => {
         let fqn = helpers_1.getFqShortname(plugin);
         let toOvr = fp_1.find((p) => {
-            return p.overrides === fqn;
+            //@ts-ignore
+            return p.state.overrides === fqn;
         }, overridePlugins);
         if (toOvr) {
-            let onlyHooks = fp_1.pickBy(fp_1.negate(fp_1.isNull), toOvr.hooks);
+            //@ts-ignore
+            let onlyHooks = fp_1.pickBy(fp_1.negate(fp_1.isNull), toOvr.state.hooks);
             let hKys = fp_1.keys(onlyHooks);
             plugin.logger.warn(`${hKys.length > 1 ? 'Hooks' : 'Hook'} - ${fp_1.keys(onlyHooks).join(', ')} - being overridden by ${helpers_1.getFqShortname(toOvr)}`, 1);
-            plugin.hooks = fp_1.merge(plugin.hooks, onlyHooks);
+            //@ts-ignore
+            plugin.state.hooks = fp_1.merge(plugin.state.hooks, onlyHooks);
             plugin.runtimeVariables = fp_1.merge(plugin.runtimeVariables, toOvr.runtimeVariables);
             plugin.runtimeDirectories = fp_1.merge(plugin.runtimeDirectories, toOvr.runtimeDirectories);
-            plugin.configuration.depends = fp_1.concat(plugin.configuration.depends, toOvr.configuration.depends);
-            plugin.configuration.provides = fp_1.concat(plugin.configuration.provides, toOvr.configuration.provides);
-            plugin.configuration.optional = fp_1.concat(plugin.configuration.optional, toOvr.configuration.optional);
+            //@ts-ignore
+            plugin.state.configuration.depends = fp_1.concat(plugin.state.configuration.depends, toOvr.state.configuration.depends);
+            //@ts-ignore
+            plugin.state.configuration.provides = fp_1.concat(plugin.state.configuration.provides, toOvr.state.configuration.provides);
+            //@ts-ignore
+            plugin.state.configuration.optional = fp_1.concat(plugin.state.configuration.optional, toOvr.state.configuration.optional);
             return plugin;
         }
         return plugin;

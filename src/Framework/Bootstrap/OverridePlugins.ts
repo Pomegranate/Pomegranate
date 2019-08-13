@@ -44,19 +44,25 @@ export const OverridePlugins = (LogManager: LogManager, frameworkMetrics, compos
   let overriddenPlugins = map((plugin) => {
     let fqn = getFqShortname(plugin)
     let toOvr = find((p) => {
-      return p.overrides === fqn
+      //@ts-ignore
+      return p.state.overrides === fqn
     }, overridePlugins)
 
     if(toOvr){
-      let onlyHooks = pickBy(negate(isNull), toOvr.hooks)
+      //@ts-ignore
+      let onlyHooks = pickBy(negate(isNull), toOvr.state.hooks)
       let hKys = keys(onlyHooks)
       plugin.logger.warn(`${hKys.length > 1 ? 'Hooks': 'Hook' } - ${keys(onlyHooks).join(', ')} - being overridden by ${getFqShortname(toOvr)}`,1)
-      plugin.hooks = merge(plugin.hooks, onlyHooks)
+      //@ts-ignore
+      plugin.state.hooks = merge(plugin.state.hooks, onlyHooks)
       plugin.runtimeVariables = merge(plugin.runtimeVariables, toOvr.runtimeVariables)
       plugin.runtimeDirectories = merge(plugin.runtimeDirectories, toOvr.runtimeDirectories)
-      plugin.configuration.depends = concat(plugin.configuration.depends,toOvr.configuration.depends)
-      plugin.configuration.provides = concat(plugin.configuration.provides,toOvr.configuration.provides)
-      plugin.configuration.optional = concat(plugin.configuration.optional,toOvr.configuration.optional)
+      //@ts-ignore
+      plugin.state.configuration.depends = concat(plugin.state.configuration.depends,toOvr.state.configuration.depends)
+      //@ts-ignore
+      plugin.state.configuration.provides = concat(plugin.state.configuration.provides,toOvr.state.configuration.provides)
+      //@ts-ignore
+      plugin.state.configuration.optional = concat(plugin.state.configuration.optional,toOvr.state.configuration.optional)
       return plugin
     }
     return plugin
