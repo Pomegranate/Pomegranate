@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@pomegranate/plugin-tools@^2.0.9":
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-tools/-/plugin-tools-2.0.9.tgz#493c444a7cf6fe0a24fbc5449c4b1791e164d3b2"
-  integrity sha512-LP0dS1TcT0D53DZTCcA2JhBfc7BTmaF95nUtdwTzcpu17jv6zsi4ZVw45xdcNb+zkU6kpUu9V1cJ1dEZO5IgEA==
+"@pomegranate/plugin-tools@^2.0.10":
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/@pomegranate/plugin-tools/-/plugin-tools-2.0.10.tgz#c18253aa72389815ae4bf44c024dd1b646f0cbe8"
+  integrity sha512-8OFGlzy+nmdWx4xaz4YPNbo1F2fnPrd5pLeGvlKYmlPRDKSFvzRIxCuOFJJ03NSLhMRGLVMFdkujxtS31MaczA==
   dependencies:
     "@types/lodash" "^4.14.123"
     bluebird "^3.5.3"
